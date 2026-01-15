@@ -40,7 +40,7 @@ import {
   ToggleLeft,
   ToggleRight,
   EyeOff,
-  Eye as EyeIcon
+  Eye as EyeIcon,
 } from "lucide-react";
 
 // Firebase imports
@@ -56,9 +56,9 @@ import {
   serverTimestamp,
   Timestamp,
   where,
-  getDocs
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+  getDocs,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 // Types (Project 1 ke same)
 interface BookingService {
@@ -89,7 +89,7 @@ interface Booking {
   totalDuration: number;
   status: BookingStatus;
   paymentMethod: string;
-  paymentStatus: 'pending' | 'paid' | 'refunded';
+  paymentStatus: "pending" | "paid" | "refunded";
   emailConfirmation: boolean;
   smsConfirmation: boolean;
   createdAt: Date;
@@ -112,7 +112,7 @@ interface Staff {
   role: string;
   branch: string;
   branchId: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   specialization: string[];
   rating: number;
   reviews: number;
@@ -124,12 +124,35 @@ interface Branch {
   name: string;
   address?: string;
   city?: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 }
 
 // Constants (Project 1 ke same)
-const PAYMENT_METHODS = ["cash", "card", "tabby", "tamara", "apple pay", "google pay", "samsung wallet", "paypal", "american express", "ewallet STC pay", "bank transfer", "cash on delivery", "other"];
-const CATEGORY_OPTIONS = ["Facial", "Hair", "Nails", "Lashes", "Massage", "Spa", "Makeup", "Waxing"];
+const PAYMENT_METHODS = [
+  "cash",
+  "card",
+  "tabby",
+  "tamara",
+  "apple pay",
+  "google pay",
+  "samsung wallet",
+  "paypal",
+  "american express",
+  "ewallet STC pay",
+  "bank transfer",
+  "cash on delivery",
+  "other",
+];
+const CATEGORY_OPTIONS = [
+  "Facial",
+  "Hair",
+  "Nails",
+  "Lashes",
+  "Massage",
+  "Spa",
+  "Makeup",
+  "Waxing",
+];
 
 // Helper functions (Project 1 ke same)
 function minutesToHHMM(mins: number) {
@@ -207,16 +230,21 @@ export default function BookingCalendar() {
   const [selectedBranch, setSelectedBranch] = useState<string>("");
   const [selectedStaffFilter, setSelectedStaffFilter] = useState<string>("");
   const [selectedDateFilter, setSelectedDateFilter] = useState<string>("");
-  const [selectedCustomerFilter, setSelectedCustomerFilter] = useState<string>("");
+  const [selectedCustomerFilter, setSelectedCustomerFilter] =
+    useState<string>("");
   const [selectedTimeInterval, setSelectedTimeInterval] = useState<string>("");
 
   // Schedule board controls (Project 1 ke same)
-  const [scheduleDate, setScheduleDate] = useState(() => format(new Date(), "yyyy-MM-dd"));
+  const [scheduleDate, setScheduleDate] = useState(() =>
+    format(new Date(), "yyyy-MM-dd")
+  );
   const [scheduleBranch, setScheduleBranch] = useState<string>("all");
-  
+
   // Form state (Project 1 ke same)
   const [branch, setBranch] = useState("");
-  const [serviceDate, setServiceDate] = useState<string>(() => format(new Date(), "yyyy-MM-dd"));
+  const [serviceDate, setServiceDate] = useState<string>(() =>
+    format(new Date(), "yyyy-MM-dd")
+  );
   const [serviceTime, setServiceTime] = useState<string>("10:00");
   const [customerName, setCustomerName] = useState<string>("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -227,34 +255,40 @@ export default function BookingCalendar() {
   const [smsConfirmation, setSmsConfirmation] = useState(false);
   const [status, setStatus] = useState<BookingStatus>("upcoming");
   const [staffName, setStaffName] = useState<string>("");
-  const [servicesList, setServicesList] = useState<BookingService[]>([{ ...emptyService }]);
+  const [servicesList, setServicesList] = useState<BookingService[]>([
+    { ...emptyService },
+  ]);
   const [remarks, setRemarks] = useState<string>("");
   const [cardLastFour, setCardLastFour] = useState<string>("");
   const [trnNumber, setTrnNumber] = useState<string>("");
   const [additionalNotes, setAdditionalNotes] = useState<string>("");
   const [tip, setTip] = useState(0);
   const [discount, setDiscount] = useState(0);
-  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'paid' | 'refunded'>('pending');
+  const [paymentStatus, setPaymentStatus] = useState<
+    "pending" | "paid" | "refunded"
+  >("pending");
 
   // 🔥 NEW: Hour enabled/disabled state
   const uniqueHours = useMemo(() => {
     const hoursSet = new Set<string>();
-    TIMESLOTS.forEach(time => {
+    TIMESLOTS.forEach((time) => {
       const hour = time.split(":")[0];
       hoursSet.add(hour);
     });
     return Array.from(hoursSet).sort((a, b) => parseInt(a) - parseInt(b));
   }, []);
 
-  const [enabledHours, setEnabledHours] = useState<Record<string, boolean>>(() => {
-    const map: Record<string, boolean> = {};
-    uniqueHours.forEach((h) => (map[h] = true));
-    return map;
-  });
+  const [enabledHours, setEnabledHours] = useState<Record<string, boolean>>(
+    () => {
+      const map: Record<string, boolean> = {};
+      uniqueHours.forEach((h) => (map[h] = true));
+      return map;
+    }
+  );
 
   // 🔥 NEW: Filter time slots based on enabled hours
   const filteredTimeSlots = useMemo(() => {
-    return TIMESLOTS.filter(timeSlot => {
+    return TIMESLOTS.filter((timeSlot) => {
       const hour = timeSlot.split(":")[0];
       return enabledHours[hour] !== false;
     });
@@ -267,20 +301,20 @@ export default function BookingCalendar() {
     const fetchBookings = async () => {
       try {
         setLoading(true);
-        const bookingsRef = collection(db, 'bookings');
-        const q = query(bookingsRef, orderBy('createdAt', 'desc'));
-        
+        const bookingsRef = collection(db, "bookings");
+        const q = query(bookingsRef, orderBy("createdAt", "desc"));
+
         unsubscribe = onSnapshot(q, (snapshot) => {
           const bookingsData: Booking[] = [];
           snapshot.forEach((doc) => {
             const data = doc.data();
-            
+
             let bookingDate: Date;
             if (data.bookingDate?.toDate) {
               bookingDate = data.bookingDate.toDate();
             } else if (data.bookingDate?.seconds) {
               bookingDate = new Date(data.bookingDate.seconds * 1000);
-            } else if (typeof data.bookingDate === 'string') {
+            } else if (typeof data.bookingDate === "string") {
               bookingDate = new Date(data.bookingDate);
             } else {
               bookingDate = new Date();
@@ -305,39 +339,38 @@ export default function BookingCalendar() {
             bookingsData.push({
               id: doc.id,
               userId: data.userId || uuidv4(),
-              customerName: data.customerName || '',
-              customerEmail: data.customerEmail || '',
-              customerPhone: data.customerPhone || '',
+              customerName: data.customerName || "",
+              customerEmail: data.customerEmail || "",
+              customerPhone: data.customerPhone || "",
               services: data.services || [],
               bookingDate,
-              bookingTime: data.bookingTime || '',
-              branch: data.branch || '',
-              branchId: data.branchId || '',
-              staff: data.staff || '',
-              staffId: data.staffId || '',
+              bookingTime: data.bookingTime || "",
+              branch: data.branch || "",
+              branchId: data.branchId || "",
+              staff: data.staff || "",
+              staffId: data.staffId || "",
               totalPrice: data.totalPrice || 0,
               totalDuration: data.totalDuration || 0,
-              status: (data.status as BookingStatus) || 'upcoming',
-              paymentMethod: data.paymentMethod || 'cash',
-              paymentStatus: data.paymentStatus || 'pending',
+              status: (data.status as BookingStatus) || "upcoming",
+              paymentMethod: data.paymentMethod || "cash",
+              paymentStatus: data.paymentStatus || "pending",
               emailConfirmation: data.emailConfirmation || false,
               smsConfirmation: data.smsConfirmation || false,
-              remarks: data.remarks || data.notes || '',
-              cardLastFour: data.cardLastFour || '',
-              trnNumber: data.trnNumber || '',
-              additionalNotes: data.additionalNotes || '',
+              remarks: data.remarks || data.notes || "",
+              cardLastFour: data.cardLastFour || "",
+              trnNumber: data.trnNumber || "",
+              additionalNotes: data.additionalNotes || "",
               tipAmount: data.tipAmount || 0,
               discount: data.discount || 0,
-              notes: data.notes || '',
+              notes: data.notes || "",
               createdAt,
-              updatedAt
+              updatedAt,
             });
           });
 
           setBookings(bookingsData);
           setLoading(false);
         });
-
       } catch (error) {
         console.error("❌ Error fetching bookings:", error);
         setLoading(false);
@@ -345,7 +378,7 @@ export default function BookingCalendar() {
     };
 
     fetchBookings();
-    
+
     return () => {
       if (unsubscribe) unsubscribe();
     };
@@ -355,27 +388,31 @@ export default function BookingCalendar() {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const staffRef = collection(db, 'staff');
-        const q = query(staffRef, where('status', '==', 'active'));
+        const staffRef = collection(db, "staff");
+        const q = query(staffRef, where("status", "==", "active"));
         const snapshot = await getDocs(q);
-        
+
         const staffData: Staff[] = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
           staffData.push({
             id: doc.id,
-            name: data.name || 'Unnamed Staff',
-            email: data.email || '',
-            phone: data.phone || '',
-            avatar: data.avatar || `https://ui-avatars.com/api/?name=${data.name || 'Staff'}&background=random`,
-            role: data.role || 'Staff',
-            branch: data.branch || 'No Branch',
-            branchId: data.branchId || '',
-            status: data.status || 'active',
+            name: data.name || "Unnamed Staff",
+            email: data.email || "",
+            phone: data.phone || "",
+            avatar:
+              data.avatar ||
+              `https://ui-avatars.com/api/?name=${
+                data.name || "Staff"
+              }&background=random`,
+            role: data.role || "Staff",
+            branch: data.branch || "No Branch",
+            branchId: data.branchId || "",
+            status: data.status || "active",
             specialization: data.specialization || [],
             rating: data.rating || 0,
             reviews: data.reviews || 0,
-            experience: data.experience || ''
+            experience: data.experience || "",
           });
         });
 
@@ -393,19 +430,19 @@ export default function BookingCalendar() {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const branchesRef = collection(db, 'branches');
-        const q = query(branchesRef, where('status', '==', 'active'));
+        const branchesRef = collection(db, "branches");
+        const q = query(branchesRef, where("status", "==", "active"));
         const snapshot = await getDocs(q);
-        
+
         const branchesData: Branch[] = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
           branchesData.push({
             id: doc.id,
-            name: data.name || '',
-            address: data.address || '',
-            city: data.city || '',
-            status: data.status || 'active'
+            name: data.name || "",
+            address: data.address || "",
+            city: data.city || "",
+            status: data.status || "active",
           });
         });
 
@@ -426,15 +463,15 @@ export default function BookingCalendar() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const servicesRef = collection(db, 'services');
-        const q = query(servicesRef, where('status', '==', 'active'));
+        const servicesRef = collection(db, "services");
+        const q = query(servicesRef, where("status", "==", "active"));
         const snapshot = await getDocs(q);
-        
+
         const servicesData: any[] = [];
         snapshot.forEach((doc) => {
           servicesData.push({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           });
         });
 
@@ -462,10 +499,14 @@ export default function BookingCalendar() {
       booking.status === (statusFilter as BookingStatus);
 
     const matchesBranch =
-      !selectedBranch || selectedBranch === "" || booking.branchId === selectedBranch;
+      !selectedBranch ||
+      selectedBranch === "" ||
+      booking.branchId === selectedBranch;
 
     const matchesStaff =
-      !selectedStaffFilter || selectedStaffFilter === "" || (booking.staff ? booking.staff === selectedStaffFilter : false);
+      !selectedStaffFilter ||
+      selectedStaffFilter === "" ||
+      (booking.staff ? booking.staff === selectedStaffFilter : false);
 
     const matchesDate =
       !selectedDateFilter ||
@@ -475,18 +516,28 @@ export default function BookingCalendar() {
     const matchesCustomer =
       !selectedCustomerFilter ||
       selectedCustomerFilter === "" ||
-      booking.customerName.toLowerCase().includes(selectedCustomerFilter.toLowerCase());
+      booking.customerName
+        .toLowerCase()
+        .includes(selectedCustomerFilter.toLowerCase());
 
     const matchesTime =
       !selectedTimeInterval ||
       selectedTimeInterval === "" ||
       booking.bookingTime === selectedTimeInterval;
 
-    return matchesSearch && matchesStatus && matchesBranch && matchesStaff && matchesDate && matchesCustomer && matchesTime;
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesBranch &&
+      matchesStaff &&
+      matchesDate &&
+      matchesCustomer &&
+      matchesTime
+    );
   });
 
   // Get Staff Options for Schedule
-  const STAFF_OPTIONS = staff.map(s => s.name);
+  const STAFF_OPTIONS = staff.map((s) => s.name);
 
   // Schedule matrix logic (Project 1 ke same)
   const scheduleMatrix = useMemo(() => {
@@ -498,24 +549,25 @@ export default function BookingCalendar() {
       STAFF_OPTIONS.forEach((s) => (map[t][s] = []));
       map[t]["Unassigned"] = [];
     });
-    
+
     bookings.forEach((b) => {
       let bookingDateObj: Date;
 
-     if (b.bookingDate instanceof Date) {
-  bookingDateObj = b.bookingDate;
-} else if (typeof b.bookingDate === "string") {
-  bookingDateObj = new Date(b.bookingDate);
-} else if ((b.bookingDate as any)?.seconds) {
-  // Type casting use karein
-  const seconds = (b.bookingDate as any).seconds;
-  bookingDateObj = new Date(seconds * 1000);
-} else {
-  return;
-}
+      if (b.bookingDate instanceof Date) {
+        bookingDateObj = b.bookingDate;
+      } else if (typeof b.bookingDate === "string") {
+        bookingDateObj = new Date(b.bookingDate);
+      } else if ((b.bookingDate as any)?.seconds) {
+        // Type casting use karein
+        const seconds = (b.bookingDate as any).seconds;
+        bookingDateObj = new Date(seconds * 1000);
+      } else {
+        return;
+      }
 
       const matchDate = format(bookingDateObj, "yyyy-MM-dd") === scheduleDate;
-      const matchBranch = scheduleBranch === "all" || b.branchId === scheduleBranch;
+      const matchBranch =
+        scheduleBranch === "all" || b.branchId === scheduleBranch;
       const hour = b.bookingTime?.split(":")[0] ?? "";
       const hourEnabled = !!enabledHours[hour];
 
@@ -532,7 +584,14 @@ export default function BookingCalendar() {
     });
 
     return map;
-  }, [bookings, scheduleDate, scheduleBranch, STAFF_OPTIONS, enabledHours, filteredTimeSlots]);
+  }, [
+    bookings,
+    scheduleDate,
+    scheduleBranch,
+    STAFF_OPTIONS,
+    enabledHours,
+    filteredTimeSlots,
+  ]);
 
   // Unique booking times
   const uniqueTimes = useMemo(() => {
@@ -554,9 +613,9 @@ export default function BookingCalendar() {
   };
 
   const toggleHour = (hour: string) => {
-    setEnabledHours(prev => ({
+    setEnabledHours((prev) => ({
       ...prev,
-      [hour]: !prev[hour]
+      [hour]: !prev[hour],
     }));
   };
 
@@ -582,7 +641,7 @@ export default function BookingCalendar() {
     setAdditionalNotes("");
     setTip(0);
     setDiscount(0);
-    setPaymentStatus('pending');
+    setPaymentStatus("pending");
   };
 
   const openForCreate = () => {
@@ -637,7 +696,7 @@ export default function BookingCalendar() {
     setAdditionalNotes(b.additionalNotes || "");
     setTip(b.tipAmount || 0);
     setDiscount(b.discount || 0);
-    setPaymentStatus(b.paymentStatus || 'pending');
+    setPaymentStatus(b.paymentStatus || "pending");
   };
 
   const handleAddServiceRow = () => {
@@ -702,8 +761,8 @@ export default function BookingCalendar() {
     try {
       setSaving(true);
 
-      const selectedBranchObj = branches.find(b => b.id === branch);
-      const selectedStaff = staff.find(s => s.name === staffName);
+      const selectedBranchObj = branches.find((b) => b.id === branch);
+      const selectedStaff = staff.find((s) => s.name === staffName);
 
       const payload = {
         userId: uuidv4(),
@@ -718,14 +777,15 @@ export default function BookingCalendar() {
         })),
         bookingDate: Timestamp.fromDate(new Date(serviceDate + "T00:00:00")),
         bookingTime: serviceTime,
-        branch: selectedBranchObj?.name || '',
+        branch: selectedBranchObj?.name || "",
         branchId: branch,
         staff: staffName || null,
-        staffId: selectedStaff?.id || '',
+        staffId: selectedStaff?.id || "",
         totalPrice: formTotals.totalPrice,
         totalDuration: formTotals.totalDuration,
         status,
-        paymentMethod: paymentMethod === "custom" ? customPaymentMethod : paymentMethod,
+        paymentMethod:
+          paymentMethod === "custom" ? customPaymentMethod : paymentMethod,
         paymentStatus,
         emailConfirmation,
         smsConfirmation,
@@ -747,7 +807,7 @@ export default function BookingCalendar() {
           ...payload,
           createdAt: serverTimestamp(),
         });
-        
+
         // Add to local state immediately
         const newBooking: Booking = {
           id: docRef.id,
@@ -760,7 +820,8 @@ export default function BookingCalendar() {
           bookingTime: payload.bookingTime,
           branch: payload.branch,
           branchId: payload.branchId,
-          staff: payload.staff || '',
+         
+          staff: payload.staff || "",
           staffId: payload.staffId,
           totalPrice: payload.totalPrice,
           totalDuration: payload.totalDuration,
@@ -776,10 +837,10 @@ export default function BookingCalendar() {
           tipAmount: payload.tipAmount,
           discount: payload.discount,
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         };
-        
-        setBookings(prev => [newBooking, ...prev]);
+
+        setBookings((prev) => [newBooking, ...prev]);
         alert("✅ Booking created successfully!");
       }
 
@@ -800,8 +861,8 @@ export default function BookingCalendar() {
     try {
       setDeleting(true);
       // Remove from local state immediately
-      setBookings(prev => prev.filter(b => b.id !== editingId));
-      
+      setBookings((prev) => prev.filter((b) => b.id !== editingId));
+
       await deleteDoc(doc(db, "bookings", editingId));
       setShowCreate(false);
       resetForm();
@@ -810,9 +871,9 @@ export default function BookingCalendar() {
       console.error("Error deleting booking:", e);
       alert("Failed to delete booking.");
       // Re-add if error
-      const deletedBooking = bookings.find(b => b.id === editingId);
+      const deletedBooking = bookings.find((b) => b.id === editingId);
       if (deletedBooking) {
-        setBookings(prev => [...prev, deletedBooking]);
+        setBookings((prev) => [...prev, deletedBooking]);
       }
     } finally {
       setDeleting(false);
@@ -820,14 +881,14 @@ export default function BookingCalendar() {
   };
 
   const openInvoice = (booking: Booking) => {
-    setInvoiceData({
-      ...booking,
-      tip: booking.tipAmount || 0,
-      discount: booking.discount || 0,
-      totalPrice: booking.totalPrice || 0,
-    });
-    setShowInvoice(true);
-  };
+  setInvoiceData({
+    ...booking,
+    tip: booking.tipAmount || 0,
+    discount: booking.discount || 0,
+    totalPrice: booking.totalPrice || 0,
+  } as Booking);
+  setShowInvoice(true);
+};
 
   const downloadInvoicePDF = async () => {
     const input = document.getElementById("invoice-content");
@@ -917,8 +978,8 @@ export default function BookingCalendar() {
   // Handle logout
   const handleLogout = async () => {
     try {
-      localStorage.removeItem('token');
-      router.push('/login');
+      localStorage.removeItem("token");
+      router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -946,7 +1007,11 @@ export default function BookingCalendar() {
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="lg:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20"
               >
-                {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {sidebarOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
               </button>
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
@@ -960,7 +1025,7 @@ export default function BookingCalendar() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4">
               <div className="hidden md:flex items-center gap-4">
                 <div className="text-sm bg-white/10 px-3 py-1 rounded-full">
@@ -976,7 +1041,7 @@ export default function BookingCalendar() {
                   </div>
                 </button>
               </div>
-              
+
               <button
                 onClick={handleLogout}
                 className="p-2 rounded-lg bg-white/10 hover:bg-white/20"
@@ -999,7 +1064,8 @@ export default function BookingCalendar() {
                 Hours Control Panel
               </h3>
               <p className="text-gray-600 mt-2">
-                Enable or disable hours for booking. Disabled hours will be hidden from the calendar.
+                Enable or disable hours for booking. Disabled hours will be
+                hidden from the calendar.
               </p>
             </div>
             <div className="flex gap-3 mt-4 lg:mt-0">
@@ -1024,26 +1090,36 @@ export default function BookingCalendar() {
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-3">
             {uniqueHours.map((hour) => {
               const hourNum = parseInt(hour);
-              const displayHour = hourNum === 0 ? "12 AM" : 
-                               hourNum < 12 ? `${hourNum} AM` : 
-                               hourNum === 12 ? "12 PM" : 
-                               `${hourNum - 12} PM`;
-              
+              const displayHour =
+                hourNum === 0
+                  ? "12 AM"
+                  : hourNum < 12
+                  ? `${hourNum} AM`
+                  : hourNum === 12
+                  ? "12 PM"
+                  : `${hourNum - 12} PM`;
+
               const isEnabled = enabledHours[hour];
-              const slotCount = TIMESLOTS.filter(slot => slot.startsWith(hour)).length;
-              
+              const slotCount = TIMESLOTS.filter((slot) =>
+                slot.startsWith(hour)
+              ).length;
+
               return (
                 <div key={hour} className="flex flex-col items-center">
                   <div className="text-center mb-2">
-                    <div className="text-lg font-bold text-gray-900">{displayHour}</div>
-                    <div className="text-xs text-gray-500">{hour}:00 - {hour}:59</div>
+                    <div className="text-lg font-bold text-gray-900">
+                      {displayHour}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {hour}:00 - {hour}:59
+                    </div>
                   </div>
                   <button
                     onClick={() => toggleHour(hour)}
                     className={`w-full py-3 rounded-xl flex flex-col items-center justify-center transition-all transform hover:scale-[1.02] ${
-                      isEnabled 
-                        ? 'bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg' 
-                        : 'bg-gradient-to-br from-red-500 to-pink-600 text-white shadow-lg'
+                      isEnabled
+                        ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg"
+                        : "bg-gradient-to-br from-red-500 to-pink-600 text-white shadow-lg"
                     }`}
                   >
                     {isEnabled ? (
@@ -1072,15 +1148,24 @@ export default function BookingCalendar() {
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                  <span className="text-sm font-medium text-gray-700">Enabled: {Object.values(enabledHours).filter(v => v).length} hours</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Enabled:{" "}
+                    {Object.values(enabledHours).filter((v) => v).length} hours
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                  <span className="text-sm font-medium text-gray-700">Disabled: {Object.values(enabledHours).filter(v => !v).length} hours</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Disabled:{" "}
+                    {Object.values(enabledHours).filter((v) => !v).length} hours
+                  </span>
                 </div>
               </div>
               <div className="text-sm text-gray-600">
-                <span className="font-bold text-blue-600">{filteredTimeSlots.length}</span> time slots available
+                <span className="font-bold text-blue-600">
+                  {filteredTimeSlots.length}
+                </span>{" "}
+                time slots available
               </div>
             </div>
           </div>
@@ -1091,7 +1176,9 @@ export default function BookingCalendar() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
             {/* Branch Filter */}
             <div>
-              <label className="text-xs block mb-1 font-medium text-gray-700">Branch</label>
+              <label className="text-xs block mb-1 font-medium text-gray-700">
+                Branch
+              </label>
               <select
                 value={selectedBranch}
                 onChange={(e) => setSelectedBranch(e.target.value)}
@@ -1099,14 +1186,18 @@ export default function BookingCalendar() {
               >
                 <option value="">All Branches</option>
                 {branches.map((b) => (
-                  <option key={b.id} value={b.id}>{b.name}</option>
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
                 ))}
               </select>
             </div>
 
             {/* Staff Filter */}
             <div>
-              <label className="text-xs block mb-1 font-medium text-gray-700">Staff</label>
+              <label className="text-xs block mb-1 font-medium text-gray-700">
+                Staff
+              </label>
               <select
                 value={selectedStaffFilter}
                 onChange={(e) => setSelectedStaffFilter(e.target.value)}
@@ -1114,14 +1205,18 @@ export default function BookingCalendar() {
               >
                 <option value="">All Staff</option>
                 {STAFF_OPTIONS.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
             </div>
 
             {/* Date Filter */}
             <div>
-              <label className="text-xs block mb-1 font-medium text-gray-700">Date</label>
+              <label className="text-xs block mb-1 font-medium text-gray-700">
+                Date
+              </label>
               <input
                 type="date"
                 value={selectedDateFilter}
@@ -1132,7 +1227,9 @@ export default function BookingCalendar() {
 
             {/* Customer Filter */}
             <div>
-              <label className="text-xs block mb-1 font-medium text-gray-700">Customer</label>
+              <label className="text-xs block mb-1 font-medium text-gray-700">
+                Customer
+              </label>
               <input
                 type="text"
                 placeholder="Search customer"
@@ -1144,7 +1241,9 @@ export default function BookingCalendar() {
 
             {/* Time Filter */}
             <div>
-              <label className="text-xs block mb-1 font-medium text-gray-700">Time</label>
+              <label className="text-xs block mb-1 font-medium text-gray-700">
+                Time
+              </label>
               <select
                 value={selectedTimeInterval}
                 onChange={(e) => setSelectedTimeInterval(e.target.value)}
@@ -1161,7 +1260,9 @@ export default function BookingCalendar() {
 
             {/* Status Filter */}
             <div>
-              <label className="text-xs block mb-1 font-medium text-gray-700">Status</label>
+              <label className="text-xs block mb-1 font-medium text-gray-700">
+                Status
+              </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -1186,7 +1287,7 @@ export default function BookingCalendar() {
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm flex-1 max-w-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div className="flex gap-2">
               <button
                 onClick={() => {
@@ -1221,13 +1322,14 @@ export default function BookingCalendar() {
                 📅 Daily Schedule Board
               </h2>
               <p className="text-gray-600">
-                Manage appointments for {format(new Date(scheduleDate), 'EEEE, MMMM d, yyyy')}
+                Manage appointments for{" "}
+                {format(new Date(scheduleDate), "EEEE, MMMM d, yyyy")}
               </p>
               <p className="text-sm text-blue-600 font-medium mt-1">
                 Showing {filteredTimeSlots.length} enabled time slots
               </p>
             </div>
-            
+
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <button
@@ -1251,7 +1353,7 @@ export default function BookingCalendar() {
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 <input
                   type="date"
@@ -1259,15 +1361,17 @@ export default function BookingCalendar() {
                   onChange={(e) => setScheduleDate(e.target.value)}
                   className="border border-gray-300 rounded-lg px-3 py-2"
                 />
-                
+
                 <select
                   value={scheduleBranch}
                   onChange={(e) => setScheduleBranch(e.target.value)}
                   className="border border-gray-300 rounded-lg px-3 py-2"
                 >
                   <option value="all">All Branches</option>
-                  {branches.map(b => (
-                    <option key={b.id} value={b.id}>{b.name}</option>
+                  {branches.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -1289,17 +1393,26 @@ export default function BookingCalendar() {
                     </div>
                   </th>
                   {STAFF_OPTIONS.map((staffName) => (
-                    <th key={staffName} className="p-4 border border-gray-200 bg-gray-50 text-center min-w-[220px]">
+                    <th
+                      key={staffName}
+                      className="p-4 border border-gray-200 bg-gray-50 text-center min-w-[220px]"
+                    >
                       <div className="flex flex-col items-center gap-2">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
                             {staffName.charAt(0)}
                           </div>
                           <div className="text-left">
-                            <div className="font-bold text-gray-900">{staffName}</div>
+                            <div className="font-bold text-gray-900">
+                              {staffName}
+                            </div>
                             <div className="text-xs text-gray-600 flex items-center gap-1">
                               <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                              <span>{staff.find(s => s.name === staffName)?.rating.toFixed(1) || '5.0'}</span>
+                              <span>
+                                {staff
+                                  .find((s) => s.name === staffName)
+                                  ?.rating.toFixed(1) || "5.0"}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -1312,25 +1425,30 @@ export default function BookingCalendar() {
                 {filteredTimeSlots.map((timeSlot) => {
                   const hour = timeSlot.split(":")[0];
                   const hourEnabled = enabledHours[hour] !== false;
-                  
+
                   return (
                     <tr key={timeSlot} className="hover:bg-gray-50/50">
                       <td className="sticky left-0 bg-white p-4 border border-gray-200 text-center font-medium z-10">
                         <div className="flex flex-col items-center">
-                          <div className="text-lg font-bold text-gray-900">{toDisplayAMPM(timeSlot)}</div>
-                          <div className="text-xs text-gray-500">{timeSlot}</div>
+                          <div className="text-lg font-bold text-gray-900">
+                            {toDisplayAMPM(timeSlot)}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {timeSlot}
+                          </div>
                         </div>
                       </td>
-                      
+
                       {STAFF_OPTIONS.map((staffName) => {
-                        const bookingsInCell = scheduleMatrix[timeSlot]?.[staffName] || [];
-                        
+                        const bookingsInCell =
+                          scheduleMatrix[timeSlot]?.[staffName] || [];
+
                         return (
                           <td
                             key={`${timeSlot}-${staffName}`}
                             className={`p-2 border border-gray-200 min-h-[120px] ${
-                              !hourEnabled 
-                                ? "bg-gray-100 opacity-50 cursor-not-allowed" 
+                              !hourEnabled
+                                ? "bg-gray-100 opacity-50 cursor-not-allowed"
                                 : "cursor-pointer hover:bg-blue-50/30"
                             }`}
                             onClick={() => {
@@ -1355,13 +1473,16 @@ export default function BookingCalendar() {
                                 {bookingsInCell.map((booking) => (
                                   <div
                                     key={booking.id}
-                                    className={`p-3 rounded-xl border-l-4 cursor-pointer shadow-sm transform transition-all hover:scale-[1.02] ${
-                                      getStatusBadge(booking.status)
-                                    }`}
+                                    className={`p-3 rounded-xl border-l-4 cursor-pointer shadow-sm transform transition-all hover:scale-[1.02] ${getStatusBadge(
+                                      booking.status
+                                    )}`}
                                     style={{
-                                      borderLeftColor: 
-                                        booking.status === 'upcoming' ? '#3B82F6' :
-                                        booking.status === 'past' ? '#10B981' : '#EF4444',
+                                      borderLeftColor:
+                                        booking.status === "upcoming"
+                                          ? "#3B82F6"
+                                          : booking.status === "past"
+                                          ? "#10B981"
+                                          : "#EF4444",
                                     }}
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -1374,32 +1495,48 @@ export default function BookingCalendar() {
                                           {booking.customerName.charAt(0)}
                                         </div>
                                         <div>
-                                          <div className="font-bold text-gray-900">{booking.customerName}</div>
-                                          <div className="text-xs text-gray-600">{booking.customerPhone || 'No phone'}</div>
+                                          <div className="font-bold text-gray-900">
+                                            {booking.customerName}
+                                          </div>
+                                          <div className="text-xs text-gray-600">
+                                            {booking.customerPhone ||
+                                              "No phone"}
+                                          </div>
                                         </div>
                                       </div>
                                       <div className="text-right">
                                         <div className="text-sm font-bold text-green-700">
                                           ${booking.totalPrice}
                                         </div>
-                                        <div className={`text-xs px-2 py-1 rounded-full mt-1 ${
-                                          booking.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                                          booking.status === 'past' ? 'bg-green-100 text-green-800' :
-                                          'bg-red-100 text-red-800'
-                                        }`}>
+                                        <div
+                                          className={`text-xs px-2 py-1 rounded-full mt-1 ${
+                                            booking.status === "upcoming"
+                                              ? "bg-blue-100 text-blue-800"
+                                              : booking.status === "past"
+                                              ? "bg-green-100 text-green-800"
+                                              : "bg-red-100 text-red-800"
+                                          }`}
+                                        >
                                           {booking.status}
                                         </div>
                                       </div>
                                     </div>
-                                    
+
                                     <div className="flex justify-between items-center mt-2 text-xs text-gray-600">
                                       <div className="flex items-center gap-1">
                                         <MapPin className="w-3 h-3" />
-                                        <span className="truncate max-w-[80px]">{booking.branch}</span>
+                                        <span className="truncate max-w-[80px]">
+                                          {booking.branch}
+                                        </span>
                                       </div>
                                       <div className="flex items-center gap-1">
                                         <Clock className="w-3 h-3" />
-                                        <span>{booking.services.length} service{booking.services.length !== 1 ? 's' : ''}</span>
+                                        <span>
+                                          {booking.services.length} service
+                                          {booking.services.length !== 1
+                                            ? "s"
+                                            : ""}
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
@@ -1421,23 +1558,33 @@ export default function BookingCalendar() {
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-blue-500 border border-blue-600"></div>
-                <span className="text-sm font-medium text-gray-700">Upcoming</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Upcoming
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500 border border-green-600"></div>
-                <span className="text-sm font-medium text-gray-700">Completed</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Completed
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500 border border-red-600"></div>
-                <span className="text-sm font-medium text-gray-700">Cancelled</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Cancelled
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-gray-300 border border-gray-400"></div>
-                <span className="text-sm font-medium text-gray-700">Disabled Slot</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Disabled Slot
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-white border border-gray-300"></div>
-                <span className="text-sm font-medium text-gray-700">Available</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Available
+                </span>
               </div>
             </div>
           </div>
@@ -1446,50 +1593,80 @@ export default function BookingCalendar() {
         {/* 🔥 RECENT BOOKINGS LIST */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-gray-900">📋 Recent Bookings</h3>
+            <h3 className="text-xl font-bold text-gray-900">
+              📋 Recent Bookings
+            </h3>
             <div className="text-sm text-gray-600">
-              Showing {Math.min(filteredBookings.length, 10)} of {filteredBookings.length} bookings
+              Showing {Math.min(filteredBookings.length, 10)} of{" "}
+              {filteredBookings.length} bookings
             </div>
           </div>
-          
+
           {filteredBookings.length === 0 ? (
             <div className="text-center py-12">
               <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h4 className="text-lg font-medium text-gray-500 mb-2">No bookings found</h4>
-              <p className="text-gray-400">Try adjusting your filters or create a new booking</p>
+              <h4 className="text-lg font-medium text-gray-500 mb-2">
+                No bookings found
+              </h4>
+              <p className="text-gray-400">
+                Try adjusting your filters or create a new booking
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="text-left p-3 font-medium text-gray-700">Customer</th>
-                    <th className="text-left p-3 font-medium text-gray-700">Date & Time</th>
-                    <th className="text-left p-3 font-medium text-gray-700">Branch</th>
-                    <th className="text-left p-3 font-medium text-gray-700">Staff</th>
-                    <th className="text-left p-3 font-medium text-gray-700">Services</th>
-                    <th className="text-left p-3 font-medium text-gray-700">Amount</th>
-                    <th className="text-left p-3 font-medium text-gray-700">Status</th>
-                    <th className="text-left p-3 font-medium text-gray-700">Actions</th>
+                    <th className="text-left p-3 font-medium text-gray-700">
+                      Customer
+                    </th>
+                    <th className="text-left p-3 font-medium text-gray-700">
+                      Date & Time
+                    </th>
+                    <th className="text-left p-3 font-medium text-gray-700">
+                      Branch
+                    </th>
+                    <th className="text-left p-3 font-medium text-gray-700">
+                      Staff
+                    </th>
+                    <th className="text-left p-3 font-medium text-gray-700">
+                      Services
+                    </th>
+                    <th className="text-left p-3 font-medium text-gray-700">
+                      Amount
+                    </th>
+                    <th className="text-left p-3 font-medium text-gray-700">
+                      Status
+                    </th>
+                    <th className="text-left p-3 font-medium text-gray-700">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredBookings.slice(0, 10).map((booking) => (
-                    <tr key={booking.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <tr
+                      key={booking.id}
+                      className="border-b border-gray-100 hover:bg-gray-50"
+                    >
                       <td className="p-3">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
                             {booking.customerName.charAt(0)}
                           </div>
                           <div>
-                            <div className="font-medium text-gray-900">{booking.customerName}</div>
-                            <div className="text-sm text-gray-500">{booking.customerPhone}</div>
+                            <div className="font-medium text-gray-900">
+                              {booking.customerName}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {booking.customerPhone}
+                            </div>
                           </div>
                         </div>
                       </td>
                       <td className="p-3">
                         <div className="text-sm font-medium text-gray-900">
-                          {format(booking.bookingDate, 'MMM d, yyyy')}
+                          {format(booking.bookingDate, "MMM d, yyyy")}
                         </div>
                         <div className="text-sm text-gray-500">
                           {toDisplayAMPM(booking.bookingTime)}
@@ -1498,26 +1675,37 @@ export default function BookingCalendar() {
                       <td className="p-3">
                         <div className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-700">{booking.branch}</span>
+                          <span className="text-sm text-gray-700">
+                            {booking.branch}
+                          </span>
                         </div>
-                      </td>
-                      <td className="p-3">
-                        <div className="text-sm text-gray-700">{booking.staff || 'Unassigned'}</div>
                       </td>
                       <td className="p-3">
                         <div className="text-sm text-gray-700">
-                          {booking.services.length} service{booking.services.length !== 1 ? 's' : ''}
+                          {booking.staff || "Unassigned"}
                         </div>
                       </td>
                       <td className="p-3">
-                        <div className="font-bold text-green-700">${booking.totalPrice}</div>
+                        <div className="text-sm text-gray-700">
+                          {booking.services.length} service
+                          {booking.services.length !== 1 ? "s" : ""}
+                        </div>
                       </td>
                       <td className="p-3">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          booking.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                          booking.status === 'past' ? 'bg-green-100 text-green-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
+                        <div className="font-bold text-green-700">
+                          ${booking.totalPrice}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            booking.status === "upcoming"
+                              ? "bg-blue-100 text-blue-800"
+                              : booking.status === "past"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
                           {booking.status}
                         </span>
                       </td>
@@ -1539,9 +1727,15 @@ export default function BookingCalendar() {
                           </button>
                           <button
                             onClick={() => {
-                              if (confirm("Are you sure you want to delete this booking?")) {
+                              if (
+                                confirm(
+                                  "Are you sure you want to delete this booking?"
+                                )
+                              ) {
                                 deleteDoc(doc(db, "bookings", booking.id));
-                                setBookings(prev => prev.filter(b => b.id !== booking.id));
+                                setBookings((prev) =>
+                                  prev.filter((b) => b.id !== booking.id)
+                                );
                               }
                             }}
                             className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
@@ -1582,11 +1776,13 @@ export default function BookingCalendar() {
                       Delete
                     </button>
                   )}
-                
+
                   {isEditing && (
                     <button
                       onClick={() => {
-                        const booking = bookings.find((b) => b.id === editingId);
+                        const booking = bookings.find(
+                          (b) => b.id === editingId
+                        );
                         if (booking) openInvoice(booking);
                       }}
                       className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
@@ -1627,7 +1823,7 @@ export default function BookingCalendar() {
                       className="mt-1 w-full border rounded-md px-3 py-2"
                       value={cardLastFour}
                       onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '');
+                        const value = e.target.value.replace(/\D/g, "");
                         if (value.length <= 4) {
                           setCardLastFour(value);
                         }
@@ -1861,7 +2057,11 @@ export default function BookingCalendar() {
                           className="w-full border rounded-md px-3 py-2"
                           value={s.serviceName}
                           onChange={(e) =>
-                            handleServiceChange(idx, "serviceName", e.target.value)
+                            handleServiceChange(
+                              idx,
+                              "serviceName",
+                              e.target.value
+                            )
                           }
                         >
                           <option value="">Select a service</option>
@@ -1977,7 +2177,9 @@ export default function BookingCalendar() {
                           className="mt-1 w-full border rounded-md px-3 py-2"
                           placeholder="Enter discount amount"
                           value={discount || ""}
-                          onChange={(e) => setDiscount(Number(e.target.value) || 0)}
+                          onChange={(e) =>
+                            setDiscount(Number(e.target.value) || 0)
+                          }
                         />
                       </div>
 
@@ -1986,8 +2188,11 @@ export default function BookingCalendar() {
                           Subtotal: ${formTotals.totalPrice.toFixed(2)}
                         </div>
                         <div className="text-lg font-bold text-green-700">
-                          Final Total: ${(
-                            formTotals.totalPrice + (tip || 0) - (discount || 0)
+                          Final Total: $
+                          {(
+                            formTotals.totalPrice +
+                            (tip || 0) -
+                            (discount || 0)
                           ).toFixed(2)}
                         </div>
                       </div>
@@ -2022,7 +2227,9 @@ export default function BookingCalendar() {
                       className="mt-1 w-full border rounded-md px-3 py-2"
                       value={paymentStatus}
                       onChange={(e) =>
-                        setPaymentStatus(e.target.value as 'pending' | 'paid' | 'refunded')
+                        setPaymentStatus(
+                          e.target.value as "pending" | "paid" | "refunded"
+                        )
                       }
                     >
                       <option value="pending">Pending</option>
@@ -2053,7 +2260,9 @@ export default function BookingCalendar() {
                       onChange={(e) => setEmailConfirmation(e.target.checked)}
                       className="rounded border-gray-300"
                     />
-                    <span className="text-sm text-gray-700">Email Confirmation</span>
+                    <span className="text-sm text-gray-700">
+                      Email Confirmation
+                    </span>
                   </label>
                   <label className="flex items-center gap-2">
                     <input
@@ -2062,7 +2271,9 @@ export default function BookingCalendar() {
                       onChange={(e) => setSmsConfirmation(e.target.checked)}
                       className="rounded border-gray-300"
                     />
-                    <span className="text-sm text-gray-700">SMS Confirmation</span>
+                    <span className="text-sm text-gray-700">
+                      SMS Confirmation
+                    </span>
                   </label>
                 </div>
               </div>
@@ -2104,7 +2315,9 @@ export default function BookingCalendar() {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-auto">
             {/* Close Button */}
             <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-2xl font-bold text-gray-900">Invoice Receipt</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Invoice Receipt
+              </h2>
               <button
                 onClick={() => setShowInvoice(false)}
                 className="text-gray-500 hover:text-gray-800 p-2"
@@ -2118,13 +2331,17 @@ export default function BookingCalendar() {
               {/* Header */}
               <div className="flex justify-between items-start mb-8">
                 <div>
-                  <h3 className="text-xl font-bold text-blue-700">MIRRORS BEAUTY LOUNGE</h3>
+                  <h3 className="text-xl font-bold text-blue-700">
+                    MIRRORS BEAUTY LOUNGE
+                  </h3>
                   <p className="text-gray-600">Professional Beauty Services</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold">INVOICE #{invoiceData.id.slice(0, 8).toUpperCase()}</p>
+                  <p className="font-bold">
+                    INVOICE #{invoiceData.id.slice(0, 8).toUpperCase()}
+                  </p>
                   <p className="text-sm text-gray-500">
-                    {format(new Date(), 'MMM d, yyyy')}
+                    {format(new Date(), "MMM d, yyyy")}
                   </p>
                 </div>
               </div>
@@ -2133,23 +2350,35 @@ export default function BookingCalendar() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div>
                   <h4 className="font-bold text-gray-900 mb-2">Bill To:</h4>
-                  <p className="text-gray-900 font-medium">{invoiceData.customerName}</p>
-                  <p className="text-gray-600">{invoiceData.customerEmail || 'N/A'}</p>
-                  <p className="text-gray-600">{invoiceData.customerPhone || 'N/A'}</p>
+                  <p className="text-gray-900 font-medium">
+                    {invoiceData.customerName}
+                  </p>
+                  <p className="text-gray-600">
+                    {invoiceData.customerEmail || "N/A"}
+                  </p>
+                  <p className="text-gray-600">
+                    {invoiceData.customerPhone || "N/A"}
+                  </p>
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 mb-2">Booking Details:</h4>
+                  <h4 className="font-bold text-gray-900 mb-2">
+                    Booking Details:
+                  </h4>
                   <p className="text-gray-600">
-                    <span className="font-medium">Date:</span> {format(invoiceData.bookingDate, 'MMM d, yyyy')}
+                    <span className="font-medium">Date:</span>{" "}
+                    {format(invoiceData.bookingDate, "MMM d, yyyy")}
                   </p>
                   <p className="text-gray-600">
-                    <span className="font-medium">Time:</span> {toDisplayAMPM(invoiceData.bookingTime)}
+                    <span className="font-medium">Time:</span>{" "}
+                    {toDisplayAMPM(invoiceData.bookingTime)}
                   </p>
                   <p className="text-gray-600">
-                    <span className="font-medium">Branch:</span> {invoiceData.branch}
+                    <span className="font-medium">Branch:</span>{" "}
+                    {invoiceData.branch}
                   </p>
                   <p className="text-gray-600">
-                    <span className="font-medium">Staff:</span> {invoiceData.staff || 'Unassigned'}
+                    <span className="font-medium">Staff:</span>{" "}
+                    {invoiceData.staff || "Unassigned"}
                   </p>
                 </div>
               </div>
@@ -2170,7 +2399,9 @@ export default function BookingCalendar() {
                       <tr key={index} className="border-t">
                         <td className="p-3">{service.serviceName}</td>
                         <td className="p-3 text-center">{service.quantity}</td>
-                        <td className="p-3 text-right">${service.price.toFixed(2)}</td>
+                        <td className="p-3 text-right">
+                          ${service.price.toFixed(2)}
+                        </td>
                         <td className="p-3 text-right font-medium">
                           ${(service.price * service.quantity).toFixed(2)}
                         </td>
@@ -2184,26 +2415,33 @@ export default function BookingCalendar() {
               <div className="ml-auto max-w-xs space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal:</span>
-                  <span className="font-medium">${invoiceData.totalPrice.toFixed(2)}</span>
+                  <span className="font-medium">
+                    ${invoiceData.totalPrice.toFixed(2)}
+                  </span>
                 </div>
                 {invoiceData.tipAmount && invoiceData.tipAmount > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tip:</span>
-                    <span className="font-medium text-green-600">+${invoiceData.tipAmount.toFixed(2)}</span>
+                    <span className="font-medium text-green-600">
+                      +${invoiceData.tipAmount.toFixed(2)}
+                    </span>
                   </div>
                 )}
                 {invoiceData.discount && invoiceData.discount > 0 && (
                   <div className="flex justify-between">
                     <span className="text-gray-600">Discount:</span>
-                    <span className="font-medium text-red-600">-${invoiceData.discount.toFixed(2)}</span>
+                    <span className="font-medium text-red-600">
+                      -${invoiceData.discount.toFixed(2)}
+                    </span>
                   </div>
                 )}
                 <div className="flex justify-between text-lg font-bold border-t pt-2">
                   <span>Total:</span>
                   <span>
-                    ${(
-                      invoiceData.totalPrice + 
-                      (invoiceData.tipAmount || 0) - 
+                    $
+                    {(
+                      invoiceData.totalPrice +
+                      (invoiceData.tipAmount || 0) -
                       (invoiceData.discount || 0)
                     ).toFixed(2)}
                   </span>
@@ -2212,32 +2450,44 @@ export default function BookingCalendar() {
 
               {/* Payment Info */}
               <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-bold text-gray-900 mb-2">Payment Information</h4>
+                <h4 className="font-bold text-gray-900 mb-2">
+                  Payment Information
+                </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-600">Method:</span>
-                    <span className="ml-2 font-medium">{invoiceData.paymentMethod}</span>
+                    <span className="ml-2 font-medium">
+                      {invoiceData.paymentMethod}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-600">Status:</span>
-                    <span className={`ml-2 font-medium ${
-                      invoiceData.paymentStatus === 'paid' ? 'text-green-600' :
-                      invoiceData.paymentStatus === 'pending' ? 'text-yellow-600' :
-                      'text-red-600'
-                    }`}>
+                    <span
+                      className={`ml-2 font-medium ${
+                        invoiceData.paymentStatus === "paid"
+                          ? "text-green-600"
+                          : invoiceData.paymentStatus === "pending"
+                          ? "text-yellow-600"
+                          : "text-red-600"
+                      }`}
+                    >
                       {invoiceData.paymentStatus}
                     </span>
                   </div>
                   {invoiceData.cardLastFour && (
                     <div>
                       <span className="text-gray-600">Card:</span>
-                      <span className="ml-2 font-medium">**** {invoiceData.cardLastFour}</span>
+                      <span className="ml-2 font-medium">
+                        **** {invoiceData.cardLastFour}
+                      </span>
                     </div>
                   )}
                   {invoiceData.trnNumber && (
                     <div>
                       <span className="text-gray-600">TRN:</span>
-                      <span className="ml-2 font-medium">{invoiceData.trnNumber}</span>
+                      <span className="ml-2 font-medium">
+                        {invoiceData.trnNumber}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -2246,7 +2496,9 @@ export default function BookingCalendar() {
               {/* Footer */}
               <div className="mt-8 text-center text-gray-500 text-sm">
                 <p>Thank you for choosing Mirrors Beauty Lounge!</p>
-                <p>For inquiries: contact@mirrorsbeautylounge.com | +123 456 7890</p>
+                <p>
+                  For inquiries: contact@mirrorsbeautylounge.com | +123 456 7890
+                </p>
               </div>
             </div>
 
