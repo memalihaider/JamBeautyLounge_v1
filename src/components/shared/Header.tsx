@@ -24,7 +24,7 @@ export function Header() {
             <Link 
               key={link.name}
               href={link.href} 
-              className="text-xs uppercase tracking-widest font-semibold text-primary/70 hover:text-secondary transition-all duration-300 hover:translate-y-[-2px]"
+              className="text-xs uppercase tracking-widest font-semibold text-primary/70 hover:text-secondary transition-all duration-300 hover:-translate-y-0.5"
             >
               {link.name}
             </Link>

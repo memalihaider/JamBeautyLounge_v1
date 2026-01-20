@@ -433,19 +433,14 @@ const branchAdminNavItems = [
     icon: BarChart3,
   },
   {
-    title: 'Clients',
-    href: '/admin/clients',
-    icon: Users,
-  },
-  {
     title: 'Appointments',
     href: '/admin/appointments',
     icon: Calendar,
   },
   {
-    title: 'Staff',
-    href: '/admin/staff',
-    icon: Users,
+    title: 'Booking Calender',
+    href: '/admin/bookingcalender',
+    icon: Calendar,
   },
   {
     title: 'Services',
@@ -458,14 +453,34 @@ const branchAdminNavItems = [
     icon: Package,
   },
   {
-    title: 'Categories',
-    href: '/admin/categories',
-    icon: Tag,
+    title: 'Clients',
+    href: '/admin/clients',
+    icon: Users,
+  },
+  {
+    title: 'Staff',
+    href: '/admin/staff',
+    icon: Users,
   },
   {
     title: 'Feedbacks',
     href: '/admin/feedbacks',
     icon: Star,
+  },
+  {
+    title: 'Categories',
+    href: '/admin/categories',
+    icon: Tag,
+  },
+  {
+    title: 'Analytics',
+    href: '/admin/analytics',
+    icon: TrendingUp,
+  },
+  {
+    title: 'Expenses',
+    href: '/admin/expenses',
+    icon: DollarSign,
   },
   {
     title: 'Orders',
@@ -478,21 +493,6 @@ const branchAdminNavItems = [
     icon: Award,
   },
   {
-    title: 'Booking Calender',
-    href: '/admin/bookingcalender',
-    icon: Calendar,
-  },
-  {
-    title: 'Expenses',
-    href: '/admin/expenses',
-    icon: DollarSign,
-  },
-  {
-    title: 'Analytics',
-    href: '/admin/analytics',
-    icon: TrendingUp,
-  },
-  {
     title: 'Messages',
     href: '/admin/messages',
     icon: MessageCircle,
@@ -501,6 +501,11 @@ const branchAdminNavItems = [
     title: 'Settings',
     href: '/admin/settings',
     icon: Settings,
+  },
+  {
+    title: 'Invoice Generator',
+    href: '/admin/custom-invoice',
+    icon: FileText,
   },
 ];
 
@@ -621,6 +626,21 @@ function SidebarContent({ role, onLogout, onToggle, isCollapsed = false }: Omit<
               </span>
             )}
           </Link>
+          {onToggle && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onToggle}
+              className="flex lg:flex text-gray-400 hover:text-secondary hover:bg-white/5 rounded-lg transition-colors"
+              title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {isCollapsed ? (
+                <ChevronRight className="h-5 w-5" />
+              ) : (
+                <ChevronLeft className="h-5 w-5" />
+              )}
+            </Button>
+          )}
         </div>
       </div>
 

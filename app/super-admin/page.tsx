@@ -32,6 +32,7 @@ import {
   AdminSidebar,
   AdminMobileSidebar,
 } from "@/components/admin/AdminSidebar";
+import { LoadingScreen } from "@/components/LoadingScreen";
 import { cn } from "@/lib/utils";
 
 // Firebase imports
@@ -560,16 +561,7 @@ export default function SuperAdminDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Loading Dashboard Data...
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen title="Loading Dashboard Data" subtitle="Syncing all branches and real-time analytics..." />;
   }
 
   return (

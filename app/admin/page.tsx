@@ -58,6 +58,8 @@ import { cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 // Define TypeScript interfaces
 interface OverallStats {
@@ -655,17 +657,17 @@ export default function SuperAdminDashboard() {
       case "active":
       case "completed":
       case "excellent":
-        return "bg-gradient-to-r from-green-100 to-green-50 text-green-800 border-green-200";
+        return "bg-linear-to-r from-green-100 to-green-50 text-green-800 border-green-200";
       case "good":
       case "pending":
-        return "bg-gradient-to-r from-blue-100 to-blue-50 text-blue-800 border-blue-200";
+        return "bg-linear-to-r from-blue-100 to-blue-50 text-blue-800 border-blue-200";
       case "average":
-        return "bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-800 border-yellow-200";
+        return "bg-linear-to-r from-yellow-100 to-yellow-50 text-yellow-800 border-yellow-200";
       case "needs_attention":
       case "cancelled":
-        return "bg-gradient-to-r from-red-100 to-red-50 text-red-800 border-red-200";
+        return "bg-linear-to-r from-red-100 to-red-50 text-red-800 border-red-200";
       default:
-        return "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-800 border-gray-200";
+        return "bg-linear-to-r from-gray-100 to-gray-50 text-gray-800 border-gray-200";
     }
   };
 
@@ -685,36 +687,11 @@ export default function SuperAdminDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="text-center space-y-6">
-          <div className="relative">
-            <div className="h-24 w-24 rounded-full border-4 border-gray-200"></div>
-            <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-xl font-bold text-gray-900 font-serif">
-              Loading Dashboard
-            </h3>
-            <p className="text-sm text-gray-500">
-              Fetching real-time data from database...
-            </p>
-          </div>
-          <div className="w-48 mx-auto">
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-primary rounded-full animate-pulse"
-                style={{ width: '75%' }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen title="Loading Dashboard" subtitle="Fetching real-time data from database..." />;
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
+    <div className="flex h-screen bg-linear-to-br from-gray-50 via-white to-blue-50/30">
       {/* Sidebar */}
       <AdminSidebar
         role={user?.role === "super_admin" ? "super_admin" : "branch_admin"}
@@ -731,7 +708,7 @@ export default function SuperAdminDashboard() {
         )}
       >
         {/* Modern Header */}
-        <header className="bg-gradient-to-r from-primary via-primary/95 to-primary/90 shadow-lg shadow-primary/10 border-b border-primary/20">
+        <header className="bg-linear-to-r from-primary via-primary/95 to-primary/90 shadow-lg shadow-primary/10 border-b border-primary/20">
           <div className="flex items-center justify-between px-1 py-1">
             <div className="flex items-center gap-4">
               <AdminMobileSidebar
@@ -759,7 +736,7 @@ export default function SuperAdminDashboard() {
                       </Badge>
                     )}
                     {user?.role === "super_admin" && (
-                      <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white border-0 px-3 py-1 rounded-full">
+                      <Badge className="bg-linear-to-r from-amber-500 to-amber-600 text-white border-0 px-3 py-1 rounded-full">
                         👑 Super Admin
                       </Badge>
                     )}
@@ -774,43 +751,7 @@ export default function SuperAdminDashboard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              {/* Notifications */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative rounded-xl bg-white/10 hover:bg-white/20 text-white"
-              >
-                <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  3
-                </span>
-              </Button>
 
-              {/* User Profile */}
-              <div className="flex items-center gap-3 bg-white/10 px-4 py-2.5 rounded-2xl backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer">
-                <Avatar className="h-10 w-10 border-2 border-white/30">
-                  <AvatarFallback className="bg-gradient-to-r from-primary to-secondary text-white font-bold">
-                    {user?.email?.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-white">
-                  <p className="text-sm font-semibold">{user?.email}</p>
-                  <p className="text-xs opacity-90 capitalize">
-                    {user?.role?.replace("_", " ")}
-                  </p>
-                </div>
-              </div>
-
-              {/* Logout Button */}
-              <Button
-                onClick={handleLogout}
-                className="bg-white text-primary hover:bg-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl px-4"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </div>
           </div>
         </header>
 
@@ -843,7 +784,7 @@ export default function SuperAdminDashboard() {
                     <Filter className="h-4 w-4 mr-2" />
                     Filter
                   </Button>
-                  <Button className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                  <Button className="bg-linear-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                     <Plus className="h-4 w-4 mr-2" />
                     Add New
                   </Button>
@@ -853,13 +794,13 @@ export default function SuperAdminDashboard() {
               {/* Main Stats Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {/* Total Revenue Card */}
-                <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white to-green-50/50 hover-lift group overflow-hidden">
+                <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-linear-to-br from-white to-green-50/50 hover-lift group overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-green-200/20 rounded-full -translate-y-12 translate-x-12 group-hover:scale-110 transition-transform duration-500"></div>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 relative z-10">
                     <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
                       Total Revenue
                     </CardTitle>
-                    <div className="p-3 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl shadow-lg">
+                    <div className="p-3 bg-linear-to-r from-green-500 to-green-600 rounded-2xl shadow-lg">
                       <DollarSign className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
@@ -876,7 +817,7 @@ export default function SuperAdminDashboard() {
                     <p className="text-xs text-gray-500 mb-3">This month</p>
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full"
+                        className="h-full bg-linear-to-r from-green-500 to-green-600 rounded-full"
                         style={{ width: '75%' }}
                       />
                     </div>
@@ -884,13 +825,13 @@ export default function SuperAdminDashboard() {
                 </Card>
 
                 {/* Total Customers Card */}
-                <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white to-purple-50/50 hover-lift group overflow-hidden">
+                <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-linear-to-br from-white to-purple-50/50 hover-lift group overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-purple-200/20 rounded-full -translate-y-12 translate-x-12 group-hover:scale-110 transition-transform duration-500"></div>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 relative z-10">
                     <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
                       Total Customers
                     </CardTitle>
-                    <div className="p-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl shadow-lg">
+                    <div className="p-3 bg-linear-to-r from-purple-500 to-purple-600 rounded-2xl shadow-lg">
                       <Users className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
@@ -909,7 +850,7 @@ export default function SuperAdminDashboard() {
                     </p>
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full"
+                        className="h-full bg-linear-to-r from-purple-500 to-purple-600 rounded-full"
                         style={{ width: '65%' }}
                       />
                     </div>
@@ -917,13 +858,13 @@ export default function SuperAdminDashboard() {
                 </Card>
 
                 {/* Total Branches Card */}
-                <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white to-blue-50/50 hover-lift group overflow-hidden">
+                <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-linear-to-br from-white to-blue-50/50 hover-lift group overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-blue-200/20 rounded-full -translate-y-12 translate-x-12 group-hover:scale-110 transition-transform duration-500"></div>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 relative z-10">
                     <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
                       {user?.role === "admin" ? "Your Branch" : "Total Branches"}
                     </CardTitle>
-                    <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl shadow-lg">
+                    <div className="p-3 bg-linear-to-r from-blue-500 to-blue-600 rounded-2xl shadow-lg">
                       <Building className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
@@ -944,7 +885,7 @@ export default function SuperAdminDashboard() {
                     </p>
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                        className="h-full bg-linear-to-r from-blue-500 to-blue-600 rounded-full"
                         style={{ width: '100%' }}
                       />
                     </div>
@@ -952,13 +893,13 @@ export default function SuperAdminDashboard() {
                 </Card>
 
                 {/* Average Rating Card */}
-                <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white to-amber-50/50 hover-lift group overflow-hidden">
+                <Card className="border-none shadow-xl hover:shadow-2xl transition-all duration-300 bg-linear-to-br from-white to-amber-50/50 hover-lift group overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-amber-200/20 rounded-full -translate-y-12 translate-x-12 group-hover:scale-110 transition-transform duration-500"></div>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 relative z-10">
                     <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
                       Average Rating
                     </CardTitle>
-                    <div className="p-3 bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl shadow-lg">
+                    <div className="p-3 bg-linear-to-r from-amber-500 to-amber-600 rounded-2xl shadow-lg">
                       <Star className="h-5 w-5 text-white" />
                     </div>
                   </CardHeader>
@@ -989,7 +930,7 @@ export default function SuperAdminDashboard() {
                     <p className="text-xs text-gray-500 mb-3">Customer satisfaction</p>
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full"
+                        className="h-full bg-linear-to-r from-amber-500 to-amber-600 rounded-full"
                         style={{ width: `${overallStats.avgRating * 20}%` }}
                       />
                     </div>
@@ -999,7 +940,7 @@ export default function SuperAdminDashboard() {
 
               {/* Secondary Stats Cards */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-white to-pink-50/30">
+                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-linear-to-br from-white to-pink-50/30">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium text-gray-500 mb-1">
@@ -1015,7 +956,7 @@ export default function SuperAdminDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-white to-cyan-50/30">
+                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-linear-to-br from-white to-cyan-50/30">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium text-gray-500 mb-1">
@@ -1031,7 +972,7 @@ export default function SuperAdminDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-white to-orange-50/30">
+                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-linear-to-br from-white to-orange-50/30">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium text-gray-500 mb-1">
@@ -1047,7 +988,7 @@ export default function SuperAdminDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-white to-teal-50/30">
+                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-linear-to-br from-white to-teal-50/30">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium text-gray-500 mb-1">
@@ -1063,7 +1004,7 @@ export default function SuperAdminDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-white to-indigo-50/30">
+                <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-linear-to-br from-white to-indigo-50/30">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium text-gray-500 mb-1">
@@ -1088,7 +1029,7 @@ export default function SuperAdminDashboard() {
                 onValueChange={setActiveTab}
                 className="w-full"
               >
-                <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <CardHeader className="border-b border-gray-100 bg-linear-to-r from-gray-50 to-white">
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1180,7 +1121,7 @@ export default function SuperAdminDashboard() {
                   <TabsContent value="bookings" className="mt-0">
                     {recentBookings.length === 0 ? (
                       <div className="text-center py-12">
-                        <div className="w-20 h-20 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-20 h-20 mx-auto bg-linear-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4">
                           <Calendar className="h-10 w-10 text-gray-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -1203,10 +1144,10 @@ export default function SuperAdminDashboard() {
                         {recentBookings.map((booking) => (
                           <div
                             key={booking.id}
-                            className="flex items-center justify-between p-5 bg-gradient-to-r from-white to-gray-50/50 border border-gray-100 rounded-2xl hover:border-primary/20 hover:shadow-lg transition-all duration-300 group"
+                            className="flex items-center justify-between p-5 bg-linear-to-r from-white to-gray-50/50 border border-gray-100 rounded-2xl hover:border-primary/20 hover:shadow-lg transition-all duration-300 group"
                           >
                             <div className="flex items-center gap-4">
-                              <div className="p-3 bg-gradient-to-r from-blue-100 to-blue-50 rounded-xl">
+                              <div className="p-3 bg-linear-to-r from-blue-100 to-blue-50 rounded-xl">
                                 <Calendar className="h-6 w-6 text-blue-600" />
                               </div>
                               <div className="flex-1">
@@ -1263,7 +1204,7 @@ export default function SuperAdminDashboard() {
                   <TabsContent value="services" className="mt-0">
                     {recentServices.length === 0 ? (
                       <div className="text-center py-12">
-                        <div className="w-20 h-20 mx-auto bg-gradient-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-20 h-20 mx-auto bg-linear-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center mb-4">
                           <Settings className="h-10 w-10 text-pink-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -1285,11 +1226,11 @@ export default function SuperAdminDashboard() {
                         {recentServices.map((service) => (
                           <div
                             key={service.id}
-                            className="p-5 bg-gradient-to-br from-white to-pink-50/30 border border-gray-100 rounded-2xl hover:border-pink-200 hover:shadow-xl transition-all duration-300 group"
+                            className="p-5 bg-linear-to-br from-white to-pink-50/30 border border-gray-100 rounded-2xl hover:border-pink-200 hover:shadow-xl transition-all duration-300 group"
                           >
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-3">
-                                <div className="p-2 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl">
+                                <div className="p-2 bg-linear-to-r from-pink-500 to-pink-600 rounded-xl">
                                   <Settings className="h-5 w-5 text-white" />
                                 </div>
                                 <div>
@@ -1347,7 +1288,7 @@ export default function SuperAdminDashboard() {
                   <TabsContent value="products" className="mt-0">
                     {recentProducts.length === 0 ? (
                       <div className="text-center py-12">
-                        <div className="w-20 h-20 mx-auto bg-gradient-to-br from-cyan-100 to-cyan-200 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-20 h-20 mx-auto bg-linear-to-br from-cyan-100 to-cyan-200 rounded-full flex items-center justify-center mb-4">
                           <Package className="h-10 w-10 text-cyan-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -1369,11 +1310,11 @@ export default function SuperAdminDashboard() {
                         {recentProducts.map((product) => (
                           <div
                             key={product.id}
-                            className="p-5 bg-gradient-to-br from-white to-cyan-50/30 border border-gray-100 rounded-2xl hover:border-cyan-200 hover:shadow-xl transition-all duration-300 group"
+                            className="p-5 bg-linear-to-br from-white to-cyan-50/30 border border-gray-100 rounded-2xl hover:border-cyan-200 hover:shadow-xl transition-all duration-300 group"
                           >
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-3">
-                                <div className="p-2 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-xl">
+                                <div className="p-2 bg-linear-to-r from-cyan-500 to-cyan-600 rounded-xl">
                                   <Package className="h-5 w-5 text-white" />
                                 </div>
                                 <div>
@@ -1423,7 +1364,7 @@ export default function SuperAdminDashboard() {
                   <TabsContent value="categories" className="mt-0">
                     {recentCategories.length === 0 ? (
                       <div className="text-center py-12">
-                        <div className="w-20 h-20 mx-auto bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-20 h-20 mx-auto bg-linear-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center mb-4">
                           <Layers className="h-10 w-10 text-orange-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -1446,11 +1387,11 @@ export default function SuperAdminDashboard() {
                         {recentCategories.map((category) => (
                           <div
                             key={category.id}
-                            className="p-5 bg-gradient-to-br from-white to-orange-50/30 border border-gray-100 rounded-2xl hover:border-orange-200 hover:shadow-xl transition-all duration-300 group"
+                            className="p-5 bg-linear-to-br from-white to-orange-50/30 border border-gray-100 rounded-2xl hover:border-orange-200 hover:shadow-xl transition-all duration-300 group"
                           >
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex items-center gap-3">
-                                <div className="p-2 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl">
+                                <div className="p-2 bg-linear-to-r from-orange-500 to-orange-600 rounded-xl">
                                   <Layers className="h-5 w-5 text-white" />
                                 </div>
                                 <div>
@@ -1504,7 +1445,7 @@ export default function SuperAdminDashboard() {
                   <TabsContent value="activities" className="mt-0">
                     {recentActivities.length === 0 ? (
                       <div className="text-center py-12">
-                        <div className="w-20 h-20 mx-auto bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-20 h-20 mx-auto bg-linear-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center mb-4">
                           <Activity className="h-10 w-10 text-purple-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -1520,9 +1461,9 @@ export default function SuperAdminDashboard() {
                         {recentActivities.map((activity, index) => (
                           <div
                             key={index}
-                            className="flex items-start gap-4 p-5 bg-gradient-to-r from-white to-purple-50/30 border border-gray-100 rounded-2xl hover:border-purple-200 hover:shadow-lg transition-all duration-300 group"
+                            className="flex items-start gap-4 p-5 bg-linear-to-r from-white to-purple-50/30 border border-gray-100 rounded-2xl hover:border-purple-200 hover:shadow-lg transition-all duration-300 group"
                           >
-                            <div className="p-2.5 bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl">
+                            <div className="p-2.5 bg-linear-to-r from-purple-100 to-purple-200 rounded-xl">
                               {activity.type === "customer_feedback" ? (
                                 <Star className="h-5 w-5 text-purple-600" />
                               ) : (
@@ -1567,7 +1508,7 @@ export default function SuperAdminDashboard() {
               {/* Quick Actions */}
               <div className="lg:col-span-2">
                 <Card className="border-none shadow-xl">
-                  <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                  <CardHeader className="border-b border-gray-100 bg-linear-to-r from-gray-50 to-white">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg font-bold text-gray-900 font-serif">
                         Quick Actions
@@ -1589,9 +1530,9 @@ export default function SuperAdminDashboard() {
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       <Link
                         href="/admin/branches"
-                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-primary/30 hover:bg-gradient-to-br hover:from-primary/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
+                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-primary/30 hover:bg-linear-to-br hover:from-primary/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
                       >
-                        <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-4 bg-linear-to-r from-blue-500 to-blue-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                           <Building className="h-7 w-7 text-white" />
                         </div>
                         <span className="text-sm font-semibold text-center text-gray-900">
@@ -1604,9 +1545,9 @@ export default function SuperAdminDashboard() {
 
                       <Link
                         href="/admin/staff"
-                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-green-500/30 hover:bg-gradient-to-br hover:from-green-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
+                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-green-500/30 hover:bg-linear-to-br hover:from-green-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
                       >
-                        <div className="p-4 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-4 bg-linear-to-r from-green-500 to-green-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                           <Users className="h-7 w-7 text-white" />
                         </div>
                         <span className="text-sm font-semibold text-center text-gray-900">
@@ -1619,9 +1560,9 @@ export default function SuperAdminDashboard() {
 
                       <Link
                         href="/admin/categories"
-                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-purple-500/30 hover:bg-gradient-to-br hover:from-purple-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
+                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-purple-500/30 hover:bg-linear-to-br hover:from-purple-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
                       >
-                        <div className="p-4 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-4 bg-linear-to-r from-purple-500 to-purple-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                           <Layers className="h-7 w-7 text-white" />
                         </div>
                         <span className="text-sm font-semibold text-center text-gray-900">
@@ -1634,9 +1575,9 @@ export default function SuperAdminDashboard() {
 
                       <Link
                         href="/admin/products"
-                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-cyan-500/30 hover:bg-gradient-to-br hover:from-cyan-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
+                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-cyan-500/30 hover:bg-linear-to-br hover:from-cyan-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
                       >
-                        <div className="p-4 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-4 bg-linear-to-r from-cyan-500 to-cyan-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                           <Package className="h-7 w-7 text-white" />
                         </div>
                         <span className="text-sm font-semibold text-center text-gray-900">
@@ -1649,9 +1590,9 @@ export default function SuperAdminDashboard() {
 
                       <Link
                         href="/admin/services"
-                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-pink-500/30 hover:bg-gradient-to-br hover:from-pink-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
+                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-pink-500/30 hover:bg-linear-to-br hover:from-pink-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
                       >
-                        <div className="p-4 bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-4 bg-linear-to-r from-pink-500 to-pink-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                           <Settings className="h-7 w-7 text-white" />
                         </div>
                         <span className="text-sm font-semibold text-center text-gray-900">
@@ -1664,9 +1605,9 @@ export default function SuperAdminDashboard() {
 
                       <Link
                         href="/admin/bookings"
-                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-amber-500/30 hover:bg-gradient-to-br hover:from-amber-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
+                        className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-amber-500/30 hover:bg-linear-to-br hover:from-amber-500/5 hover:to-white hover:shadow-xl transition-all duration-300 group"
                       >
-                        <div className="p-4 bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <div className="p-4 bg-linear-to-r from-amber-500 to-amber-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                           <Calendar className="h-7 w-7 text-white" />
                         </div>
                         <span className="text-sm font-semibold text-center text-gray-900">
@@ -1683,7 +1624,7 @@ export default function SuperAdminDashboard() {
 
               {/* Recent Activities */}
               <Card className="border-none shadow-xl h-fit">
-                <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <CardHeader className="border-b border-gray-100 bg-linear-to-r from-gray-50 to-white">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg font-bold text-gray-900 font-serif">
                       Recent Activities
@@ -1712,11 +1653,11 @@ export default function SuperAdminDashboard() {
                       {recentActivities.map((activity, index) => (
                         <div
                           key={index}
-                          className="flex items-start gap-3 p-4 bg-gradient-to-r from-gray-50/50 to-white border border-gray-100 rounded-xl hover:border-primary/20 hover:shadow-sm transition-all duration-200 group"
+                          className="flex items-start gap-3 p-4 bg-linear-to-r from-gray-50/50 to-white border border-gray-100 rounded-xl hover:border-primary/20 hover:shadow-sm transition-all duration-200 group"
                         >
                           <div className="relative">
-                            <div className="w-3 h-3 bg-gradient-to-r from-primary to-secondary rounded-full mt-2"></div>
-                            <div className="absolute top-2 left-2 w-3 h-3 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-full animate-ping"></div>
+                            <div className="w-3 h-3 bg-linear-to-r from-primary to-secondary rounded-full mt-2"></div>
+                            <div className="absolute top-2 left-2 w-3 h-3 bg-linear-to-r from-primary/30 to-secondary/30 rounded-full animate-ping"></div>
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-gray-900 truncate">
