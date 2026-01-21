@@ -1,6 +1,4 @@
-// // components/ui/advanced-calendar.tsx
 // 'use client';
-
 // import React, { useState, useEffect, useMemo } from 'react';
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Button } from "@/components/ui/button";
@@ -14,7 +12,7 @@
 // import { db } from "@/lib/firebase";
 
 // interface Appointment {
-//   id: number;
+//   id: string | number;
 //   customer: string;
 //   service: string;
 //   barber: string;
@@ -28,8 +26,8 @@
 //   notes: string;
 //   source: string;
 //   branch: string;
-//   createdAt: string;
-//   updatedAt: string;
+//   createdAt: string | Date;
+//   updatedAt: string | Date;
 // }
 
 // interface StaffMember {
@@ -50,11 +48,11 @@
 // interface AdvancedCalendarProps {
 //   appointments: Appointment[];
 //   onAppointmentClick: (appointment: Appointment) => void;
-//   onStatusChange: (appointmentId: number, newStatus: string) => void;
+//   onStatusChange: (appointmentId: string | number, newStatus: string) => void;
 //   onCreateBooking?: (barber: string, date: string, time: string) => void;
+//   staff?: StaffMember[];
 // }
 
-// // Firebase se staff fetch karne ka function
 // const fetchStaffFromFirebase = async (): Promise<StaffMember[]> => {
 //   try {
 //     const staffRef = collection(db, "staff");
@@ -88,7 +86,13 @@
 //   }
 // };
 
-// export function AdvancedCalendar({ appointments, onAppointmentClick, onStatusChange, onCreateBooking }: AdvancedCalendarProps) {
+// export function AdvancedCalendar({ 
+//   appointments, 
+//   onAppointmentClick, 
+//   onStatusChange, 
+//   onCreateBooking,
+//   staff: propStaff 
+// }: AdvancedCalendarProps) {
 //   const [selectedDate, setSelectedDate] = useState(new Date());
 //   const [selectedBarber, setSelectedBarber] = useState<string>('all');
 //   const [timeSlotGap, setTimeSlotGap] = useState(30);
@@ -96,22 +100,23 @@
 //   const [businessHours, setBusinessHours] = useState({ start: 9, end: 18 });
 //   const [hiddenHours, setHiddenHours] = useState<number[]>([]);
 //   const [showSettings, setShowSettings] = useState(false);
-//   const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+//   const [staffMembers, setStaffMembers] = useState<StaffMember[]>(propStaff || []);
   
-//   // Firebase se staff data fetch karen - NO loading state
 //   useEffect(() => {
 //     const loadStaffData = async () => {
-//       const staffData = await fetchStaffFromFirebase();
-//       setStaffMembers(staffData);
+//       if (propStaff && propStaff.length > 0) {
+//         setStaffMembers(propStaff);
+//       } else {
+//         const staffData = await fetchStaffFromFirebase();
+//         setStaffMembers(staffData);
+//       }
 //     };
     
 //     loadStaffData();
-//   }, []);
+//   }, [propStaff]);
 
-//   // Firebase staff se barber list banayein
 //   const barbers = useMemo(() => staffMembers.map(staff => staff.name), [staffMembers]);
 
-//   // Generate time slots based on business hours, gap, and hidden hours
 //   const generateTimeSlots = () => {
 //     const slots = [];
 //     const startTime = new Date(selectedDate);
@@ -134,10 +139,9 @@
 
 //   const timeSlots = useMemo(() => generateTimeSlots(), [selectedDate, businessHours, timeSlotGap, hiddenHours]);
 
-//   // Filter appointments for selected date and barber
 //   const filteredAppointments = useMemo(() => 
 //     appointments.filter(apt => {
-//       const aptDate = parseISO(apt.date);
+//       const aptDate = typeof apt.date === 'string' ? parseISO(apt.date) : new Date(apt.date);
 //       const isSameDate = isSameDay(aptDate, selectedDate);
 //       const isSameBarber = selectedBarber === 'all' || apt.barber === selectedBarber;
 //       return isSameDate && isSameBarber;
@@ -145,8 +149,9 @@
 //     [appointments, selectedDate, selectedBarber]
 //   );
 
-//   // Helper function to convert 12-hour time to 24-hour format
 //   const convertTo24Hour = (time12h: string): string => {
+//     if (!time12h.includes(' ')) return time12h;
+    
 //     const [time, period] = time12h.split(' ');
 //     const [hours, minutes] = time.split(':');
 //     let hour24 = parseInt(hours);
@@ -160,13 +165,11 @@
 //     return `${hour24.toString().padStart(2, '0')}:${minutes}`;
 //   };
 
-//   // Helper function to parse duration string to minutes
 //   const parseDuration = (duration: string): number => {
 //     const match = duration.match(/(\d+)\s*min/);
 //     return match ? parseInt(match[1]) : 30;
 //   };
 
-//   // Check if an appointment covers a specific time slot
 //   const doesAppointmentCoverSlot = (appointment: Appointment, slot: string): boolean => {
 //     const appointmentTime24 = convertTo24Hour(appointment.time);
 //     const appointmentDuration = parseDuration(appointment.duration);
@@ -181,14 +184,12 @@
 //     return slotMinutesSinceStart >= appointmentStartMinutes && slotMinutesSinceStart < appointmentEndMinutes;
 //   };
 
-//   // Get appointment for specific time slot and barber
-//   const getAppointmentForSlot = (timeSlot: string, barber: string) => {
+//   const getAppointmentForSlot = (timeSlot: string, barber: string): Appointment | undefined => {
 //     return filteredAppointments.find(apt =>
 //       apt.barber === barber && doesAppointmentCoverSlot(apt, timeSlot)
 //     );
 //   };
 
-//   // Check if this is the start slot of an appointment
 //   const isAppointmentStart = (appointment: Appointment, timeSlot: string): boolean => {
 //     const appointmentTime24 = convertTo24Hour(appointment.time);
 //     const [aptHours, aptMinutes] = appointmentTime24.split(':').map(Number);
@@ -201,7 +202,6 @@
 //     return appointmentStartMinutes >= slotStart && appointmentStartMinutes < slotEnd;
 //   };
 
-//   // Calculate how many slots an appointment spans
 //   const getAppointmentSpan = (appointment: Appointment, startTimeSlot: string): number => {
 //     const appointmentTime24 = convertTo24Hour(appointment.time);
 //     const duration = parseDuration(appointment.duration);
@@ -225,7 +225,7 @@
 //     return span || 1;
 //   };
 
-//   const getStatusColor = (status: string) => {
+//   const getStatusColor = (status: string): string => {
 //     switch (status) {
 //       case "completed": return "bg-green-500";
 //       case "in-progress": return "bg-blue-500";
@@ -257,14 +257,12 @@
 //     setHiddenHours([]);
 //   };
 
-//   // Staff ki avatar image get karna
-//   const getStaffAvatar = (barberName: string) => {
+//   const getStaffAvatar = (barberName: string): string => {
 //     const staff = staffMembers.find(s => s.name === barberName);
 //     return staff?.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop";
 //   };
 
-//   // Staff ki role get karna
-//   const getStaffRole = (barberName: string) => {
+//   const getStaffRole = (barberName: string): string => {
 //     const staff = staffMembers.find(s => s.name === barberName);
 //     return staff?.role || "Staff";
 //   };
@@ -327,6 +325,8 @@
 //               <Settings className="w-4 h-4" />
 //               Settings
 //             </Button>
+
+            
 
 //             {/* Date Navigation */}
 //             <div className="flex items-center gap-1">
@@ -425,6 +425,10 @@
 //                               src={staff.avatar} 
 //                               alt={staff.name} 
 //                               className="object-cover w-full h-full"
+//                               onError={(e) => {
+//                                 const target = e.target as HTMLImageElement;
+//                                 target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop";
+//                               }}
 //                             />
 //                           </div>
 //                           <span>{staff.name}</span>
@@ -460,14 +464,13 @@
 //                 {/* Staff rows */}
 //                 {(selectedBarber === 'all' ? barbers : [selectedBarber]).map(barber => {
 //                   let slotIndex = 0;
-//                   const rowElements: React.JSX.Element[] = [];
+//                   const rowElements: React.ReactElement[] = [];
                   
 //                   while (slotIndex < timeSlots.length) {
 //                     const currentSlot = timeSlots[slotIndex];
 //                     const appointment = getAppointmentForSlot(currentSlot, barber);
                     
 //                     if (appointment && isAppointmentStart(appointment, currentSlot)) {
-//                       // This is the start of a multi-slot appointment
 //                       const span = Math.min(getAppointmentSpan(appointment, currentSlot), timeSlots.length - slotIndex);
                       
 //                       rowElements.push(
@@ -494,10 +497,8 @@
                       
 //                       slotIndex += span;
 //                     } else if (appointment) {
-//                       // This slot is covered by an appointment that started earlier - skip it
 //                       slotIndex += 1;
 //                     } else {
-//                       // Empty slot
 //                       rowElements.push(
 //                         <div
 //                           key={`${barber}-${currentSlot}`}
@@ -517,8 +518,8 @@
 //                   }
                   
 //                   const staff = staffMembers.find(s => s.name === barber);
-//                   const staffAvatar = staff?.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop";
-//                   const staffRole = staff?.role || "Staff";
+//                   const staffAvatar = getStaffAvatar(barber);
+//                   const staffRole = getStaffRole(barber);
                   
 //                   return (
 //                     <div key={barber} className="grid gap-1 mb-1" style={{ gridTemplateColumns: `clamp(120px, 15vw, 200px) repeat(${timeSlots.length}, minmax(50px, 1fr))` }}>
@@ -528,6 +529,10 @@
 //                             src={staffAvatar} 
 //                             alt={barber} 
 //                             className="object-cover w-full h-full"
+//                             onError={(e) => {
+//                               const target = e.target as HTMLImageElement;
+//                               target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop";
+//                             }}
 //                           />
 //                         </div>
 //                         <div className="flex-1 min-w-0">
@@ -554,8 +559,8 @@
 //                 </div>
 //                 {(selectedBarber === 'all' ? barbers : [selectedBarber]).map(barber => {
 //                   const staff = staffMembers.find(s => s.name === barber);
-//                   const staffAvatar = staff?.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop";
-//                   const staffRole = staff?.role || "Staff";
+//                   const staffAvatar = getStaffAvatar(barber);
+//                   const staffRole = getStaffRole(barber);
                   
 //                   return (
 //                     <div key={barber} className="p-2 text-xs text-center font-medium text-muted-foreground border rounded bg-muted/50 flex flex-col items-center justify-center gap-1 sticky top-0 bg-background z-20 border-b">
@@ -564,6 +569,10 @@
 //                           src={staffAvatar} 
 //                           alt={barber} 
 //                           className="object-cover w-full h-full"
+//                           onError={(e) => {
+//                             const target = e.target as HTMLImageElement;
+//                             target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop";
+//                           }}
 //                         />
 //                       </div>
 //                       <div className="text-center">
@@ -614,10 +623,8 @@
 //                           </div>
 //                         );
 //                       } else if (appointment) {
-//                         // Covered by an ongoing appointment - skip rendering
 //                         return null;
 //                       } else {
-//                         // Empty slot
 //                         return (
 //                           <div
 //                             key={`${slot}-${barber}`}
@@ -695,6 +702,10 @@
 //                         src={staff.avatar} 
 //                         alt={staff.name} 
 //                         className="object-cover w-full h-full"
+//                         onError={(e) => {
+//                           const target = e.target as HTMLImageElement;
+//                           target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop";
+//                         }}
 //                       />
 //                     </div>
 //                     <span>{staff.name.split(' ')[0]}</span>
@@ -713,7 +724,6 @@
 // }
 
 // new code
-// components/ui/advanced-calendar.tsx
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -723,7 +733,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Calendar, Clock, User, ChevronLeft, ChevronRight, Settings, RotateCcw, Grid3X3, Users } from "lucide-react";
+import { Calendar, Clock, User, ChevronLeft, ChevronRight, Settings, RotateCcw, Grid3X3, Users, PlusCircle } from "lucide-react";
 import { format, addDays, startOfDay, addMinutes, isSameDay, parseISO } from "date-fns";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -768,6 +778,7 @@ interface AdvancedCalendarProps {
   onStatusChange: (appointmentId: string | number, newStatus: string) => void;
   onCreateBooking?: (barber: string, date: string, time: string) => void;
   staff?: StaffMember[];
+  showFullDetails?: boolean; // Yeh line add karein
 }
 
 const fetchStaffFromFirebase = async (): Promise<StaffMember[]> => {
@@ -1043,6 +1054,24 @@ export function AdvancedCalendar({
               Settings
             </Button>
 
+            {/* Quick Book Button */}
+            {onCreateBooking && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => {
+                  // Default booking with first available barber and time
+                  const defaultBarber = barbers.length > 0 ? barbers[0] : 'all';
+                  const defaultTime = timeSlots.length > 0 ? timeSlots[0] : '09:00';
+                  onCreateBooking(defaultBarber, format(selectedDate, 'yyyy-MM-dd'), defaultTime);
+                }}
+                className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Quick Book
+              </Button>
+            )}
+
             {/* Date Navigation */}
             <div className="flex items-center gap-1">
               <Button variant="outline" size="sm" onClick={() => navigateDate('prev')}>
@@ -1217,14 +1246,15 @@ export function AdvancedCalendar({
                       rowElements.push(
                         <div
                           key={`${barber}-${currentSlot}`}
-                          className="p-1 border rounded cursor-pointer hover:shadow-md transition-all duration-200 min-h-[60px] flex items-center justify-center border-dashed border-muted-foreground/30 hover:border-muted-foreground/50"
+                          className="p-1 border rounded cursor-pointer hover:shadow-md transition-all duration-200 min-h-[60px] flex items-center justify-center border-dashed border-muted-foreground/30 hover:border-muted-foreground/50 hover:bg-green-50"
                           onClick={(e) => {
                             e.stopPropagation();
                             onCreateBooking && onCreateBooking(barber, format(selectedDate, 'yyyy-MM-dd'), currentSlot);
                           }}
                         >
-                          <div className="text-muted-foreground/50 text-xs text-center cursor-pointer hover:text-primary transition-colors">
-                            + Book
+                          <div className="text-muted-foreground/50 text-xs text-center cursor-pointer hover:text-green-600 transition-colors flex flex-col items-center gap-1">
+                            <PlusCircle className="w-3 h-3" />
+                            Book
                           </div>
                         </div>
                       );
@@ -1343,14 +1373,15 @@ export function AdvancedCalendar({
                         return (
                           <div
                             key={`${slot}-${barber}`}
-                            className="p-1 border rounded cursor-pointer hover:shadow-md transition-all duration-200 flex items-center justify-center border-dashed border-muted-foreground/30 hover:border-muted-foreground/50 min-h-[80px]"
+                            className="p-1 border rounded cursor-pointer hover:shadow-md transition-all duration-200 flex items-center justify-center border-dashed border-muted-foreground/30 hover:border-muted-foreground/50 hover:bg-green-50 min-h-[80px]"
                             onClick={(e) => {
                               e.stopPropagation();
                               onCreateBooking && onCreateBooking(barber, format(selectedDate, 'yyyy-MM-dd'), slot);
                             }}
                           >
-                            <div className="text-muted-foreground/50 text-xs text-center cursor-pointer hover:text-primary transition-colors">
-                              + Book
+                            <div className="text-muted-foreground/50 text-xs text-center cursor-pointer hover:text-green-600 transition-colors flex flex-col items-center gap-1">
+                              <PlusCircle className="w-3 h-3" />
+                              Book
                             </div>
                           </div>
                         );
