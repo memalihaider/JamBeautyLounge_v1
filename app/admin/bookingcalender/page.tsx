@@ -892,7 +892,7 @@ const generatePDFInvoice = (invoiceData: ExtendedInvoiceData) => {
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     doc.setFont("helvetica", "bold");
-    doc.text('MAN OF CAVE', 20, 20);
+    doc.text('JAM BEAUTY LOUNGE', 20, 20);
     
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");

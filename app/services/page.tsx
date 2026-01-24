@@ -586,27 +586,30 @@ export default function ServicesPage() {
       )}
 
       {/* Premium Hero Section */}
-      <section className="relative py-32 px-4 overflow-hidden bg-primary">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-secondary blur-[120px] animate-pulse"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary blur-[120px] animate-pulse"></div>
+      <section className="relative py-48 px-4 overflow-hidden bg-primary">
+        <div className="absolute inset-0">
+          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/20 blur-[150px] animate-pulse"></div>
+          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/20 blur-[150px] animate-pulse"></div>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05]"></div>
         </div>
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          <div className="inline-block bg-secondary/20 px-3 py-1 rounded-full mb-6 border border-secondary/30">
-            <span className="text-secondary font-black tracking-[0.3em] uppercase text-[10px]">The Menu</span>
+          <div className="inline-block bg-white/10 backdrop-blur-md px-6 py-2 rounded-full mb-10 border border-white/10">
+            <span className="text-secondary font-black tracking-[0.5em] uppercase text-[10px]">The Service Menu</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
-            Our <span className="text-secondary italic">Services</span>
+          <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-10 leading-[0.85] tracking-tighter">
+            Signature <br /><span className="text-secondary italic">Rituals</span>
           </h1>
-          <p className="text-gray-300 max-w-2xl mx-auto text-lg font-light leading-relaxed">
+          <p className="text-white/40 max-w-2xl mx-auto text-xl font-light leading-relaxed italic">
+            "Artistry is not just a service, it's a transformation."
           </p>
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <Badge className="bg-secondary text-primary px-4 py-1.5 font-bold">
-              Live Data
+          <div className="mt-16 flex items-center justify-center gap-6">
+            <Badge className="bg-secondary text-primary px-6 py-2 rounded-full font-black tracking-widest text-[10px] uppercase shadow-2xl">
+              REAL-TIME AVAILABILITY
             </Badge>
-            <Badge variant="outline" className="text-white border-white/40">
-              {services.length} Services Available
-            </Badge>
+            <div className="h-px w-12 bg-white/20"></div>
+            <span className="text-white/40 font-black tracking-[0.3em] text-[10px] uppercase">
+              {services.length} MASTER SERVICES
+            </span>
           </div>
         </div>
       </section>

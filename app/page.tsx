@@ -647,94 +647,97 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative h-[85vh] flex items-center justify-center overflow-hidden mt-[3.5rem]">
+      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 animate-slow-zoom"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 animate-slow-pan"
           style={{ 
-            backgroundImage: "url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070&auto=format&fit=crop')",
+            backgroundImage: "url('https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=2074&auto=format&fit=crop')",
           }}
         >
-          <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/40 to-black/70 backdrop-blur-[2px]"></div>
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+          <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-black/60 backdrop-blur-[1px]"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent"></div>
         </div>
         
         <div className="relative z-10 text-center text-white px-4 max-w-5xl mx-auto">
-          <div className="inline-flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 animate-fade-in">
-            <div className="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
-            <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-secondary">For The Modern Caveman</span>
+          <div className="inline-flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 animate-fade-in shadow-2xl">
+            <Sparkles className="w-4 h-4 text-secondary animate-pulse" />
+            <span className="text-[11px] tracking-[0.4em] uppercase font-bold text-white">The Pinnacle of Beauty</span>
           </div>
           
-          <h1 className="text-6xl md:text-8xl font-serif font-bold mb-6 leading-[1.1] tracking-tight drop-shadow-2xl">
-            Unleash Your <br />
-            <span className="text-secondary italic">Raw</span> Potential
+          <h1 className="text-7xl md:text-9xl font-serif font-bold mb-8 leading-[0.9] tracking-tighter drop-shadow-2xl">
+            Elegance <br />
+            <span className="text-secondary italic">Redefined.</span>
           </h1>
           
-          <p className="text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light text-gray-300 leading-relaxed drop-shadow-lg">
-            Primal grooming for the modern man. Embrace your inner strength with bold, authentic style.
+          <p className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto font-light text-gray-100 leading-relaxed drop-shadow-lg opacity-90">
+            Immerse yourself in a sanctuary of luxury where science meets art to reveal your most radiant self.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
-            <Button size="lg" asChild className="bg-secondary hover:bg-secondary/90 text-primary font-bold px-10 py-7 text-base rounded-xl transition-all duration-500 shadow-[0_0_30px_rgba(197,160,89,0.3)] hover:shadow-[0_0_50px_rgba(197,160,89,0.5)] hover:scale-105 active:scale-95">
-              <Link href="/services">RESERVE YOUR SERVICE</Link>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <Button size="lg" asChild className="bg-white hover:bg-secondary text-primary hover:text-white font-bold px-12 py-8 text-lg rounded-full transition-all duration-700 shadow-2xl hover:scale-105 active:scale-95 group">
+              <Link href="/services" className="flex items-center gap-2">
+                BOOK AN EXPERIENCE <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="border-white/30 text-primary hover:bg-white hover:text-primary px-10 py-7 text-base rounded-xl transition-all duration-500 backdrop-blur-sm hover:scale-105 active:scale-95">
-              <Link href="/services">VIEW OUR MENU</Link>
+            <Button size="lg" variant="outline" asChild className="border-white/40 text-white hover:bg-white/10 px-12 py-8 text-lg rounded-full transition-all duration-700 backdrop-blur-md hover:scale-105 active:scale-95">
+              <Link href="/services">OUR MENU</Link>
             </Button>
           </div>
         </div>
 
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce hidden md:block">
-          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center p-1">
-            <div className="w-1 h-2 bg-secondary rounded-full"></div>
-          </div>
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-60">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Discover More</span>
+          <div className="w-[1px] h-16 bg-gradient-to-b from-white to-transparent"></div>
         </div>
       </section>
 
-      {/* Trust Bar - Real-time Data */}
-      <section className="py-10 border-b border-gray-100 bg-white relative z-20 -mt-10 mx-4 md:mx-10 rounded-2xl shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      {/* Trust Bar - Enhanced Premium Version */}
+      <section className="relative z-30 -mt-20 px-4 md:px-10">
+        <div className="max-w-7xl mx-auto glass-card rounded-[3rem] p-10 md:p-16 shadow-[0_30px_100px_rgba(0,0,0,0.1)] border border-white/40">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
               { 
                 icon: Award, 
-                label: "Master Barbers", 
+                label: "Artisans", 
                 value: `${totalActiveStaff}+`, 
-                desc: "Expertly Trained",
+                desc: "Certified Experts",
                 data: totalActiveStaff
               },
               { 
-                icon: Users, 
-                label: "Active Services", 
+                icon: Sparkles, 
+                label: "Rituals", 
                 value: `${totalActiveServices}+`, 
-                desc: "Premium Offerings",
+                desc: "Besproke Services",
                 data: totalActiveServices
               },
               { 
                 icon: MapPin, 
-                label: "Luxury Studios", 
+                label: "Lounges", 
                 value: `${totalActiveBranches}+`, 
-                desc: "Prime Locations",
+                desc: "Global Presence",
                 data: totalActiveBranches
               },
               { 
-                icon: TrendingUp, 
-                label: "Total Revenue", 
-                value: `$${Math.floor(totalRevenue/1000)}k+`, 
-                desc: "Generated Value",
-                data: totalRevenue
+                icon: Star, 
+                label: "Rating", 
+                value: "4.9", 
+                desc: "Client Excellence",
+                data: 4.9
               },
             ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center text-center group">
-                <div className="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center mb-3 group-hover:bg-secondary group-hover:text-primary transition-all duration-500">
-                  <stat.icon className="w-6 h-6 text-secondary group-hover:text-primary transition-colors" />
+              <div key={i} className="flex flex-col items-center text-center group hover:-translate-y-2 transition-transform duration-500">
+                <div className="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-700 shadow-sm">
+                  <stat.icon className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
                 </div>
-                <span className="text-2xl font-serif font-bold text-primary mb-0.5">{stat.value}</span>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-bold mb-1">{stat.label}</span>
-                <span className="text-[9px] text-muted-foreground font-medium">{stat.desc}</span>
-                <div className="w-16 h-1 bg-secondary/20 rounded-full mt-2">
+                <div className="space-y-1">
+                  <span className="text-4xl font-serif font-bold text-primary block">{stat.value}</span>
+                  <span className="text-[11px] uppercase tracking-[0.4em] text-gray-500 font-black block">{stat.label}</span>
+                  <p className="text-[10px] text-gray-400 font-medium italic mt-2">{stat.desc}</p>
+                </div>
+                <div className="w-12 h-[2px] bg-secondary/30 mt-6 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-secondary rounded-full transition-all duration-1000"
-                    style={{ width: `${Math.min(100, (stat.data || 0) * 10)}%` }}
+                    className="h-full bg-secondary transition-all duration-2000"
+                    style={{ width: '100%' }}
                   ></div>
                 </div>
               </div>
@@ -743,13 +746,85 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured In Section */}
-      <section className="py-12 bg-white border-b border-gray-50">
+      {/* Philosophy Section - New Premium Addition */}
+      <section className="py-32 px-4 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+            <div className="relative">
+              <div className="absolute -top-12 -left-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-secondary/5 rounded-full blur-3xl"></div>
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[4rem] shadow-2xl group">
+                <img 
+                  src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=2069&auto=format&fit=crop" 
+                  alt="Philosophy" 
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+              </div>
+              <div className="absolute top-1/2 -right-12 -translate-y-1/2 bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 hidden lg:block animate-float">
+                <div className="space-y-4">
+                  <Quote className="w-10 h-10 text-secondary opacity-30" />
+                  <p className="text-lg font-serif italic text-primary max-w-[200px]">
+                    "Beauty is the illumination of your soul."
+                  </p>
+                  <div className="h-px w-12 bg-secondary"></div>
+                  <p className="text-xs font-black tracking-widest text-gray-400 uppercase">Founder, JAM</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-10">
+              <div className="space-y-4">
+                <div className="inline-block bg-secondary/10 px-4 py-1.5 rounded-full">
+                  <span className="text-secondary font-black tracking-[0.3em] uppercase text-[10px]">The JAM Philosophy</span>
+                </div>
+                <h2 className="text-5xl md:text-7xl font-serif font-bold text-primary leading-tight">
+                  Where Nature <br /> Meets <span className="text-secondary italic">Luxury</span>
+                </h2>
+              </div>
+              
+              <p className="text-xl text-gray-600 font-light leading-relaxed">
+                Founded on the principle that true beauty is an experience, not just a result. At JAM Beauty Lounge, we believe in a holistic approach to self-care, combining age-old wisdom with modern innovation.
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center">
+                      <ShieldCheck className="w-5 h-5 text-primary" />
+                    </div>
+                    <h4 className="font-bold text-primary uppercase tracking-widest text-sm">Purity</h4>
+                  </div>
+                  <p className="text-sm text-gray-500 font-light">We use only the finest organic and scientifically-proven ingredients.</p>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center">
+                      <Zap className="w-5 h-5 text-primary" />
+                    </div>
+                    <h4 className="font-bold text-primary uppercase tracking-widest text-sm">Innovation</h4>
+                  </div>
+                  <p className="text-sm text-gray-500 font-light">State-of-the-art treatments tailored to your unique biology.</p>
+                </div>
+              </div>
+              
+              <div className="pt-8">
+                <Button variant="link" className="text-primary font-black uppercase tracking-[0.3em] text-xs p-0 group">
+                  Learn Our Full Story <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured In Section - Enhanced Press Bar */}
+      <section className="py-20 bg-gray-50/30">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="text-center text-[10px] uppercase tracking-[0.4em] text-muted-foreground mb-8 font-bold">As Featured In</p>
-          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-            {['GQ', 'VOGUE', 'ESQUIRE', 'FORBES', 'MEN\'S HEALTH'].map((brand) => (
-              <span key={brand} className="text-2xl md:text-3xl font-serif font-black tracking-tighter text-primary">{brand}</span>
+          <p className="text-center text-[11px] uppercase tracking-[0.6em] text-gray-400 mb-12 font-black">As Recognised By</p>
+          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-1000">
+            {['GQ', 'VOGUE', 'ESQUIRE', 'FORBES', 'HAPERS BAZAAR'].map((brand) => (
+              <span key={brand} className="text-2xl md:text-4xl font-serif font-bold tracking-tighter text-primary cursor-default">{brand}</span>
             ))}
           </div>
         </div>
@@ -1033,187 +1108,161 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services Slider Section - Real-time Data */}
-      <section className="py-24 px-4 bg-white">
+      {/* Services Slider Section - Premium Enhancement */}
+      <section className="py-32 px-4 bg-white relative">
+        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-secondary/5 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div className="space-y-3">
-              <div className="inline-block bg-secondary/10 px-3 py-1 rounded-full">
-                <span className="text-secondary font-bold tracking-[0.2em] uppercase text-[10px]">Our Signature Menu</span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+            <div className="space-y-4">
+              <div className="inline-block bg-secondary/10 px-4 py-1.5 rounded-full">
+                <span className="text-secondary font-black tracking-[0.3em] uppercase text-[10px]">The Collection</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">Bespoke Services</h2>
-              <Badge variant="outline" className="text-xs border-secondary/30 text-secondary">
-                {services.length} Premium Services Available
-              </Badge>
+              <h2 className="text-5xl md:text-7xl font-serif font-bold text-primary tracking-tight">Signature Rituals</h2>
+              <p className="text-gray-400 font-light text-lg">Indulge in our most sought-after treatments, curated for the modern soul.</p>
             </div>
-            <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white rounded-full px-8 py-6 font-bold tracking-widest group transition-all duration-500">
+            <Button asChild variant="outline" className="border-primary/10 text-primary hover:bg-primary hover:text-white rounded-full px-10 py-7 font-black tracking-[0.2em] text-[10px] group transition-all duration-700">
               <Link href="/services" className="flex items-center">
-                EXPLORE FULL MENU <ChevronRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                EXPLORE ALL RITUALS <ChevronRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>
 
           {services.length === 0 ? (
-            <div className="text-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
-              <Scissors className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-2xl font-serif font-bold text-gray-400 mb-2">No Services Available</h3>
-              <p className="text-gray-400 font-light">Add services to Firebase to see them here</p>
+            <div className="text-center py-24 bg-gray-50/50 rounded-[4rem] border border-dashed border-gray-200">
+              <Sparkles className="w-20 h-20 text-gray-200 mx-auto mb-6" />
+              <h3 className="text-3xl font-serif font-bold text-gray-400 mb-2">Awaiting Excellence</h3>
+              <p className="text-gray-400 font-light">Rituals will appear here once they are prepared.</p>
             </div>
           ) : (
             <Carousel opts={{ align: "start" }} className="w-full">
-              <CarouselContent className="-ml-6">
+              <CarouselContent className="-ml-8">
                 {services.map((service) => (
-                  <CarouselItem key={service.id} className="pl-6 md:basis-1/2 lg:basis-1/3">
-                    <Card className="group border-none bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden rounded-[2rem] transition-all duration-500">
-                      <div className="relative aspect-[4/3] overflow-hidden">
+                  <CarouselItem key={service.id} className="pl-8 md:basis-1/2 lg:basis-1/3">
+                    <Card className="group border-none bg-transparent shadow-none overflow-hidden transition-all duration-700">
+                      <div className="relative aspect-[3/4] overflow-hidden rounded-[3rem] shadow-xl group-hover:shadow-2xl transition-all duration-700">
                         <img 
                           src={service.imageUrl || "https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop"} 
                           alt={service.name} 
-                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                            e.currentTarget.src = 'https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop';
-                          }}
+                          className="w-full h-full object-cover transition-transform duration-2000 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="absolute top-6 right-6">
-                          <div className="bg-white/90 backdrop-blur-md text-primary border-none px-4 py-2 rounded-2xl font-black text-sm shadow-xl">
-                            ${service.price}
-                          </div>
-                        </div>
-                        <div className="absolute bottom-6 left-6 right-6 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                          <Button asChild className="w-full bg-secondary hover:bg-secondary/90 text-primary font-black rounded-xl py-6 shadow-2xl">
-                            <Link href={`/booking?service=${service.id}`}>BOOK THIS SERVICE</Link>
-                          </Button>
-                        </div>
-                      </div>
-                      <CardHeader className="px-8 pt-8 pb-2">
-                        <div className="flex justify-between items-center mb-3">
-                          <Badge variant="outline" className="text-[10px] uppercase tracking-[0.2em] text-secondary border-secondary/30">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-700"></div>
+                        
+                        <div className="absolute top-8 left-8">
+                          <Badge className="bg-white/20 backdrop-blur-md text-white border-0 px-4 py-1.5 rounded-full font-bold text-[10px] tracking-widest uppercase">
                             {service.category}
                           </Badge>
-                          <div className="flex items-center gap-2 text-muted-foreground bg-gray-50 px-3 py-1 rounded-full">
-                            <Clock className="w-3 h-3 text-secondary" />
-                            <span className="text-[10px] uppercase tracking-widest font-bold">{service.duration} MIN</span>
+                        </div>
+
+                        <div className="absolute bottom-10 left-10 right-10 space-y-6">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-3xl font-serif font-bold text-white group-hover:text-secondary transition-colors line-clamp-1">{service.name}</h4>
+                                <span className="text-xl font-bold text-secondary">${service.price}</span>
+                            </div>
+                            <p className="text-white/70 text-sm font-light line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                                {service.description || "A transformative journey for your skin and soul."}
+                            </p>
+                          </div>
+                          
+                          <div className="flex items-center gap-6 pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-200">
+                            <div className="flex items-center gap-2 text-white/60">
+                                <Clock className="w-4 h-4" />
+                                <span className="text-[11px] font-black uppercase tracking-widest">{service.duration} MIN</span>
+                            </div>
+                            <div className="w-px h-4 bg-white/20"></div>
+                            <Button asChild className="bg-white text-primary hover:bg-secondary hover:text-white font-black rounded-full px-6 py-5 text-[10px] tracking-widest shadow-2xl">
+                                <Link href={`/booking?service=${service.id}`}>SECURE THE BENCH</Link>
+                            </Button>
                           </div>
                         </div>
-                        <CardTitle className="text-2xl font-serif font-bold text-primary group-hover:text-secondary transition-colors duration-300">
-                          {service.name}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="px-8 pb-8">
-                        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2 font-light">
-                          {service.description || "Premium grooming service for the modern gentleman"}
-                        </p>
-                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                          <div className="flex items-center gap-2">
-                            <MapPin className="w-3 h-3 text-secondary" />
-                            <span className="text-[10px] text-gray-500">
-                              {service.branchNames?.length || 0} branch(es)
-                            </span>
-                          </div>
-                          <Badge className={cn(
-                            "text-[9px]",
-                            service.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          )}>
-                            {service.status}
-                          </Badge>
-                        </div>
-                      </CardContent>
+                      </div>
                     </Card>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <div className="hidden md:flex justify-center gap-4 mt-12">
-                <CarouselPrevious className="static translate-y-0 border-primary/10 hover:bg-primary hover:text-white transition-all" />
-                <CarouselNext className="static translate-y-0 border-primary/10 hover:bg-primary hover:text-white transition-all" />
+              <div className="hidden md:flex justify-center gap-6 mt-16">
+                <CarouselPrevious className="static translate-y-0 w-14 h-14 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-lg rounded-full" />
+                <CarouselNext className="static translate-y-0 w-14 h-14 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-lg rounded-full" />
               </div>
             </Carousel>
           )}
         </div>
       </section>
 
-      {/* Products Slider Section - Real-time Data */}
-      <section className="py-24 px-4 bg-[#0f0f0f] text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-secondary/5 blur-[150px] pointer-events-none"></div>
+      {/* Products Slider Section - Boutique Enhancement */}
+      <section className="py-32 px-4 bg-primary text-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-tr from-secondary/10 to-transparent"></div>
+        
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div className="space-y-3">
-              <div className="inline-block bg-secondary/20 px-3 py-1 rounded-full border border-secondary/30">
-                <span className="text-secondary font-bold tracking-[0.2em] uppercase text-[10px]">Premium Apothecary</span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
+            <div className="space-y-4">
+              <div className="inline-block bg-white/10 px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
+                <span className="text-secondary font-black tracking-[0.4em] uppercase text-[10px]">The Boutique</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white">Grooming Essentials</h2>
-              <Badge variant="outline" className="text-xs border-white/20 text-white">
-                {products.length} Premium Products Available
-              </Badge>
+              <h2 className="text-5xl md:text-7xl font-serif font-bold text-white tracking-tight">Couture Skincare</h2>
+              <p className="text-white/50 font-light text-lg max-w-xl">Scientifically formulated. Artistically packaged. Experience the JAM collection.</p>
             </div>
-            <Button asChild variant="outline" className="border-white/20 text-black bg-white hover:text-primary rounded-full px-8 py-6 font-bold tracking-widest group transition-all duration-500">
+            <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white hover:text-primary rounded-full px-10 py-7 font-black tracking-[0.2em] text-[10px] group transition-all duration-700 backdrop-blur-sm">
               <Link href="/products" className="flex items-center">
-                SHOP ALL PRODUCTS <ChevronRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                VISIT THE BOUTIQUE <ChevronRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>
 
           {products.length === 0 ? (
-            <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
-              <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-serif font-bold text-gray-300 mb-2">No Products Available</h3>
-              <p className="text-gray-400 font-light">Add products to Firebase to see them here</p>
+            <div className="text-center py-24 bg-white/5 rounded-[4rem] border border-dashed border-white/10 backdrop-blur-md">
+              <ShoppingBag className="w-20 h-20 text-white/20 mx-auto mb-6" />
+              <h3 className="text-3xl font-serif font-bold text-white/40 mb-2">Awaiting Inventory</h3>
+              <p className="text-white/30 font-light">Our exclusive collection is being curated.</p>
             </div>
           ) : (
             <Carousel opts={{ align: "start" }} className="w-full">
-              <CarouselContent className="-ml-6">
+              <CarouselContent className="-ml-8">
                 {products.map((product) => (
-                  <CarouselItem key={product.id} className="pl-6 md:basis-1/2 lg:basis-1/4">
-                    <div className="group cursor-pointer bg-white/[0.03] p-6 border border-white/10 rounded-[2.5rem] hover:bg-white/[0.07] hover:border-secondary/50 transition-all duration-500">
-                      <div className="relative aspect-square overflow-hidden mb-6 rounded-[2rem] bg-white/5">
+                  <CarouselItem key={product.id} className="pl-8 md:basis-1/2 lg:basis-1/4">
+                    <div className="group cursor-pointer bg-white/5 p-8 border border-white/10 rounded-[3rem] hover:bg-white/10 hover:border-secondary/50 transition-all duration-700 backdrop-blur-md">
+                      <div className="relative aspect-square overflow-hidden mb-10 rounded-[2rem] bg-black/20 shadow-2xl">
                         <img 
                           src={product.imageUrl || "https://images.unsplash.com/photo-1512690196222-7c7d3f993c1b?q=80&w=2070&auto=format&fit=crop"} 
                           alt={product.name} 
-                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                            e.currentTarget.src = 'https://images.unsplash.com/photo-1512690196222-7c7d3f993c1b?q=80&w=2070&auto=format&fit=crop';
-                          }}
+                          className="w-full h-full object-cover transition-transform duration-2000 group-hover:scale-110"
                         />
                         {product.totalStock <= 5 && (
-                          <div className="absolute top-4 left-4 bg-secondary text-primary px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase shadow-2xl">
-                            LIMITED STOCK
+                          <div className="absolute top-6 left-6 bg-secondary text-primary px-4 py-1.5 rounded-full text-[9px] font-black tracking-[0.3em] uppercase shadow-2xl">
+                            RARE
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                          <Button asChild className="bg-white text-primary hover:bg-secondary hover:text-primary rounded-full w-12 h-12 p-0 shadow-2xl">
+                        <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-center justify-center backdrop-blur-[2px]">
+                          <Button asChild className="bg-white text-primary hover:bg-secondary hover:text-white rounded-full w-14 h-14 p-0 shadow-2xl transition-all duration-500 group-hover:scale-110">
                             <Link href={`/products#${product.id}`}>
-                              <ShoppingBag className="w-5 h-5" />
+                              <ShoppingBag className="w-6 h-6" />
                             </Link>
                           </Button>
                         </div>
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-6">
                         <div className="flex justify-between items-center">
-                          <Badge variant="outline" className="text-[9px] uppercase tracking-[0.3em] text-gray-500 font-black border-gray-700">
+                          <span className="text-[10px] uppercase tracking-[0.4em] text-secondary font-black">
                             {product.category}
-                          </Badge>
-                          <span className="text-secondary font-black text-lg">${product.price}</span>
+                          </span>
+                          <span className="text-white font-serif italic text-2xl">${product.price}</span>
                         </div>
-                        <h4 className="text-xl font-serif font-bold group-hover:text-secondary transition-colors duration-300 truncate">
+                        <h4 className="text-2xl font-serif font-bold group-hover:text-secondary transition-colors duration-500 truncate">
                           {product.name}
                         </h4>
-                        <div className="flex items-center gap-1.5 pt-1">
-                          <div className="flex gap-0.5">
+                        <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                          <div className="flex gap-1">
                             {[1,2,3,4,5].map(s => (
                               <Star key={s} className={cn(
-                                "w-2.5 h-2.5", 
-                                s <= Math.floor(product.rating) ? "fill-secondary text-secondary" : "text-gray-700"
+                                "w-3 h-3 transition-colors duration-500", 
+                                s <= Math.floor(product.rating) ? "fill-secondary text-secondary" : "text-white/20"
                               )} />
                             ))}
                           </div>
-                          <span className="text-[10px] font-black text-gray-400">{product.rating.toFixed(1)}</span>
-                          <span className="text-[9px] text-gray-600">({product.reviews})</span>
+                          <span className="text-[10px] font-black tracking-widest text-white/40 ml-auto uppercase">{product.reviews} VERIFIED REVIEW(S)</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs text-gray-500 mt-4">
-                          <span>SKU: {product.sku}</span>
-                          <span>Stock: {product.totalStock}</span>
-                        </div>
-                        <Button asChild className="w-full mt-6 bg-white/10 hover:bg-secondary hover:text-primary text-white rounded-2xl py-6 text-[10px] font-black tracking-[0.2em] transition-all duration-500 border border-white/5 hover:border-secondary">
+                        <Button asChild className="w-full mt-4 bg-white/5 hover:bg-secondary hover:text-white text-white rounded-2xl py-7 text-[10px] font-black tracking-[0.3em] transition-all duration-700 border border-white/5 hover:border-secondary shadow-lg">
                           <Link href={`/products?product=${product.id}`}>ADD TO COLLECTION</Link>
                         </Button>
                       </div>
@@ -1221,292 +1270,285 @@ export default function Home() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <div className="hidden md:flex justify-end gap-3 mt-12">
-                <CarouselPrevious className="static translate-y-0 border-white/10 text-white hover:bg-white/10 transition-all" />
-                <CarouselNext className="static translate-y-0 border-white/10 text-white hover:bg-white/10 transition-all" />
+              <div className="hidden md:flex justify-end gap-5 mt-16">
+                <CarouselPrevious className="static translate-y-0 w-12 h-12 border-white/10 text-white hover:bg-white/10 transition-all rounded-full" />
+                <CarouselNext className="static translate-y-0 w-12 h-12 border-white/10 text-white hover:bg-white/10 transition-all rounded-full" />
               </div>
             </Carousel>
           )}
         </div>
       </section>
 
-      {/* Staff Slider Section - Real-time Data */}
-      <section className="py-32 px-4 bg-gray-50/50 overflow-hidden relative">
+      {/* Staff Slider Section - Artisans Enhancement */}
+      <section className="py-32 px-4 bg-white overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-secondary/5 skew-x-12 translate-x-1/2 pointer-events-none"></div>
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-20">
-            <div className="inline-block bg-secondary/10 px-3 py-1 rounded-full mb-4">
-              <span className="text-secondary font-bold tracking-[0.2em] uppercase text-[10px]">The Artisans</span>
+          <div className="flex flex-col md:flex-row items-end justify-between mb-24 gap-8">
+            <div className="space-y-4">
+              <div className="inline-block bg-primary/5 px-4 py-1.5 rounded-full border border-primary/10">
+                <span className="text-primary font-black tracking-[0.4em] uppercase text-[10px]">The Collective</span>
+              </div>
+              <h2 className="text-5xl md:text-7xl font-serif font-bold text-primary tracking-tight">Master Artisans</h2>
+              <p className="text-muted-foreground max-w-xl font-light text-lg">Curating beauty through precision, technique, and a touch of JAM magic.</p>
             </div>
-            <h2 className="text-5xl md:text-6xl font-serif font-bold text-primary mb-6">Meet The Masters</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto font-light text-lg">
-              Our barbers are more than just stylists; they are highly trained artisans dedicated to the perfection of their craft.
-            </p>
-            <Badge variant="outline" className="mt-4 border-secondary/30 text-secondary">
-              {staff.length} Professional Staff Members
-            </Badge>
+            <div className="flex items-center gap-4 bg-gray-50 p-2 rounded-full border border-gray-100">
+               <div className="flex -space-x-4">
+                 {staff.slice(0, 4).map((s, i) => (
+                   <div key={i} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden">
+                     <img src={s.image} className="w-full h-full object-cover" alt="" />
+                   </div>
+                 ))}
+               </div>
+               <div className="px-4">
+                 <p className="text-[10px] font-black tracking-widest text-primary uppercase">{staff.length} ELITE MASTERS</p>
+                 <div className="flex items-center gap-1">
+                   <Star className="w-3 h-3 fill-secondary text-secondary" />
+                   <span className="text-[10px] font-bold text-primary font-serif italic">4.9/5 Average Rating</span>
+                 </div>
+               </div>
+            </div>
           </div>
 
           {staff.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-2xl font-serif font-bold text-gray-400 mb-2">No Staff Available</h3>
-              <p className="text-gray-400 font-light">Add staff to Firebase to see them here</p>
+            <div className="text-center py-24 bg-gray-50 rounded-[4rem] border border-dashed border-gray-200">
+              <Users className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+              <h3 className="text-3xl font-serif font-bold text-gray-400 mb-2">Artisans Off-Duty</h3>
+              <p className="text-gray-400 font-light">Our masters are currently preparing for the next season.</p>
             </div>
           ) : (
             <Carousel opts={{ align: "start", loop: true }} className="w-full">
-              <CarouselContent className="-ml-8">
+              <CarouselContent className="-ml-10">
                 {staff.map((member) => (
-                  <CarouselItem key={member.id} className="pl-8 basis-1/4">
-                    <Card className="group overflow-hidden border-none shadow-none bg-transparent">
-                      <div className="relative aspect-[3/4] overflow-hidden rounded-[2.5rem] mb-8 shadow-2xl">
+                  <CarouselItem key={member.id} className="pl-10 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                    <div className="group relative">
+                      <div className="relative aspect-[4/5] overflow-hidden rounded-[3rem] shadow-2xl transition-all duration-1000 group-hover:rounded-[1.5rem]">
                         <img 
                           src={member.image} 
                           alt={member.name}
-                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                            e.currentTarget.src = '/default-avatar.png';
-                          }}
+                          className="w-full h-full object-cover transition-transform duration-2000 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-linear-to-t from-primary/90 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-10">
-                          <div className="flex gap-4 mb-6 translate-y-10 group-hover:translate-y-0 transition-transform duration-500">
-                            <a href="#" className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-primary hover:scale-110 transition-all shadow-xl">
-                              <Instagram className="w-5 h-5" />
-                            </a>
-                            <Button asChild className="bg-white text-primary hover:bg-secondary hover:text-primary rounded-2xl px-6 font-black text-[10px] tracking-widest shadow-xl">
-                              <Link href={`/staff/${member.id}`}>VIEW PROFILE</Link>
+                        <div className="absolute inset-0 bg-linear-to-t from-primary/95 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-10">
+                          <div className="space-y-6 translate-y-10 group-hover:translate-y-0 transition-transform duration-700">
+                            <div className="flex gap-3">
+                              <a href="#" className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-secondary hover:text-white transition-all">
+                                <Instagram className="w-5 h-5" />
+                              </a>
+                              <a href="#" className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-secondary hover:text-white transition-all">
+                                <Phone className="w-5 h-5" />
+                              </a>
+                            </div>
+                            <Button asChild className="w-full bg-white text-primary hover:bg-secondary hover:text-white rounded-2xl py-7 font-black text-[10px] tracking-[0.3em] shadow-2xl transition-all duration-500">
+                              <Link href={`/staff/${member.id}`}>VIEW PORTFOLIO</Link>
                             </Button>
                           </div>
                         </div>
-                      </div>
-                      <div className="text-center px-4">
-                        <div className="inline-block border border-secondary/30 text-secondary text-[9px] font-black uppercase tracking-[0.3em] px-4 py-1 rounded-full mb-4">
-                          {member.role}
-                        </div>
-                        <h3 className="text-3xl font-serif font-bold text-primary mb-3 group-hover:text-secondary transition-colors duration-300">
-                          {member.name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground font-light line-clamp-2 mb-6 leading-relaxed">
-                          {member.bio || "Professional barber with extensive experience in modern grooming techniques."}
-                        </p>
-                        <div className="flex items-center justify-center gap-3 py-4 border-t border-gray-100">
-                          <div className="flex gap-0.5">
-                            {[1,2,3,4,5].map(s => (
-                              <Star key={s} className={cn(
-                                "w-3 h-3",
-                                s <= Math.floor(member.rating) ? "fill-secondary text-secondary" : "text-gray-300"
-                              )} />
-                            ))}
-                          </div>
-                          <span className="text-xs font-black text-primary">{member.rating.toFixed(1)}</span>
-                          <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-                            ({member.reviews} REVIEWS)
-                          </span>
+                        <div className="absolute top-8 right-8 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                           <span className="text-[10px] text-white font-black tracking-widest">{member.reviews} REVIEWS</span>
                         </div>
                       </div>
-                    </Card>
+                      <div className="mt-8 text-center px-4">
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-secondary">{member.role}</span>
+                        <h3 className="text-3xl font-serif font-bold text-primary mt-3 group-hover:text-secondary transition-colors duration-500">{member.name}</h3>
+                        <div className="flex items-center justify-center gap-2 mt-4">
+                           <div className="flex gap-0.5">
+                             {[1,2,3,4,5].map(s => (
+                               <Star key={s} className={cn(
+                                 "w-2.5 h-2.5",
+                                 s <= Math.floor(member.rating) ? "fill-secondary text-secondary" : "text-gray-300"
+                               )} />
+                             ))}
+                           </div>
+                           <span className="text-[10px] font-black text-primary/40 tracking-widest uppercase">{member.rating.toFixed(1)} RATING</span>
+                        </div>
+                      </div>
+                    </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <div className="flex justify-center gap-6 mt-16">
-                <CarouselPrevious className="static translate-y-0 w-14 h-14 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-lg" />
-                <CarouselNext className="static translate-y-0 w-14 h-14 border-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-lg" />
+              <div className="flex justify-center gap-8 mt-20">
+                <CarouselPrevious className="static translate-y-0 w-16 h-16 border-primary/5 text-primary hover:bg-primary hover:text-white transition-all shadow-xl rounded-full" />
+                <CarouselNext className="static translate-y-0 w-16 h-16 border-primary/5 text-primary hover:bg-primary hover:text-white transition-all shadow-xl rounded-full" />
               </div>
             </Carousel>
           )}
         </div>
       </section>
 
-      {/* Branches Section - Real-time Data */}
-      <section className="py-32 px-4 bg-white relative overflow-hidden">
+      {/* Flagships Section - Enhanced */}
+      <section className="py-40 px-4 bg-gray-50 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] pointer-events-none"></div>
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
-            <div className="space-y-3">
-              <div className="inline-block bg-secondary/10 px-3 py-1 rounded-full">
-                <span className="text-secondary font-bold tracking-[0.2em] uppercase text-[10px]">Our Global Presence</span>
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12">
+            <div className="space-y-6">
+              <div className="inline-block bg-secondary/10 px-4 py-1.5 rounded-full">
+                <span className="text-secondary font-black tracking-[0.4em] uppercase text-[10px]">Global Flagships</span>
               </div>
-              <h2 className="text-5xl md:text-6xl font-serif font-bold text-primary leading-[1.1]">
-                Luxury Grooming, <br /><span className="text-secondary italic">Everywhere.</span>
+              <h2 className="text-5xl md:text-8xl font-serif font-bold text-primary leading-tight tracking-tighter">
+                The Lounge <br /><span className="text-secondary italic">Experience.</span>
               </h2>
-              <Badge variant="outline" className="border-secondary/30 text-secondary">
-                {branches.length} Premium Branches
-              </Badge>
             </div>
-            <p className="text-muted-foreground max-w-xl font-light leading-relaxed">
-              With {branches.length} flagship studios across prime locations, we bring the ultimate grooming experience closer to you. Each location is a sanctuary of style.
-            </p>
+            <div className="lg:max-w-md space-y-8">
+              <p className="text-muted-foreground text-xl font-light leading-relaxed">
+                With {branches.length} curated destinations globally, we redefine the sanctuary of beauty. Find your local JAM haven.
+              </p>
+              <Button size="lg" asChild className="bg-primary hover:bg-secondary text-white rounded-full px-12 py-8 font-black tracking-[0.3em] text-[10px] shadow-2xl transition-all duration-700 hover:scale-105">
+                <Link href="/branches" className="flex items-center gap-3">
+                  EXPLORE ALL {branches.length} LOCATIONS <ArrowRight className="w-5 h-5" />
+                </Link>
+              </Button>
+            </div>
           </div>
 
           {branches.length === 0 ? (
-            <div className="text-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
-              <Building className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-2xl font-serif font-bold text-gray-400 mb-2">No Branches Available</h3>
-              <p className="text-gray-400 font-light">Add branches to Firebase to see them here</p>
+            <div className="text-center py-24 bg-white rounded-[4rem] border border-dashed border-gray-200 shadow-sm">
+              <Building className="w-20 h-20 text-gray-300 mx-auto mb-6" />
+              <h3 className="text-3xl font-serif font-bold text-gray-400 mb-2">Opening Soon</h3>
+              <p className="text-gray-400 font-light">New flagships are currently being designed.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10">
               {branches.map((branch) => (
-                <div key={branch.id} className="flex items-start gap-6 p-6 rounded-[2rem] bg-gray-50 border border-transparent hover:border-secondary/30 hover:bg-white hover:shadow-2xl transition-all duration-500 group cursor-pointer">
-                  <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-500 shadow-sm">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <div className="space-y-2">
-                    <div>
-                      <h4 className="font-black text-primary text-sm uppercase tracking-widest mb-1">
-                        {branch.name}
-                      </h4>
-                      <Badge className={cn(
-                        "text-[9px]",
-                        branch.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      )}>
-                        {branch.status}
-                      </Badge>
+                <div key={branch.id} className="group cursor-pointer bg-white p-10 rounded-[3rem] border border-transparent hover:border-secondary/20 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] transition-all duration-700 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-secondary/5 rounded-bl-[4rem] group-hover:w-full group-hover:h-full group-hover:rounded-none transition-all duration-700"></div>
+                  <div className="relative z-10 space-y-8">
+                    <div className="w-16 h-16 rounded-[1.5rem] bg-gray-50 flex items-center justify-center text-secondary group-hover:bg-white group-hover:scale-110 transition-all duration-700 shadow-sm">
+                      <MapPin className="w-8 h-8" />
                     </div>
-                    <p className="text-xs text-muted-foreground font-medium line-clamp-2">
-                      {branch.address}
-                    </p>
-                    <p className="text-[10px] text-gray-500">
-                      {branch.city}, {branch.country}
-                    </p>
-                    <div className="pt-2 border-t border-gray-100">
-                      <p className="text-[9px] text-gray-600">
-                        Hours: {branch.openingTime} - {branch.closingTime}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-serif font-bold text-2xl text-primary group-hover:text-primary transition-colors">
+                          {branch.name}
+                        </h4>
+                        <div className={cn(
+                          "w-2 h-2 rounded-full animate-pulse",
+                          branch.status === 'active' ? 'bg-green-500 shadow-[0_0_10px_#22c55e]' : 'bg-red-500'
+                        )}></div>
+                      </div>
+                      <p className="text-sm text-muted-foreground font-light leading-relaxed">
+                        {branch.address}, {branch.city}
                       </p>
-                      <p className="text-[9px] text-gray-600">
-                        Phone: {branch.phone}
-                      </p>
+                    </div>
+                    <div className="pt-8 border-t border-gray-100 space-y-3">
+                      <div className="flex items-center gap-3 text-[10px] font-black tracking-widest text-primary/60 uppercase">
+                        <Clock className="w-3.5 h-3.5" />
+                        {branch.openingTime} - {branch.closingTime}
+                      </div>
+                      <div className="flex items-center gap-3 text-[10px] font-black tracking-widest text-primary/60 uppercase">
+                        <Phone className="w-3.5 h-3.5" />
+                        {branch.phone}
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           )}
-
-          {branches.length > 0 && (
-            <div className="text-center mt-12">
-              <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-white px-10 py-8 rounded-2xl group shadow-2xl transition-all duration-500 hover:scale-105">
-                <Link href="/branches" className="flex items-center justify-center gap-3 font-black tracking-[0.2em] text-xs">
-                  EXPLORE ALL {branches.length} BRANCHES <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                </Link>
-              </Button>
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="py-32 px-4 bg-primary relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-secondary blur-[150px] animate-pulse"></div>
-          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary blur-[150px] animate-pulse"></div>
-        </div>
+      {/* Newsletter Section - Premium */}
+      <section className="py-40 px-4 bg-primary relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 blur-sm scale-110"></div>
+        <div className="absolute inset-0 bg-primary/90"></div>
         
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-block bg-secondary/20 px-4 py-1.5 rounded-full mb-8 border border-secondary/30">
-            <span className="text-secondary font-black tracking-[0.3em] uppercase text-[10px]">The Inner Circle</span>
+          <div className="inline-block bg-white/5 backdrop-blur-md px-6 py-2 rounded-full mb-10 border border-white/10">
+            <span className="text-secondary font-black tracking-[0.5em] uppercase text-[10px]">Lifestyle Newsletter</span>
           </div>
-          <h2 className="text-5xl md:text-7xl font-serif font-bold text-white mb-10 leading-tight">
-            Join The <span className="text-secondary italic">Elite</span>
+          <h2 className="text-5xl md:text-8xl font-serif font-bold text-white mb-10 leading-[0.9] tracking-tighter">
+            The <span className="text-secondary italic">Inner</span> Circle
           </h2>
-          <p className="text-xl text-gray-400 mb-16 font-light max-w-2xl mx-auto leading-relaxed">
-            Subscribe to receive exclusive invitations, grooming insights, and priority access to our most sought-after events.
+          <p className="text-xl text-white/50 mb-20 font-light max-w-2xl mx-auto leading-relaxed italic">
+            "Beauty is an experience, not just a service." Join 5,000+ members receiving curated aesthetics weekly.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-5 max-w-3xl mx-auto bg-white/5 p-3 rounded-[2.5rem] border border-white/10 backdrop-blur-xl shadow-2xl">
+          <div className="flex flex-col sm:flex-row gap-6 max-w-3xl mx-auto bg-white/5 p-4 rounded-[3.5rem] border border-white/10 backdrop-blur-2xl shadow-2xl ring-1 ring-white/10">
             <input 
-              placeholder="Your prestigious email address" 
-              className="h-16 bg-transparent text-white rounded-2xl px-8 focus:outline-none transition-all w-full font-light text-lg"
+              placeholder="Your email for the invitation" 
+              className="h-20 bg-transparent text-white rounded-full px-10 focus:outline-none transition-all w-full font-light text-xl placeholder:text-white/20"
             />
-            <Button size="lg" className="h-16 bg-secondary text-primary hover:bg-white hover:scale-105 transition-all font-black px-12 rounded-[1.8rem] shrink-0 tracking-[0.2em] text-xs">
-              SUBSCRIBE NOW
+            <Button size="lg" className="h-20 bg-secondary text-primary hover:bg-white hover:text-primary hover:scale-105 transition-all duration-500 font-black px-16 rounded-[2.5rem] shrink-0 tracking-[0.3em] text-[10px]">
+              SUBSCRIBE
             </Button>
           </div>
-          <p className="text-[10px] text-gray-500 mt-10 uppercase tracking-[0.3em] font-bold">
-            Privacy is our priority. Unsubscribe at any time.
-          </p>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="relative py-40 px-4 overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-fixed bg-center scale-110"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1512690196222-7c7d3f993c1b?q=80&w=2070&auto=format&fit=crop')" }}
-        >
-          <div className="absolute inset-0 bg-linear-to-b from-primary/95 via-primary/80 to-primary/95"></div>
+      {/* Final CTA Section */}
+      <section className="relative py-48 px-4 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=2074&auto=format&fit=crop" 
+            className="w-full h-full object-cover scale-110 opacity-30 blur-[2px]"
+            alt="Background"
+          />
+          <div className="absolute inset-0 bg-linear-to-b from-white via-white/80 to-white"></div>
         </div>
         
-        <div className="relative z-10 max-w-5xl mx-auto text-center text-white space-y-12">
-          <h2 className="text-6xl md:text-8xl font-serif font-bold leading-[1.1] tracking-tight">
-            Your Chair <br />
-            <span className="text-secondary italic">Awaits.</span>
-          </h2>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
-            Step into a world where time slows down and style takes center stage. Experience the pinnacle of luxury grooming today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-8 justify-center pt-8">
-            <Button size="lg" asChild className="bg-secondary hover:bg-white text-primary font-black px-14 py-10 text-sm rounded-2xl shadow-[0_20px_50px_rgba(197,160,89,0.3)] transition-all duration-500 hover:scale-110 tracking-[0.2em]">
-              <Link href="/services">BOOK APPOINTMENT</Link>
+        <div className="relative z-10 max-w-6xl mx-auto text-center space-y-16">
+          <div className="space-y-6">
+            <h2 className="text-6xl md:text-9xl font-serif font-bold text-primary leading-[0.85] tracking-tighter">
+              Redefine <br />
+              <span className="text-secondary italic">Your Style.</span>
+            </h2>
+            <p className="text-xl md:text-3xl text-primary/60 max-w-4xl mx-auto font-light leading-relaxed">
+              Step into the world of JAM. Where every visit is a transformation.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-10 justify-center items-center">
+            <Button size="lg" asChild className="bg-primary hover:bg-secondary text-white font-black px-16 py-12 text-xs rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(168,21,86,0.5)] transition-all duration-700 hover:scale-110 tracking-[0.4em] ring-offset-2 ring-primary/20 hover:ring-8">
+              <Link href="/services">BOOK NOW</Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="border-white/30 text-primary hover:bg-white hover:text-primary px-14 py-10 text-sm rounded-2xl backdrop-blur-md transition-all duration-500 hover:scale-110 tracking-[0.2em]">
-              <Link href="/login">JOIN THE CLUB</Link>
+            <Button size="lg" variant="outline" asChild className="border-primary/20 text-primary hover:bg-primary hover:text-white px-16 py-12 text-xs rounded-[2rem] backdrop-blur-md transition-all duration-700 hover:scale-110 tracking-[0.4em] bg-white/50">
+              <Link href="/login">BECOME A MEMBER</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#050505] text-white py-32 px-4 border-t border-white/5 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
+      {/* Footer - Premium Overhaul */}
+      <footer className="bg-primary text-white py-40 px-4 border-t border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none"></div>
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-20">
-            <div className="space-y-10">
-              <Link href="/" className="inline-block">
-                <h3 className="text-3xl font-serif font-bold tracking-tighter">
-                  PREMIUM<span className="text-secondary">CUTS</span>
-                </h3>
-              </Link>
-              <div className="space-y-4">
-                <p className="text-gray-500 text-base leading-relaxed font-light max-w-xs">
-                  The city's premier destination for luxury grooming and traditional barbering since 2015.
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-secondary" />
-                    <span className="text-[10px] text-gray-500 uppercase tracking-widest">
-                      {stats.totalServices} Services
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-secondary" />
-                    <span className="text-[10px] text-gray-500 uppercase tracking-widest">
-                      {stats.totalStaff} Masters
-                    </span>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
+            <div className="space-y-12">
+              <Link href="/" className="inline-block group">
+                <div className="flex items-center gap-3">
+                   <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-primary group-hover:rotate-12 transition-transform duration-500">
+                     <Sparkles className="w-6 h-6" />
+                   </div>
+                   <h3 className="text-3xl font-serif font-bold tracking-tighter group-hover:text-secondary transition-colors">
+                    JAM <span className="opacity-50">BEAUTY</span>
+                  </h3>
                 </div>
-              </div>
-              <div className="flex gap-6">
-                {[Instagram, Phone, Mail].map((Icon, i) => (
-                  <div key={i} className="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center hover:bg-secondary hover:text-primary transition-all duration-500 cursor-pointer group shadow-xl">
-                    <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  </div>
-                ))}
+              </Link>
+              <div className="space-y-6">
+                <p className="text-white/40 text-lg leading-relaxed font-light max-w-xs italic">
+                  "Defining the future of luxury beauty experiences through artistic expression and technical mastery."
+                </p>
+                <div className="flex items-center gap-6">
+                  {[Instagram, Phone, Mail].map((Icon, i) => (
+                    <div key={i} className="w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center hover:bg-secondary hover:text-primary transition-all duration-700 cursor-pointer group shadow-2xl">
+                      <Icon className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             
-            <div>
-              <h4 className="font-black mb-10 uppercase tracking-[0.3em] text-[10px] text-secondary">Navigation</h4>
-              <ul className="space-y-5 text-gray-400 text-sm font-medium">
+            <div className="space-y-12">
+              <h4 className="font-black uppercase tracking-[0.5em] text-[10px] text-secondary">The Menu</h4>
+              <ul className="space-y-6 text-white/50 text-sm font-light">
                 {[
-                  { label: 'Our Services', href: '/services' },
-                  { label: 'Shop Products', href: '/products' },
-                  { label: 'Book Appointment', href: '/booking' },
-                  { label: 'Our Staff', href: '/staff' },
-                  { label: 'Our Branches', href: '/branches' }
+                  { label: 'Signature Rituals', href: '/services' },
+                  { label: 'The Boutique', href: '/products' },
+                  { label: 'Secure Booking', href: '/booking' },
+                  { label: 'Our Artisans', href: '/staff' },
+                  { label: 'Flashship Stores', href: '/branches' }
                 ].map((item) => (
                   <li key={item.label}>
                     <Link href={item.href} className="hover:text-secondary transition-colors flex items-center group">
-                      <div className="w-0 group-hover:w-4 h-[1px] bg-secondary transition-all duration-300 mr-0 group-hover:mr-3"></div>
+                      <span className="w-0 group-hover:w-6 h-[1px] bg-secondary transition-all duration-500 mr-0 group-hover:mr-4"></span>
                       {item.label}
                     </Link>
                   </li>
@@ -1514,61 +1556,58 @@ export default function Home() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-black mb-10 uppercase tracking-[0.3em] text-[10px] text-secondary">Business Stats</h4>
-              <ul className="space-y-6 text-gray-400 text-sm font-medium">
-                {[
-                  { label: 'Total Services', value: stats.totalServices },
-                  { label: 'Total Products', value: stats.totalProducts },
-                  { label: 'Active Staff', value: stats.totalStaff },
-                  { label: 'Active Branches', value: stats.totalBranches },
-                  { label: 'Total Revenue', value: `$${Math.floor(totalRevenue/1000)}k` }
-                ].map((item) => (
-                  <li key={item.label} className="flex justify-between items-center border-b border-white/5 pb-3">
-                    <span className="font-light">{item.label}</span>
-                    <span className="text-white font-bold">{item.value}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="space-y-12">
+              <h4 className="font-black uppercase tracking-[0.5em] text-[10px] text-secondary">Global Reach</h4>
+              <div className="space-y-4">
+                 {[
+                   { label: 'Locations', count: stats.totalBranches },
+                   { label: 'Services', count: stats.totalServices },
+                   { label: 'Products', count: stats.totalProducts },
+                   { label: 'Artisans', count: stats.totalStaff }
+                 ].map(s => (
+                   <div key={s.label} className="flex items-end justify-between border-b border-white/5 pb-4">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white/30">{s.label}</span>
+                      <span className="font-serif italic text-2xl text-secondary">{s.count}</span>
+                   </div>
+                 ))}
+              </div>
             </div>
 
-            <div>
-              <h4 className="font-black mb-10 uppercase tracking-[0.3em] text-[10px] text-secondary">Headquarters</h4>
-              <ul className="space-y-8 text-gray-400 text-sm font-medium">
-                <li className="flex items-start gap-4 group">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-500">
-                    <MapPin className="w-5 h-5" />
+            <div className="space-y-12">
+              <h4 className="font-black uppercase tracking-[0.5em] text-[10px] text-secondary">Concierge</h4>
+              <ul className="space-y-10 text-white/50 text-sm font-light">
+                <li className="flex items-start gap-5 group">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-700 shadow-xl border border-white/5">
+                    <MapPin className="w-6 h-6" />
                   </div>
-                  <span className="font-light leading-relaxed">
-                    {branches[0]?.address || "123 Luxury Way, Suite 100"}<br />
-                    {branches[0]?.city || "Financial District"}, {branches[0]?.country || "NY 10004"}
+                  <span className="leading-relaxed text-xs">
+                    {branches[0]?.address || "123 Luxury Way"}<br />
+                    {branches[0]?.city || "Manhattan"}, {branches[0]?.country || "NY"}
                   </span>
                 </li>
-                <li className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-500">
-                    <Phone className="w-5 h-5" />
+                <li className="flex items-center gap-5 group">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-700 shadow-xl border border-white/5">
+                    <Mail className="w-6 h-6" />
                   </div>
-                  <span className="font-light">{branches[0]?.phone || "+1 (555) 000-1234"}</span>
-                </li>
-                <li className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-500">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <span className="font-light">{branches[0]?.email || "concierge@premiumcuts.com"}</span>
+                  <span className="text-xs">hello@jambeautylounge.com</span>
                 </li>
               </ul>
             </div>
           </div>
           
-          <div className="mt-32 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-gray-600 text-[9px] tracking-[0.4em] font-black uppercase">
-            <p>&copy; 2026 PREMIUM CUTS LUXURY GROOMING. ALL RIGHTS RESERVED.</p>
-            <div className="flex gap-12">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+          <div className="mt-40 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-10 text-white/20 text-[9px] tracking-[0.5em] font-black uppercase">
+            <p>&copy; 2026 JAM BEAUTY LOUNGE. ALL RIGHTS RESERVED.</p>
+            <div className="flex gap-16">
+              <a href="#" className="hover:text-white transition-colors">Privacy</a>
+              <a href="#" className="hover:text-white transition-colors">Terms</a>
+              <a href="#" className="hover:text-white transition-colors">Accessibility</a>
             </div>
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
     </div>
   );
 }

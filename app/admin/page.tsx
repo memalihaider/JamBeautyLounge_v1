@@ -769,26 +769,6 @@ export default function SuperAdminDashboard() {
                     Real-time statistics and performance metrics
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Button
-                    variant="outline"
-                    className="border-gray-200 hover:border-primary/30 rounded-xl"
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Export Report
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-gray-200 hover:border-primary/30 rounded-xl"
-                  >
-                    <Filter className="h-4 w-4 mr-2" />
-                    Filter
-                  </Button>
-                  <Button className="bg-linear-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add New
-                  </Button>
-                </div>
               </div>
 
               {/* Main Stats Cards */}

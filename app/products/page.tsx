@@ -423,53 +423,39 @@ export default function ProductsPage() {
       )}
 
       {/* Premium Hero Section */}
-      <section className="relative py-32 px-4 overflow-hidden bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a]">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-secondary blur-[120px] animate-pulse"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary blur-[120px] animate-pulse"></div>
+      <section className="relative py-48 px-4 overflow-hidden bg-primary">
+        <div className="absolute inset-0">
+          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/20 blur-[150px] animate-pulse"></div>
+          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/20 blur-[150px] animate-pulse"></div>
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05]"></div>
         </div>
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full mb-6 border border-secondary/30">
+          <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-2 rounded-full mb-10 border border-white/10">
             <Package className="w-4 h-4 text-secondary" />
-            <span className="text-secondary font-black tracking-[0.3em] uppercase text-[10px]">The Apothecary</span>
+            <span className="text-secondary font-black tracking-[0.5em] uppercase text-[10px]">The Boutique</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
-            Grooming <span className="text-secondary italic">Collection</span>
+          <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-10 leading-[0.85] tracking-tighter">
+            Couture <br /><span className="text-secondary italic">Skincare</span>
           </h1>
-          <p className="text-gray-300 max-w-2xl mx-auto text-lg font-light leading-relaxed mb-8">
-            Professional-grade essentials for the modern gentleman. 
+          <p className="text-white/40 max-w-2xl mx-auto text-xl font-light leading-relaxed italic mb-12">
+            "Beauty is science, curated for your skin."
           </p>
           
           {/* Stats */}
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-6 py-3">
-              <div className="flex items-center gap-3">
-                <Box className="w-5 h-5 text-secondary" />
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">Total Products</p>
-                  <p className="text-2xl font-bold text-white">{totalProducts}</p>
-                </div>
-              </div>
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl px-10 py-6 min-w-[200px]">
+              <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] mb-2 font-black">Collection Size</p>
+              <p className="text-4xl font-serif font-bold text-white">{totalProducts}</p>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-6 py-3">
-              <div className="flex items-center gap-3">
-                <DollarSign className="w-5 h-5 text-secondary" />
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">Inventory Value</p>
-                  <p className="text-2xl font-bold text-white">${totalValue.toLocaleString()}</p>
-                </div>
-              </div>
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl px-10 py-6 min-w-[200px]">
+              <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] mb-2 font-black">Global Demand</p>
+              <p className="text-4xl font-serif font-bold text-white">{totalSold.toLocaleString()}</p>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-6 py-3">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="w-5 h-5 text-secondary" />
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">Total Sold</p>
-                  <p className="text-2xl font-bold text-white">{totalSold.toLocaleString()}</p>
-                </div>
-              </div>
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl px-10 py-6 min-w-[200px]">
+              <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] mb-2 font-black">Premium Brands</p>
+              <p className="text-4xl font-serif font-bold text-white">JAM ELITE</p>
             </div>
           </div>
         </div>

@@ -25,29 +25,29 @@ export default function LandingPageCMS() {
 
   // Mock data for CMS content
   const heroSection = {
-    title: "Man of Cave",
-    subtitle: "Experience luxury grooming at our 8 locations across the city",
-    ctaPrimary: "Book Now",
-    ctaSecondary: "Find Location",
+    title: "JAM Beauty Lounge",
+    subtitle: "Experience signature rituals any time, anywhere",
+    ctaPrimary: "Download Now",
+    ctaSecondary: "Learn More",
     backgroundImage: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070&auto=format&fit=crop",
   };
 
   const testimonials = [
-    { id: 1, name: "John D.", rating: 5, text: "Best barber in town! Always perfect cuts.", status: "published" },
-    { id: 2, name: "Mike R.", rating: 5, text: "Professional service and great atmosphere.", status: "published" },
-    { id: 3, name: "Alex T.", rating: 5, text: "Worth every penny. Highly recommend!", status: "draft" },
+    { id: 1, name: "Sophie L.", rating: 5, text: "The app is so convenient for booking my rituals.", status: "published" },
+    { id: 2, name: "Maria R.", rating: 5, text: "Love the loyalty points tracking!", status: "published" },
+    { id: 3, name: "Chloe T.", rating: 5, text: "Seamless experience from start to finish.", status: "draft" },
   ];
 
   const services = [
-    { id: 1, name: "Haircut & Styling", price: "From $35", description: "Professional cuts with modern techniques", status: "published" },
-    { id: 2, name: "Beard Grooming", price: "From $25", description: "Precision beard trimming and styling", status: "published" },
-    { id: 3, name: "Premium Packages", price: "From $65", description: "Complete grooming experience", status: "published" },
+    { id: 1, name: "Mobile Booking", price: "Free", description: "Instantly secure your artisan chair", status: "published" },
+    { id: 2, name: "Loyalty Hub", price: "Free", description: "Track points and exclusive rewards", status: "published" },
+    { id: 3, name: "Premium Shop", price: "Varies", description: "Purchase couture skincare on the go", status: "published" },
   ];
 
   const seoSettings = {
-    metaTitle: "Man of Cave - Luxury Grooming | Book Online",
-    metaDescription: "Experience luxury grooming services at Man of Cave. Professional barbers, luxury atmosphere, 8 locations across the city.",
-    keywords: "barber, haircuts, beard grooming, luxury salon, man of cave",
+    metaTitle: "JAM Beauty - Luxury Mobile Experience",
+    metaDescription: "The official premium mobile application for JAM Beauty Lounge rituals.",
+    keywords: "beauty app, booking, luxury salon, jam beauty lounge",
   };
 
   return (
@@ -75,7 +75,7 @@ export default function LandingPageCMS() {
                 />
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">Mobile App Management</h1>
-                  <p className="text-sm text-gray-600">Man of Cave Mobile App Console</p>
+                  <p className="text-sm text-gray-600">JAM Beauty Mobile App Console</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -92,7 +92,7 @@ export default function LandingPageCMS() {
           <main className="flex-1 overflow-y-auto p-4 lg:p-8">
             <div className="max-w-7xl mx-auto">
               <h2>Mobile App Management</h2>
-              <p className="text-gray-600 mt-2">Man of Cave Mobile App Console</p>
+              <p className="text-gray-600 mt-2">JAM Beauty Mobile App Console</p>
             </div>
           </main>
         </div>

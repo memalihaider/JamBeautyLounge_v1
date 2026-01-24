@@ -31,11 +31,11 @@ export default function AdminSettings() {
 
   const [settings, setSettings] = useState({
     // Business Settings
-    businessName: "Man of Cave Downtown",
-    businessEmail: "downtown@manofcave.com",
+    businessName: "JAM Beauty lounge",
+    businessEmail: "info@jambeautylounge.com",
     businessPhone: "(555) 123-4567",
-    businessAddress: "123 Main Street, Downtown, NY 10001",
-    businessDescription: "Man of Cave offering traditional and modern grooming with expert stylists.",
+    businessAddress: "123 Beauty Ave, Downtown, NY 10001",
+    businessDescription: "JAM Beauty Lounge offering premium beauty treatments with expert specialists.",
     timezone: "America/New_York",
 
     // Operating Hours

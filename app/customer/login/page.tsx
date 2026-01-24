@@ -187,10 +187,10 @@ export default function CustomerLogin() {
               <span className="text-secondary font-black tracking-[0.2em] uppercase text-[10px]">Customer Portal</span>
             </div>
             <h1 className="text-4xl font-serif font-bold text-primary mb-4">
-              Welcome to <span className="text-secondary">Man of Cave</span>
+              Welcome to <span className="text-secondary">JAM Beauty Lounge</span>
             </h1>
             <p className="text-muted-foreground font-light">
-              Sign in to manage your bookings, orders, and profile
+              Sign in to manage your beauty bookings and profile
             </p>
           </div>
 
@@ -291,7 +291,7 @@ export default function CustomerLogin() {
               <TabsContent value="register" className="p-0">
                 <CardHeader className="pb-4 pt-8 px-8">
                   <CardTitle className="text-xl font-serif">Create Account</CardTitle>
-                  <CardDescription>Join Man of Cave and start your journey</CardDescription>
+                  <CardDescription>Join JAM Beauty Lounge and start your journey</CardDescription>
                 </CardHeader>
                 <CardContent className="px-8 pb-8">
                   <form onSubmit={handleRegister} className="space-y-4">

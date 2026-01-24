@@ -40,7 +40,7 @@ export function ModernTemplate({ invoice, branch }: InvoiceTemplateProps) {
       {/* Header */}
       <div className="flex justify-between items-start mb-12 border-b-2 border-primary pb-8">
         <div>
-          <h1 className="text-4xl font-bold text-primary mb-2">MAN OF CAVE</h1>
+          <h1 className="text-4xl font-bold text-primary mb-2">JAM BEAUTY LOUNGE</h1>
           <p className="text-gray-600">{branch.name}</p>
         </div>
         <div className="text-right">
@@ -162,7 +162,7 @@ export function ClassicTemplate({ invoice, branch }: InvoiceTemplateProps) {
     <div className="bg-white p-12 max-w-4xl mx-auto font-serif">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-primary mb-2">MAN OF CAVE</h1>
+        <h1 className="text-5xl font-bold text-primary mb-2">JAM BEAUTY LOUNGE</h1>
         <p className="text-xl text-secondary font-semibold">{branch.name}</p>
         <p className="text-gray-600 mt-4">{branch.address} | {branch.phone} | {branch.email}</p>
       </div>
@@ -245,7 +245,7 @@ export function ClassicTemplate({ invoice, branch }: InvoiceTemplateProps) {
         <p className="font-semibold mb-2">{branch.name}</p>
         <p>{branch.address}</p>
         <p className="mt-2">Phone: {branch.phone} | Email: {branch.email}</p>
-        <p className="mt-4 italic">Thank you for choosing Man of Cave</p>
+        <p className="mt-4 italic">Thank you for choosing JAM Beauty Lounge</p>
       </div>
     </div>
   );
@@ -262,7 +262,7 @@ export function MinimalistTemplate({ invoice, branch }: InvoiceTemplateProps) {
     <div className="bg-white p-8 max-w-4xl mx-auto font-sans">
       {/* Header */}
       <div className="mb-12">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">MAN OF CAVE</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">JAM BEAUTY LOUNGE</h1>
         <p className="text-gray-500">{branch.name}</p>
         <p className="text-xs text-gray-400 mt-4">{branch.address} · {branch.city} · {branch.phone}</p>
       </div>
@@ -345,7 +345,7 @@ export function MinimalistTemplate({ invoice, branch }: InvoiceTemplateProps) {
 
       {/* Footer */}
       <div className="text-center text-xs text-gray-400 border-t border-gray-200 pt-8 mt-8">
-        <p>www.manofcave.com</p>
+        <p>www.jambeautylounge.com</p>
       </div>
     </div>
   );
@@ -364,7 +364,7 @@ export function PremiumTemplate({ invoice, branch }: InvoiceTemplateProps) {
       <div className="bg-gradient-to-r from-primary to-secondary/80 text-white p-12">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div>
-            <h1 className="text-4xl font-bold mb-2">MAN OF CAVE</h1>
+            <h1 className="text-4xl font-bold mb-2">JAM BEAUTY LOUNGE</h1>
             <p className="text-white/90">{branch.name}</p>
           </div>
           <div className="text-right">
@@ -478,7 +478,7 @@ export function PremiumTemplate({ invoice, branch }: InvoiceTemplateProps) {
 
         {/* Footer */}
         <div className="border-t-2 border-primary pt-8 text-center">
-          <p className="text-gray-600 text-sm mb-4">Thank you for your business with Man of Cave</p>
+          <p className="text-gray-600 text-sm mb-4">Thank you for your business with JAM Beauty Lounge</p>
           <p className="text-gray-500 text-xs">{branch.website} · {branch.phone} · {branch.email}</p>
         </div>
       </div>

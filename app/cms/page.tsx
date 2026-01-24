@@ -25,29 +25,29 @@ export default function LandingPageCMS() {
 
   // Mock data for CMS content
   const heroSection = {
-    title: "Man of Cave",
-    subtitle: "Experience luxury grooming at our 8 locations across the city",
+    title: "JAM Beauty Lounge",
+    subtitle: "Experience signature rituals at our premium flagships",
     ctaPrimary: "Book Now",
     ctaSecondary: "Find Location",
     backgroundImage: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070&auto=format&fit=crop",
   };
 
   const testimonials = [
-    { id: 1, name: "John D.", rating: 5, text: "Best barber in town! Always perfect cuts.", status: "published" },
-    { id: 2, name: "Mike R.", rating: 5, text: "Professional service and great atmosphere.", status: "published" },
-    { id: 3, name: "Alex T.", rating: 5, text: "Worth every penny. Highly recommend!", status: "draft" },
+    { id: 1, name: "Sophie L.", rating: 5, text: "The best aesthetic lounge I've ever visited.", status: "published" },
+    { id: 2, name: "Maria R.", rating: 5, text: "Absolute magic. My skin has never looked better.", status: "published" },
+    { id: 3, name: "Chloe T.", rating: 5, text: "A truly premium experience. Highly recommend!", status: "draft" },
   ];
 
   const services = [
-    { id: 1, name: "Haircut & Styling", price: "From $35", description: "Professional cuts with modern techniques", status: "published" },
-    { id: 2, name: "Beard Grooming", price: "From $25", description: "Precision beard trimming and styling", status: "published" },
-    { id: 3, name: "Premium Packages", price: "From $65", description: "Complete grooming experience", status: "published" },
+    { id: 1, name: "Signature Hair Ritual", price: "From $85", description: "Artistic styling and transformation", status: "published" },
+    { id: 2, name: "Glow Facial Therapy", price: "From $120", description: "Scientific skincare for lasting radiance", status: "published" },
+    { id: 3, name: "Elite Bridal Package", price: "From $450", description: "Complete beauty journey for your day", status: "published" },
   ];
 
   const seoSettings = {
-    metaTitle: "Man of Cave - Luxury Grooming | Book Online",
-    metaDescription: "Experience luxury grooming services at Man of Cave. Professional barbers, luxury atmosphere, 8 locations across the city.",
-    keywords: "barber, haircuts, beard grooming, luxury salon, man of cave",
+    metaTitle: "JAM Beauty Lounge - Signature Beauty | Book Online",
+    metaDescription: "Experience signature beauty rituals at JAM Beauty Lounge. Professional artisans, premium atmosphere, luxury flagships.",
+    keywords: "beauty, hair, skincare, luxury salon, jam beauty lounge",
   };
 
   return (

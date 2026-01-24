@@ -21,8 +21,8 @@ const inconsolata = Inconsolata({
 });
 
 export const metadata: Metadata = {
-  title: "Man of Cave Management System",
-  description: "Man of Cave booking and management system",
+  title: "JAM Beauty Lounge Management System",
+  description: "JAM Beauty Lounge booking and management system",
 };
 
 export default function RootLayout({
