@@ -33,10 +33,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${inconsolata.variable} ${playfairDisplay.variable} antialiased font-sans`}
+        className={`${poppins.variable} ${inconsolata.variable} ${playfairDisplay.variable} antialiased font-sans transition-all duration-300`}
       >
         <Providers>
-          {children}
+          <div className="page-transition">
+            {children}
+          </div>
         </Providers>
       </body>
     </html>

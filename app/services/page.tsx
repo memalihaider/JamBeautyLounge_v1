@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Scissors, Star, Clock, Search, Filter, Check, ShoppingCart, ChevronRight, Sparkles, Plus, X, Loader2, Calendar, Users, MapPin, Award, Info, DollarSign, TrendingUp, Package, Shield, MessageCircle, Phone, Mail, Navigation, Share2 } from 'lucide-react';
+import { Scissors, Star, Clock, Search, Filter, Check, ShoppingCart, ChevronRight, Sparkles, Plus, X, Calendar, Users, MapPin, Award, Info, DollarSign, TrendingUp, Package, Shield, MessageCircle, Phone, Mail, Navigation, Share2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { create } from 'zustand';
 import { 
@@ -575,16 +575,6 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-[#fcfcfc]">
       <Header />
 
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-            <p className="text-lg font-semibold text-primary">Loading services...</p>
-          </div>
-        </div>
-      )}
-
       {/* Premium Hero Section */}
       <section className="relative py-48 px-4 overflow-hidden bg-primary">
         <div className="absolute inset-0">
@@ -1055,7 +1045,7 @@ export default function ServicesPage() {
                       >
                         {isAddingToCart === service.id ? (
                           <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" /> 
+                            <div className="w-4 h-4 mr-2 border-2 border-white/30 border-t-white rounded-full animate-spin" /> 
                             ADDING...
                           </>
                         ) : addedService === service.id ? (
@@ -1160,8 +1150,8 @@ export default function ServicesPage() {
       <Sheet open={isServiceSidebarOpen} onOpenChange={setIsServiceSidebarOpen}>
         <SheetContent className="w-full sm:max-w-2xl lg:max-w-3xl overflow-y-auto p-5 rounded-3xl h-[750px] m-auto">
           {isLoadingService ? (
-            <div className="flex items-center justify-center h-full">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <div className="flex items-center justify-center h-full fade-in">
+              <div className="w-8 h-8 border-3 border-primary/20 border-t-primary rounded-full animate-spin" />
             </div>
           ) : selectedService ? (
             <>

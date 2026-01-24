@@ -128,19 +128,11 @@ export default function ProtectedRoute({ children, requiredRole }: ProtectedRout
     setAccessDenied(false);
   }, [user, isLoading, router, requiredRole, pathname]);
 
-  // Show loading state
+  // Show subtle loading state instead of blocking
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-secondary flex items-center justify-center">
-        <Card className="w-96">
-          <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-              <Scissors className="w-8 h-8 text-primary" />
-            </div>
-            <h2 className="text-xl font-serif text-primary mb-2">Verifying Access...</h2>
-            <p className="text-gray-600">Checking your permissions</p>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-secondary/5 fade-in">
+        {/* Empty state - page will load in background */}
       </div>
     );
   }

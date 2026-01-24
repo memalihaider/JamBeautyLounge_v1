@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Search, Star, ShoppingCart, Filter, Package, Check, Sparkles, ChevronRight, Loader2, TrendingUp, Box, DollarSign, RefreshCw } from 'lucide-react';
+import { Search, Star, ShoppingCart, Filter, Package, Check, Sparkles, ChevronRight, TrendingUp, Box, DollarSign, RefreshCw } from 'lucide-react';
 import { create } from 'zustand';
 import { 
   collection, 
@@ -412,15 +412,6 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-[#fcfcfc]">
       <Header />
 
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-            <p className="text-lg font-semibold text-primary">Loading products...</p>
-          </div>
-        </div>
-      )}
 
       {/* Premium Hero Section */}
       <section className="relative py-48 px-4 overflow-hidden bg-primary">
@@ -805,7 +796,7 @@ export default function ProductsPage() {
                     >
                       {isAddingToCart === product.id ? (
                         <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" /> 
+                          <div className="w-4 h-4 mr-2 border-2 border-white/30 border-t-white rounded-full animate-spin" /> 
                           ADDING...
                         </>
                       ) : addedProduct === product.id ? (

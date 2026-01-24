@@ -4,7 +4,7 @@ import { Sparkles } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-primary/10 z-50 shadow-sm">
+    <header className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-primary/10 z-50 shadow-sm fade-in">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 bg-primary flex items-center justify-center rounded-lg transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 shadow-md">
