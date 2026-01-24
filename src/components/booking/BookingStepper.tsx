@@ -80,7 +80,7 @@ export function BookingStepper({ selectedServiceId }: { selectedServiceId?: stri
           <div key={step.id} className="flex flex-col items-center">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
               currentStep >= step.id
-                ? "bg-secondary text-primary"
+                ? "bg-secondary text-white"
                 : "bg-gray-200 text-gray-400"
             }`}>
               <step.icon className="w-6 h-6" />
@@ -145,7 +145,7 @@ export function BookingStepper({ selectedServiceId }: { selectedServiceId?: stri
                 >
                   <CardHeader>
                     <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-3">
-                      <User className="w-8 h-8 text-primary" />
+                      <User className="w-8 h-8 text-white" />
                     </div>
                     <CardTitle className="text-lg">{barber.name}</CardTitle>
                     <CardDescription>⭐ {barber.rating} • {barber.specialties.join(", ")}</CardDescription>
@@ -178,7 +178,7 @@ export function BookingStepper({ selectedServiceId }: { selectedServiceId?: stri
                       variant={bookingData.time === time ? "default" : "outline"}
                       size="sm"
                       onClick={() => updateBookingData("time", time)}
-                      className={bookingData.time === time ? "bg-secondary text-primary" : ""}
+                      className={bookingData.time === time ? "bg-secondary text-white" : ""}
                     >
                       {time}
                     </Button>

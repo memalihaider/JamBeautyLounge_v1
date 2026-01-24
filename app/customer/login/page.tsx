@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Header } from '@/components/shared/Header';
-import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Sparkles, Loader2, Check } from 'lucide-react';
 
 // Firebase imports
 import { db, auth } from '@/lib/firebase';
@@ -175,221 +175,237 @@ export default function CustomerLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc]">
+    <div className="min-h-screen bg-[#fcfcfc] relative overflow-hidden">
+      {/* Premium Background Elements */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary/10 blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-secondary/10 blur-[120px] animate-pulse"></div>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]"></div>
+      </div>
+
       <Header />
       
-      <div className="pt-32 pb-16 px-4">
+      <div className="relative z-10 pt-32 pb-16 px-4">
         <div className="max-w-md mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 bg-secondary/10 px-4 py-2 rounded-full mb-6">
+            <div className="inline-flex items-center gap-2 bg-secondary/10 px-4 py-2 rounded-full mb-6 border border-secondary/20 shadow-sm">
               <Sparkles className="w-4 h-4 text-secondary" />
-              <span className="text-secondary font-black tracking-[0.2em] uppercase text-[10px]">Customer Portal</span>
+              <span className="text-secondary font-black tracking-[0.2em] uppercase text-[10px]">The Sanctuary Portal</span>
             </div>
-            <h1 className="text-4xl font-serif font-bold text-primary mb-4">
-              Welcome to <span className="text-secondary">JAM Beauty Lounge</span>
+            <h1 className="text-5xl font-serif font-bold text-primary mb-4 tracking-tight">
+              Welcome to <br /><span className="text-secondary italic">JAM Beauty Lounge</span>
             </h1>
-            <p className="text-muted-foreground font-light">
-              Sign in to manage your beauty bookings and profile
+            <p className="text-muted-foreground font-light text-lg">
+              Sign in to manage your rituals and profile
             </p>
           </div>
 
-          <Card className="border-none shadow-2xl rounded-3xl overflow-hidden">
+          <Card className="border border-secondary/10 shadow-[0_40px_100px_rgba(0,0,0,0.08)] rounded-[2.5rem] overflow-hidden bg-white/80 backdrop-blur-xl">
             <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-none">
-                <TabsTrigger value="login" className="rounded-xl font-bold text-xs tracking-widest uppercase">Sign In</TabsTrigger>
-                <TabsTrigger value="register" className="rounded-xl font-bold text-xs tracking-widest uppercase">Register</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-gray-50/50 p-2 rounded-none border-b border-gray-100">
+                <TabsTrigger value="login" className="rounded-2xl font-black text-[10px] tracking-[0.2em] uppercase py-3 data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-500">Sign In</TabsTrigger>
+                <TabsTrigger value="register" className="rounded-2xl font-black text-[10px] tracking-[0.2em] uppercase py-3 data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-500">Join Us</TabsTrigger>
               </TabsList>
               
               {/* Login Tab */}
               <TabsContent value="login" className="p-0">
-                <CardHeader className="pb-4 pt-8 px-8">
-                  <CardTitle className="text-xl font-serif">Sign In</CardTitle>
-                  <CardDescription>Enter your credentials to access your account</CardDescription>
+                <CardHeader className="pb-4 pt-10 px-10">
+                  <CardTitle className="text-2xl font-serif font-bold text-primary">Resume Your Journey</CardTitle>
+                  <CardDescription className="text-gray-400">Enter your credentials to access your sanctuary account</CardDescription>
                 </CardHeader>
-                <CardContent className="px-8 pb-8">
-                  <form onSubmit={handleLogin} className="space-y-5">
+                <CardContent className="px-10 pb-10">
+                  <form onSubmit={handleLogin} className="space-y-6">
                     {error && (
-                      <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
+                      <div className="bg-red-50 border border-red-100 text-red-600 px-5 py-4 rounded-2xl text-[13px] font-medium flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
                         {error}
                       </div>
                     )}
                     
                     {success && (
-                      <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-xl text-sm">
+                      <div className="bg-green-50 border border-green-100 text-green-600 px-5 py-4 rounded-2xl text-[13px] font-medium flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
                         {success}
                       </div>
                     )}
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest">Email Address</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <div className="space-y-2.5">
+                      <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 ml-1">Email Address</Label>
+                      <div className="relative group">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-secondary transition-colors" />
                         <Input
                           id="email"
                           type="email"
-                          placeholder="you@example.com"
+                          placeholder="you@sanctuary.com"
                           value={loginData.email}
                           onChange={(e) => setLoginData({...loginData, email: e.target.value})}
-                          className="pl-11 h-12 rounded-xl border-gray-200"
+                          className="pl-11 h-14 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-secondary/20 transition-all text-sm"
                           required
                         />
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="password" className="text-xs font-bold uppercase tracking-widest">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <div className="space-y-2.5">
+                      <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 ml-1">Secure Password</Label>
+                      <div className="relative group">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-secondary transition-colors" />
                         <Input
                           id="password"
                           type={showPassword ? 'text' : 'password'}
-                          placeholder="Enter your password"
+                          placeholder="••••••••"
                           value={loginData.password}
                           onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                          className="pl-11 pr-11 h-12 rounded-xl border-gray-200"
+                          className="pl-11 pr-11 h-14 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-secondary/20 transition-all text-sm"
                           required
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-primary transition-colors"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-sm">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" className="rounded border-gray-300" />
-                        <span className="text-muted-foreground">Remember me</span>
+                    <div className="flex items-center justify-between px-1">
+                      <label className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center">
+                          <input type="checkbox" className="peer appearance-none w-5 h-5 rounded-lg border-2 border-gray-200 checked:bg-secondary checked:border-secondary transition-all" />
+                          <Check className="absolute w-3 h-3 text-primary opacity-0 peer-checked:opacity-100 left-1 transition-opacity" />
+                        </div>
+                        <span className="text-xs text-gray-400 font-medium group-hover:text-primary transition-colors">Remember my ritual</span>
                       </label>
-                      <a href="#" className="text-secondary hover:underline font-medium">Forgot password?</a>
+                      <a href="#" className="text-xs text-secondary hover:text-primary font-bold tracking-tight transition-colors underline-offset-4 hover:underline">Forgot password?</a>
                     </div>
 
                     <Button 
                       type="submit" 
-                      className="w-full h-14 bg-primary hover:bg-secondary hover:text-primary font-black tracking-[0.2em] text-xs rounded-xl transition-all duration-300"
+                      className="w-full h-16 bg-primary hover:bg-secondary text-white hover:text-primary font-black tracking-[0.3em] text-[10px] rounded-2xl transition-all duration-500 shadow-xl shadow-primary/10 hover:shadow-secondary/20 uppercase"
                       disabled={isLoading}
                     >
-                      {isLoading ? 'SIGNING IN...' : 'SIGN IN'}
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          Entering...
+                        </>
+                      ) : (
+                        <>
+                          ENTER THE LOUNGE
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </>
+                      )}
                     </Button>
                   </form>
-
-                  {/* Demo Credentials */}
-                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                    <p className="text-xs font-bold text-blue-800 mb-2">Demo Credentials:</p>
-                    <p className="text-xs text-blue-700">Email: customer@manofcave.com</p>
-                    <p className="text-xs text-blue-700">Password: customer123</p>
-                  </div>
                 </CardContent>
               </TabsContent>
               
               {/* Register Tab */}
               <TabsContent value="register" className="p-0">
-                <CardHeader className="pb-4 pt-8 px-8">
-                  <CardTitle className="text-xl font-serif">Create Account</CardTitle>
-                  <CardDescription>Join JAM Beauty Lounge and start your journey</CardDescription>
+                <CardHeader className="pb-4 pt-10 px-10">
+                  <CardTitle className="text-2xl font-serif font-bold text-primary">Begin Your Journey</CardTitle>
+                  <CardDescription className="text-gray-400">Join the JAM elite and unlock a world of bespoke beauty</CardDescription>
                 </CardHeader>
-                <CardContent className="px-8 pb-8">
-                  <form onSubmit={handleRegister} className="space-y-4">
+                <CardContent className="px-10 pb-10">
+                  <form onSubmit={handleRegister} className="space-y-5">
                     {/* Success Message */}
                     {success && (
-                      <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-xl text-sm">
+                      <div className="bg-green-50 border border-green-100 text-green-600 px-5 py-4 rounded-2xl text-[13px] font-medium flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
                         {success}
                       </div>
                     )}
                     
                     {/* Error Message */}
                     {error && (
-                      <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
+                      <div className="bg-red-50 border border-red-100 text-red-600 px-5 py-4 rounded-2xl text-[13px] font-medium flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
                         {error}
                       </div>
                     )}
                     
                     <div className="space-y-2">
-                      <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest">Full Name</Label>
-                      <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 ml-1">Full Name</Label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-secondary transition-colors" />
                         <Input
                           id="name"
                           type="text"
-                          placeholder="John Doe"
+                          placeholder="Your Name"
                           value={registerData.name}
                           onChange={(e) => setRegisterData({...registerData, name: e.target.value})}
-                          className="pl-11 h-12 rounded-xl border-gray-200"
+                          className="pl-11 h-14 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white transition-all text-sm"
                           required
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="reg-email" className="text-xs font-bold uppercase tracking-widest">Email Address</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Label htmlFor="reg-email" className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 ml-1">Email Address</Label>
+                      <div className="relative group">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-secondary transition-colors" />
                         <Input
                           id="reg-email"
                           type="email"
                           placeholder="you@example.com"
                           value={registerData.email}
                           onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
-                          className="pl-11 h-12 rounded-xl border-gray-200"
+                          className="pl-11 h-14 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white transition-all text-sm"
                           required
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-widest">Phone Number</Label>
-                      <div className="relative">
-                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 ml-1">Phone Number</Label>
+                      <div className="relative group">
+                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-secondary transition-colors" />
                         <Input
                           id="phone"
                           type="tel"
-                          placeholder="(555) 123-4567"
+                          placeholder="Contact Number"
                           value={registerData.phone}
                           onChange={(e) => setRegisterData({...registerData, phone: e.target.value})}
-                          className="pl-11 h-12 rounded-xl border-gray-200"
+                          className="pl-11 h-14 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white transition-all text-sm"
                           required
                         />
                       </div>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="reg-password" className="text-xs font-bold uppercase tracking-widest">Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Label htmlFor="reg-password" className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 ml-1">Choose Password</Label>
+                      <div className="relative group">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-secondary transition-colors" />
                         <Input
                           id="reg-password"
                           type={showPassword ? 'text' : 'password'}
-                          placeholder="Create a password (min 6 characters)"
+                          placeholder="Min 6 characters"
                           value={registerData.password}
                           onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
-                          className="pl-11 h-12 rounded-xl border-gray-200"
+                          className="pl-11 h-14 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white transition-all text-sm"
                           required
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="confirm-password" className="text-xs font-bold uppercase tracking-widest">Confirm Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Label htmlFor="confirm-password" className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 ml-1">Confirm Password</Label>
+                      <div className="relative group">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-secondary transition-colors" />
                         <Input
                           id="confirm-password"
                           type={showPassword ? 'text' : 'password'}
-                          placeholder="Confirm your password"
+                          placeholder="Re-enter password"
                           value={registerData.confirmPassword}
                           onChange={(e) => setRegisterData({...registerData, confirmPassword: e.target.value})}
-                          className="pl-11 h-12 rounded-xl border-gray-200"
+                          className="pl-11 pr-11 h-14 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white transition-all text-sm"
                           required
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-primary transition-colors"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -398,41 +414,32 @@ export default function CustomerLogin() {
 
                     <Button 
                       type="submit" 
-                      className="w-full h-14 bg-secondary hover:bg-primary text-primary hover:text-white font-black tracking-[0.2em] text-xs rounded-xl transition-all duration-300"
+                      className="w-full h-16 bg-secondary hover:bg-primary text-primary hover:text-white font-black tracking-[0.3em] text-[10px] rounded-2xl transition-all duration-500 shadow-xl shadow-secondary/10 hover:shadow-primary/20 uppercase"
                       disabled={isLoading}
                     >
-                      {isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          Creating Account...
+                        </>
+                      ) : (
+                        <>
+                          Create My Sanctuary Account
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </>
+                      )}
                     </Button>
                   </form>
-                  
-                  {/* Firebase Info Note */}
-                  <div className="mt-6 p-3 bg-gray-50 border border-gray-200 rounded-xl">
-                    <p className="text-xs text-gray-600">
-                      <strong>Note:</strong> Your account data will be securely stored in Firebase database.
-                    </p>
-                  </div>
                 </CardContent>
               </TabsContent>
             </Tabs>
           </Card>
 
-          {/* Admin Login Link */}
-          <div className="text-center mt-8 flex flex-col gap-4">
-            <div className="flex items-center justify-center gap-2">
-              <div className="h-px bg-gray-300 flex-1"></div>
-              <span className="text-xs text-muted-foreground">OR</span>
-              <div className="h-px bg-gray-300 flex-1"></div>
-            </div>
-            <Link 
-              href="/login" 
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-colors text-sm font-medium text-primary"
-            >
-              <Lock className="w-4 h-4" />
-              Admin Login
-            </Link>
-            <Link href="/" className="text-muted-foreground hover:text-primary text-sm font-medium">
-              ← Back to Home
+          {/* Back Link */}
+          <div className="text-center mt-12 pb-10">
+            <Link href="/" className="text-gray-400 hover:text-secondary text-xs font-black tracking-[0.3em] uppercase transition-all flex items-center justify-center gap-3 group">
+              <span className="group-hover:-translate-x-2 transition-transform duration-500">←</span>
+              Back to the Menu
             </Link>
           </div>
         </div>

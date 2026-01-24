@@ -586,6 +586,11 @@ const superAdminNavItems = [
     icon: Users,
   },
   {
+    title: 'Users Roles',
+    href: '/super-admin/users-roles',
+    icon: Settings,
+  },
+  {
     title: 'Custom Invoice Generator',
     href: '/super-admin/custom-invoice',
     icon: FileText,
@@ -604,6 +609,11 @@ const superAdminNavItems = [
     title: 'Messages',
     href: '/super-admin/messages',
     icon: MessageCircle,
+  },
+  {
+    title: 'Settings',
+    href: '/super-admin/settings',
+    icon: Settings,
   },
 ];
 
@@ -657,12 +667,12 @@ function SidebarContent({ role, onLogout, onToggle, isCollapsed = false }: Omit<
                     "w-full justify-start gap-3 h-10 rounded-lg transition-all duration-200",
                     isCollapsed && "justify-center px-0",
                     isActive 
-                      ? "bg-secondary text-primary font-semibold shadow-lg shadow-secondary/20" 
+                      ? "bg-secondary text-white font-semibold shadow-lg shadow-secondary/20" 
                       : "text-gray-400 hover:text-secondary hover:bg-white/5"
                   )}
                 >
-                  <item.icon className={cn("h-5 w-5", isActive ? "text-primary" : "text-gray-400 group-hover:text-secondary")} />
-                  {!isCollapsed && <span className="text-sm">{item.title}</span>}
+                  <item.icon className={cn("h-5 w-5", isActive ? "text-white" : "text-gray-400 group-hover:text-secondary")} />
+                  {!isCollapsed && <span className={cn("text-sm", isActive ? "text-white" : "text-gray-400")}>{item.title}</span>}
                 </Button>
               </Link>
             );

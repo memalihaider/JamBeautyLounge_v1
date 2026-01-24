@@ -388,7 +388,7 @@ export default function BookingCheckout() {
                         <p className="text-xs text-muted-foreground">Signed in as {customerEmail}</p>
                       </div>
                     </div>
-                    <Badge className="bg-secondary text-primary">Authenticated</Badge>
+                    <Badge className="bg-secondary text-white">Authenticated</Badge>
                   </CardContent>
                 </Card>
               )}

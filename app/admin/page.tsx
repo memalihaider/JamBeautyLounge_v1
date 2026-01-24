@@ -1034,7 +1034,7 @@ export default function SuperAdminDashboard() {
                     <TabsList className="grid grid-cols-5 w-full bg-gray-100/50 p-1 rounded-xl">
                       <TabsTrigger
                         value="bookings"
-                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary rounded-lg transition-all"
+                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-black rounded-lg transition-all"
                       >
                         <Calendar className="h-4 w-4 mr-2" />
                         Bookings
@@ -1046,7 +1046,7 @@ export default function SuperAdminDashboard() {
                       </TabsTrigger>
                       <TabsTrigger
                         value="services"
-                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-pink-600 rounded-lg transition-all"
+                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-black rounded-lg transition-all"
                       >
                         <Settings className="h-4 w-4 mr-2" />
                         Services
@@ -1058,7 +1058,7 @@ export default function SuperAdminDashboard() {
                       </TabsTrigger>
                       <TabsTrigger
                         value="products"
-                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-cyan-600 rounded-lg transition-all"
+                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-black rounded-lg transition-all"
                       >
                         <Package className="h-4 w-4 mr-2" />
                         Products
@@ -1070,7 +1070,7 @@ export default function SuperAdminDashboard() {
                       </TabsTrigger>
                       <TabsTrigger
                         value="categories"
-                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-orange-600 rounded-lg transition-all"
+                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-black rounded-lg transition-all"
                       >
                         <Layers className="h-4 w-4 mr-2" />
                         Categories
@@ -1082,7 +1082,7 @@ export default function SuperAdminDashboard() {
                       </TabsTrigger>
                       <TabsTrigger
                         value="activities"
-                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-purple-600 rounded-lg transition-all"
+                        className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-black rounded-lg transition-all"
                       >
                         <Activity className="h-4 w-4 mr-2" />
                         Activities

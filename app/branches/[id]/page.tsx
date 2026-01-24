@@ -50,7 +50,7 @@ export default function BranchPage({ params }: { params: { id: string } }) {
           </div>
           <h1 className="text-5xl font-serif font-bold text-white">Sanctuary Not Found</h1>
           <p className="text-gray-400 max-w-md mx-auto font-light">The location you are seeking is currently unavailable or does not exist in our collection.</p>
-          <Button asChild className="bg-secondary text-primary font-black tracking-widest px-10 py-8 rounded-2xl">
+          <Button asChild className="bg-secondary text-white font-black tracking-widest px-10 py-8 rounded-2xl">
             <Link href="/branches">EXPLORE ALL LOCATIONS</Link>
           </Button>
         </div>
@@ -174,7 +174,7 @@ export default function BranchPage({ params }: { params: { id: string } }) {
             <div className="relative z-10">
               <Sparkles className="w-10 h-10 text-primary mb-6 animate-pulse" />
               <h3 className="text-2xl font-serif font-bold text-primary mb-6">Ready for your ritual?</h3>
-              <Button asChild className="w-full h-16 bg-primary hover:bg-white text-white hover:text-primary font-black tracking-widest rounded-2xl transition-all duration-500 shadow-xl">
+              <Button asChild className="w-full h-16 bg-primary hover:bg-white text-white hover:text-black font-black tracking-widest rounded-2xl transition-all duration-500 shadow-xl">
                 <Link href="/booking">BOOK APPOINTMENT</Link>
               </Button>
             </div>

@@ -1201,17 +1201,48 @@ export default function CustomerPortal() {
     const initializeData = async () => {
       setIsLoading(true);
 
-      // Check authentication
-      const authData = localStorage.getItem("customerAuth");
+      // ENHANCED: Check authentication from both sources for backward compatibility
+      let authData = localStorage.getItem("user");
+      let customerData;
+
       if (!authData) {
-        router.push("/customer/login");
-        return;
+        // Fallback to old customerAuth format
+        authData = localStorage.getItem("customerAuth");
+        if (authData) {
+          try {
+            const parsed = JSON.parse(authData);
+            customerData = parsed.customer || parsed;
+          } catch (error) {
+            console.error("Error parsing customerAuth:", error);
+            router.push("/customer/login");
+            return;
+          }
+        } else {
+          // No auth found at all
+          router.push("/customer/login");
+          return;
+        }
+      } else {
+        // New format - check if it's a customer
+        try {
+          const parsed = JSON.parse(authData);
+          if (parsed.role === 'customer') {
+            customerData = parsed;
+          } else {
+            // Not a customer, redirect to login
+            router.push("/customer/login");
+            return;
+          }
+        } catch (error) {
+          console.error("Error parsing user auth:", error);
+          router.push("/customer/login");
+          return;
+        }
       }
 
       try {
-        const { customer: customerData } = JSON.parse(authData);
         const customerObj: Customer = {
-          id: customerData.uid || customerData.id || "cust_" + Date.now(),
+          id: customerData.id || customerData.uid || "cust_" + Date.now(),
           name: customerData.name || "Customer",
           email: customerData.email || "",
           phone: customerData.phone || "",
@@ -3240,15 +3271,63 @@ const handleAddFeedback = async () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#fcfcfc] flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-secondary mx-auto mb-4" />
-          <p className="text-lg font-serif text-primary">
-            Loading your portal...
+      <div className="min-h-screen bg-gradient-to-br from-[#fcfcfc] via-primary/5 to-secondary/5 flex items-center justify-center overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute top-20 right-20 w-72 h-72 bg-secondary/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        
+        <div className="relative z-10 text-center max-w-md px-4">
+          {/* Fancy Animated Logo */}
+          <div className="mb-8 flex justify-center">
+            <div className="relative w-24 h-24">
+              {/* Outer rotating ring */}
+              <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-secondary border-r-secondary animate-spin" style={{ animationDuration: '3s' }}></div>
+              
+              {/* Middle pulsing ring */}
+              <div className="absolute inset-2 rounded-full border-2 border-primary/30 animate-pulse"></div>
+              
+              {/* Center icon container */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center">
+                  <Sparkles className="w-8 h-8 text-white animate-bounce" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Text */}
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-2">
+            Preparing Your <br />
+            <span className="text-secondary">Beauty Experience</span>
+          </h2>
+          
+          {/* Subtitle */}
+          <p className="text-primary/60 font-light text-base mb-8 leading-relaxed">
+            We're curating your personalized beauty dashboard with all your bookings, loyalty points, and exclusive offers.
           </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Please wait while we fetch your data
-          </p>
+
+          {/* Loading Steps Animation */}
+          <div className="space-y-3 mb-8">
+            <div className="flex items-center gap-3 animate-fadeIn">
+              <div className="w-2 h-2 rounded-full bg-secondary"></div>
+              <p className="text-sm text-primary/70">Fetching your profile</p>
+            </div>
+            <div className="flex items-center gap-3 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+              <div className="w-2 h-2 rounded-full bg-secondary"></div>
+              <p className="text-sm text-primary/70">Loading your bookings</p>
+            </div>
+            <div className="flex items-center gap-3 animate-fadeIn" style={{ animationDelay: '0.6s' }}>
+              <div className="w-2 h-2 rounded-full bg-secondary"></div>
+              <p className="text-sm text-primary/70">Updating loyalty rewards</p>
+            </div>
+          </div>
+
+          {/* Animated Quote */}
+          <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-4 border border-secondary/10">
+            <p className="text-xs text-primary/60 italic">
+              ✨ "Beauty is not just makeup, it's an experience of self-care and confidence."
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -3273,7 +3352,7 @@ const handleAddFeedback = async () => {
               <div className="flex items-center gap-4">
                 <Avatar className="w-20 h-20 border-4 border-secondary/30">
                   <AvatarImage src={customer.avatar} />
-                  <AvatarFallback className="bg-secondary text-primary text-2xl font-bold">
+                  <AvatarFallback className="bg-secondary text-white text-2xl font-bold">
                     {customer.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -5437,7 +5516,7 @@ const handleAddFeedback = async () => {
                                 <Wallet className="w-12 h-12 opacity-50" />
                               </div>
                               <Link href="/customer/portal/wallet/topup">
-                                <Button className="w-full bg-white hover:bg-white/90 text-primary">
+                                <Button className="w-full bg-white hover:bg-white/90 text-black">
                                   <Plus className="w-4 h-4 mr-2" />
                                   Add Funds
                                 </Button>

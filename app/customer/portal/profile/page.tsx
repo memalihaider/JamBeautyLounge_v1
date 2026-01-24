@@ -183,7 +183,7 @@ export default function CustomerProfile() {
                 <div className="relative">
                   <Avatar className="w-24 h-24 border-4 border-secondary">
                     <AvatarImage src={customer.avatar} />
-                    <AvatarFallback className="bg-secondary text-primary text-2xl font-bold">
+                    <AvatarFallback className="bg-secondary text-white text-2xl font-bold">
                       {customer.name?.charAt(0) || 'C'}
                     </AvatarFallback>
                   </Avatar>

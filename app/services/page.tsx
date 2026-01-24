@@ -2,15 +2,18 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { Header } from '@/components/shared/Header';
 import { Button } from '@/components/ui/button';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import Autoplay from "embla-carousel-autoplay";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Scissors, Star, Clock, Search, Filter, Check, ShoppingCart, ChevronRight, Sparkles, Plus, X, Calendar, Users, MapPin, Award, Info, DollarSign, TrendingUp, Package, Shield, MessageCircle, Phone, Mail, Navigation, Share2 } from 'lucide-react';
+import { Scissors, Star, Clock, Search, Filter, Check, ShoppingCart, ChevronRight, Sparkles, Plus, X, Calendar, Users, MapPin, Award, Info, DollarSign, TrendingUp, Package, Shield, MessageCircle, Phone, Mail, Navigation, Share2, Loader2, RefreshCw } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { create } from 'zustand';
 import { 
@@ -273,8 +276,12 @@ const openWhatsApp = (message: string) => {
 };
 
 // Main Component
-export default function ServicesPage() {
+function ServicesContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const categoryQuery = searchParams.get('category');
+  const { selectedBranch } = require('@/contexts/BranchContext').useBranch?.() || {};
+  
   const { addToCart, cartItems } = useBookingStore();
   const { 
     services, 
@@ -303,6 +310,39 @@ export default function ServicesPage() {
   // Use ref to track if we've already set up real-time updates
   const hasSetupRealtimeRef = useRef<boolean>(false);
 
+  // Filter services by selected branch
+  const filteredByBranch = selectedBranch
+    ? services.filter(service => {
+        if (service.branches && service.branches.length > 0) {
+          return service.branches.includes(selectedBranch.id);
+        }
+        if (service.branchNames && service.branchNames.length > 0) {
+          return service.branchNames.includes(selectedBranch.name);
+        }
+        return true; // Show all services if branch filter is not specified
+      })
+    : services;
+
+  // Handle URL category query
+  useEffect(() => {
+    if (categoryQuery && filteredByBranch.length > 0) {
+      const normalizedQuery = categoryQuery.toLowerCase().replace(/\s+/g, '-');
+      // Find if this category exists in our service categories
+      const categoryExists = filteredByBranch.some(s => 
+        s.category.toLowerCase().replace(/\s+/g, '-') === normalizedQuery
+      );
+      
+      if (categoryExists) {
+        setSelectedCategory(normalizedQuery);
+        // Scroll to the products/services section if needed
+        const element = document.getElementById('services-grid');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  }, [categoryQuery, filteredByBranch]);
+
   // Fetch data on component mount
   useEffect(() => {
     const loadData = async () => {
@@ -325,10 +365,10 @@ export default function ServicesPage() {
     }
   }, [hasFetchedInitialData, setupRealtimeUpdates]);
 
-  // Get unique categories from services
+  // Get unique categories from filtered services
   const categories = [
     { id: 'all', name: 'All Services' },
-    ...Array.from(new Set(services.map(s => s.category)))
+    ...Array.from(new Set(filteredByBranch.map(s => s.category)))
       .filter((category): category is string => Boolean(category && category.trim() !== ''))
       .map(category => ({
         id: category.toLowerCase().replace(/\s+/g, '-'),
@@ -337,7 +377,7 @@ export default function ServicesPage() {
   ];
 
   // Filter services based on selected filters
-  const filteredServices = services.filter(service => {
+  const filteredServices = filteredByBranch.filter(service => {
     const matchesCategory = selectedCategory === 'all' || 
       service.category?.toLowerCase().replace(/\s+/g, '-') === selectedCategory;
     
@@ -575,29 +615,61 @@ export default function ServicesPage() {
     <div className="min-h-screen bg-[#fcfcfc]">
       <Header />
 
-      {/* Premium Hero Section */}
-      <section className="relative py-48 px-4 overflow-hidden bg-primary">
-        <div className="absolute inset-0">
-          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/20 blur-[150px] animate-pulse"></div>
-          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/20 blur-[150px] animate-pulse"></div>
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05]"></div>
-        </div>
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          <div className="inline-block bg-white/10 backdrop-blur-md px-6 py-2 rounded-full mb-10 border border-white/10">
+      {/* Premium Hero Section with Image Carousel */}
+      <section className="relative py-32 px-4 overflow-hidden h-96">
+        {/* Background Carousel */}
+        <Carousel 
+          opts={{ 
+            align: "center", 
+            loop: true,
+          }} 
+          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
+          className="absolute inset-0 w-full h-full"
+        >
+          <CarouselContent className="h-full">
+            {[
+              "https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1564466809058-bf4114d55352?q=80&w=2070&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1522335617519-26ec2d4ea5ef?q=80&w=2070&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1552987543-3ca62c069efb?q=80&w=2070&auto=format&fit=crop",
+            ].map((image, index) => (
+              <CarouselItem key={index} className="relative w-full h-96 flex items-center justify-center group">
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 group-hover:scale-120 transition-transform duration-1000"
+                  style={{ 
+                    backgroundImage: `url('${image}')`,
+                  }}
+                >
+                  <div className="absolute inset-0 bg-linear-to-b from-black/50 via-black/40 to-primary/80"></div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {/* Carousel Controls */}
+          <div className="absolute bottom-6 right-6 z-20 flex gap-2">
+            <CarouselPrevious className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
+            <CarouselNext className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
+          </div>
+        </Carousel>
+
+        {/* Content Overlay */}
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="max-w-7xl mx-auto text-center relative z-10 h-full flex flex-col justify-center items-center">
+          <div className="inline-block bg-white/10 backdrop-blur-md px-6 py-2 rounded-full mb-6 border border-white/10">
             <span className="text-secondary font-black tracking-[0.5em] uppercase text-[10px]">The Service Menu</span>
           </div>
-          <h1 className="text-6xl md:text-9xl font-serif font-bold text-white mb-10 leading-[0.85] tracking-tighter">
+          <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-[0.85] tracking-tighter">
             Signature <br /><span className="text-secondary italic">Rituals</span>
           </h1>
-          <p className="text-white/40 max-w-2xl mx-auto text-xl font-light leading-relaxed italic">
+          <p className="text-white/60 max-w-2xl mx-auto text-lg font-light leading-relaxed italic mb-8">
             "Artistry is not just a service, it's a transformation."
           </p>
-          <div className="mt-16 flex items-center justify-center gap-6">
-            <Badge className="bg-secondary text-primary px-6 py-2 rounded-full font-black tracking-widest text-[10px] uppercase shadow-2xl">
+          <div className="flex items-center justify-center gap-6 flex-wrap">
+            <Badge className="bg-secondary text-white px-6 py-2 rounded-full font-black tracking-widest text-[10px] uppercase shadow-2xl">
               REAL-TIME AVAILABILITY
             </Badge>
-            <div className="h-px w-12 bg-white/20"></div>
-            <span className="text-white/40 font-black tracking-[0.3em] text-[10px] uppercase">
+            <div className="h-px w-12 bg-white/20 hidden md:block"></div>
+            <span className="text-white/50 font-black tracking-[0.3em] text-[10px] uppercase">
               {services.length} MASTER SERVICES
             </span>
           </div>
@@ -683,7 +755,7 @@ export default function ServicesPage() {
                           <div className="flex items-start gap-4">
                             {/* Checkbox */}
                             <div className={cn(
-                              "w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all mt-1",
+                              "w-6 h-6 rounded border-2 flex items-center justify-center shrink-0 transition-all mt-1",
                               selectedServices.has(service.id)
                                 ? "bg-secondary border-secondary"
                                 : "border-gray-300"
@@ -756,7 +828,7 @@ export default function ServicesPage() {
                       
                       <Button 
                         onClick={handleAddSelectedServices}
-                        className="w-full bg-secondary hover:bg-secondary/90 text-primary font-bold py-6 rounded-2xl tracking-[0.2em] text-sm shadow-lg"
+                        className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold py-6 rounded-2xl tracking-[0.2em] text-sm shadow-lg"
                         type="button"
                       >
                         <ShoppingCart className="w-4 h-4 mr-2" />
@@ -778,7 +850,7 @@ export default function ServicesPage() {
                     "whitespace-nowrap px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all border rounded-2xl min-w-[120px] text-center",
                     selectedCategory === cat.id 
                       ? "bg-primary text-white border-primary shadow-xl scale-[1.02]" 
-                      : "bg-white text-primary border-gray-200 hover:border-secondary hover:text-secondary hover:shadow-md"
+                      : "bg-white text-black border-gray-200 hover:border-secondary hover:text-secondary hover:shadow-md"
                   )}
                   type="button"
                 >
@@ -806,7 +878,7 @@ export default function ServicesPage() {
                 )}
                 type="button"
               >
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-6 h-6 rounded-full bg-linear-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white text-xs font-bold">
                   All
                 </div>
                 All Barbers
@@ -820,11 +892,11 @@ export default function ServicesPage() {
                     "whitespace-nowrap px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all flex items-center gap-3 border min-w-[140px]",
                     selectedStaff === member.id 
                       ? "bg-secondary/10 text-secondary border-secondary/30 shadow-sm" 
-                      : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:shadow-sm"
+                      : "bg-white text-black border-gray-200 hover:border-gray-300 hover:shadow-sm"
                   )}
                   type="button"
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 border-2 border-white shadow-sm flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 border-2 border-white shadow-sm shrink-0">
                     <img 
                       src={member.image} 
                       alt={member.name} 
@@ -846,7 +918,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Grid Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-gray-50/50 to-white">
+      <section id="services-grid" className="py-20 px-4 bg-linear-to-b from-gray-50/50 to-white">
         <div className="max-w-7xl mx-auto">
           {/* Services Count and Stats */}
           <div className="mb-10 flex items-center justify-between">
@@ -909,14 +981,14 @@ export default function ServicesPage() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {filteredServices.map((service) => (
                 <Card 
                   key={service.id} 
-                  className="group border-2 border-gray-100 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-500 rounded-[2rem] overflow-hidden flex flex-col hover:border-secondary/20"
+                  className="group border border-gray-100 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500 rounded-3xl overflow-hidden flex flex-col hover:border-secondary/20"
                 >
                   {/* Service Image with Overlay */}
-                  <div className="relative aspect-[16/10] overflow-hidden">
+                  <div className="relative aspect-square overflow-hidden">
                     <img 
                       src={service.imageUrl} 
                       alt={service.name} 
@@ -927,150 +999,106 @@ export default function ServicesPage() {
                     />
                     
                     {/* Image Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
                     {/* Price Badge */}
-                    <div className="absolute top-5 right-5">
-                      <div className="bg-white/95 backdrop-blur-sm text-primary border-none px-4 py-2.5 rounded-2xl font-black text-sm shadow-2xl">
+                    <div className="absolute top-4 right-4">
+                      <div className="bg-white/95 backdrop-blur-sm text-black border-none px-3 py-1.5 rounded-xl font-black text-xs shadow-xl">
                         ${service.price}
                       </div>
                     </div>
                     
                     {/* Popularity Badge */}
-                    <div className="absolute bottom-5 left-5 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                    <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
                       <Badge className={cn(
-                        "border-none px-3 py-1.5 font-black text-[9px] tracking-widest uppercase shadow-lg",
+                        "border-none px-2 py-1 font-black text-[8px] tracking-widest uppercase shadow-md",
                         service.popularity === 'high' ? 'bg-red-500 text-white' :
                         service.popularity === 'medium' ? 'bg-yellow-500 text-white' :
-                        'bg-secondary text-primary'
+                        'bg-secondary text-white'
                       )}>
                         {service.popularity === 'high' ? '🔥 HOT' :
                          service.popularity === 'medium' ? '⭐ POPULAR' :
                          '✨ STANDARD'}
                       </Badge>
                     </div>
-                    
-                    {/* Status Indicator */}
-                    <div className="absolute top-5 left-5">
-                      <div className={cn(
-                        "w-3 h-3 rounded-full border-2 border-white shadow-lg",
-                        service.status === 'active' ? 'bg-green-500' : 'bg-red-500'
-                      )}></div>
-                    </div>
                   </div>
 
                   {/* Card Content */}
-                  <CardHeader className="pt-7 pb-4 px-7">
-                    <div className="flex justify-between items-center mb-3">
-                      <Badge variant="outline" className="text-[10px] uppercase tracking-[0.2em] text-secondary border-secondary/30">
+                  <div className="p-5 flex-1 flex flex-col">
+                    <div className="flex justify-between items-center mb-2">
+                      <Badge variant="outline" className="text-[8px] uppercase tracking-widest text-secondary border-secondary/20 font-black">
                         {service.category}
                       </Badge>
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <Clock className="w-4 h-4 text-secondary" />
-                        <span className="text-[11px] font-bold uppercase tracking-wider">
+                      <div className="flex items-center gap-1.5 text-gray-500">
+                        <Clock className="w-3.5 h-3.5 text-secondary" />
+                        <span className="text-[9px] font-black uppercase tracking-widest">
                           {service.duration} MIN
                         </span>
                       </div>
                     </div>
                     
-                    <CardTitle className="text-2xl font-serif font-bold text-primary group-hover:text-secondary transition-colors duration-300 leading-tight">
+                    <h4 className="text-lg font-serif font-bold text-primary group-hover:text-secondary transition-colors duration-300 leading-tight mb-2 line-clamp-1">
                       {service.name}
-                    </CardTitle>
-                  </CardHeader>
+                    </h4>
 
-                  <CardContent className="px-7 pb-7 flex-1 flex flex-col">
                     {/* Description */}
-                    <p className="text-gray-600 text-sm font-light leading-relaxed line-clamp-3 mb-6 flex-1">
+                    <p className="text-gray-500 text-[12px] font-light leading-relaxed line-clamp-2 mb-4 flex-1">
                       {service.description}
                     </p>
 
-                    {/* Service Stats */}
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-6">
-                      <div className="flex items-center gap-4">
+                    {/* Action Area */}
+                    <div className="space-y-4 pt-4 border-t border-gray-50 flex flex-col">
+                      <div className="flex items-center justify-between text-[10px] text-gray-400 mb-2">
                         <div className="flex items-center gap-1">
-                          <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
-                          <span className="font-bold">5.0</span>
-                          <span className="text-gray-400">({service.totalBookings})</span>
+                          <Star className="w-3 h-3 text-secondary fill-secondary" />
+                          <span className="font-bold text-primary text-xs">5.0</span>
+                          <span className="text-[10px]">({service.totalBookings})</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <span className="font-bold">Revenue:</span>
-                          <span>${service.revenue}</span>
+                          <Users className="w-3 h-3 text-gray-400" />
+                          <span className="text-[9px] uppercase tracking-tighter">Availability: Live</span>
                         </div>
                       </div>
-                      <div className={cn(
-                        "px-2 py-1 rounded-full text-[10px] font-bold",
-                        service.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      )}>
-                        {service.status.toUpperCase()}
-                      </div>
-                    </div>
-
-                    {/* Branches Info (if available) */}
-                    {service.branchNames && service.branchNames.length > 0 && (
-                      <div className="mb-6">
-                        <p className="text-xs text-gray-500 mb-2 font-medium">Available at:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {service.branchNames.slice(0, 2).map((branch, index) => (
-                            <Badge 
-                              key={index} 
-                              variant="outline" 
-                              className="text-[10px] px-2 py-1 border-gray-200 text-gray-600"
-                            >
-                              {branch}
-                            </Badge>
-                          ))}
-                          {service.branchNames.length > 2 && (
-                            <Badge variant="outline" className="text-[10px] px-2 py-1 border-gray-200 text-gray-600">
-                              +{service.branchNames.length - 2} more
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="mt-auto flex gap-3">
-                      <Button 
+                      
+                      <Button
                         onClick={() => handleAddToCart(service)}
                         disabled={isAddingToCart === service.id}
                         className={cn(
-                          "flex-1 h-14 rounded-2xl font-black tracking-[0.2em] text-[10px] transition-all duration-500 shadow-lg group/btn",
-                          addedService === service.id 
-                            ? "bg-green-600 hover:bg-green-600 text-white scale-95" 
-                            : isAddingToCart === service.id
-                            ? "bg-gray-400 text-white cursor-not-allowed"
-                            : "bg-primary hover:bg-secondary hover:text-primary text-white"
+                          "w-full rounded-2xl font-black py-7 h-auto text-[10px] tracking-[0.2em] transition-all duration-500",
+                          addedService === service.id
+                            ? "bg-green-500 hover:bg-green-600 text-white"
+                            : "bg-primary hover:bg-secondary text-white shadow-lg hover:shadow-secondary/20 hover:-translate-y-1"
                         )}
                         type="button"
                       >
                         {isAddingToCart === service.id ? (
-                          <>
-                            <div className="w-4 h-4 mr-2 border-2 border-white/30 border-t-white rounded-full animate-spin" /> 
-                            ADDING...
-                          </>
+                           <>
+                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                             RESERVING...
+                           </>
                         ) : addedService === service.id ? (
                           <>
-                            <Check className="w-4 h-4 mr-2" /> 
-                            ADDED TO BOOKING
+                            <Check className="mr-2 h-4 w-4" />
+                            SECURED
                           </>
                         ) : (
                           <>
-                            <ShoppingCart className="w-4 h-4 mr-2 group-hover/btn:animate-bounce" /> 
-                            ADD TO BOOKING
+                            <Calendar className="mr-2 h-4 w-4" />
+                            SECURE THE BENCH
                           </>
                         )}
                       </Button>
                       
-                      <Button 
-                        variant="outline" 
-                        onClick={() => handleViewServiceDetails(service.id)}
-                        className="w-14 h-14 rounded-2xl border-gray-200 text-primary hover:border-secondary hover:text-secondary hover:bg-secondary/10 transition-all duration-500 shadow-sm"
-                        type="button"
-                      >
-                        <ChevronRight className="w-5 h-5" />
-                      </Button>
+                      <div className="flex justify-center">
+                        <Link 
+                          href={`/booking?service=${service.id}`}
+                          className="text-[9px] font-black text-gray-400 hover:text-secondary hover:underline transition-colors tracking-widest uppercase"
+                        >
+                          Advanced Booking Options
+                        </Link>
+                      </div>
                     </div>
-                  </CardContent>
+                  </div>
                 </Card>
               ))}
             </div>
@@ -1170,7 +1198,7 @@ export default function ServicesPage() {
                     alt={selectedService.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
                   <Button
                     size="icon"
                     variant="ghost"
@@ -1433,25 +1461,17 @@ export default function ServicesPage() {
   );
 }
 
-// Refresh Icon Component
-function RefreshCw(props: React.SVGProps<SVGSVGElement>) {
+export default function ServicesPage() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M21 2v6h-6" />
-      <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
-      <path d="M3 22v-6h6" />
-      <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
-    </svg>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#fcfcfc] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
+          <p className="text-lg font-semibold text-primary">Loading premium experience...</p>
+        </div>
+      </div>
+    }>
+      <ServicesContent />
+    </Suspense>
   );
 }

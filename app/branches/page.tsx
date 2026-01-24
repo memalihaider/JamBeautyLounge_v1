@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/shared/Header";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import { MapPin, Star, Clock, Phone, Search, Filter, CheckCircle2, ArrowRight, Sparkles, Award, Users, Zap, Crown, Shield, Mail, User, Loader2, RefreshCw, Navigation, X, Instagram, Facebook, MessageCircle, Share2, Globe, Calendar, Info, Wifi, Coffee, Car, Users as UsersIcon, Smartphone, CreditCard, WifiIcon, Tv, Music, Coffee as CoffeeIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -448,66 +450,77 @@ export default function Branches() {
         </div>
       )}
 
-      {/* Premium Hero */}
-      <section className="relative py-32 px-4 overflow-hidden bg-gradient-to-br from-primary to-primary/90">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-secondary blur-[120px] animate-pulse"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary blur-[120px] animate-pulse"></div>
-          <div className="absolute top-[20%] right-[20%] w-[20%] h-[20%] rounded-full bg-white/10 blur-[80px] animate-pulse delay-1000"></div>
-        </div>
-        
-        {/* Floating Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 animate-bounce delay-500">
-            <Crown className="w-8 h-8 text-secondary/30" />
+      {/* Premium Hero with Image Carousel */}
+      <section className="relative h-96 overflow-hidden">
+        {/* Background Carousel */}
+        <Carousel 
+          opts={{ 
+            align: "center", 
+            loop: true,
+          }} 
+          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
+          className="absolute inset-0 w-full h-full"
+        >
+          <CarouselContent className="h-full">
+            {[
+              "https://images.unsplash.com/photo-1552913007-12d65932e836?q=80&w=2070&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1632545639266-7d1ef5d91c15?q=80&w=2070&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1576438436891-519e3b2af870?q=80&w=2070&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1576091160622-137ba884ae86?q=80&w=2070&auto=format&fit=crop",
+            ].map((image, index) => (
+              <CarouselItem key={index} className="relative w-full h-96 flex items-center justify-center group">
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 group-hover:scale-120 transition-transform duration-1000"
+                  style={{ 
+                    backgroundImage: `url('${image}')`,
+                  }}
+                >
+                  <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/30 to-primary/70"></div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {/* Carousel Controls */}
+          <div className="absolute bottom-6 right-6 z-20 flex gap-2">
+            <CarouselPrevious className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
+            <CarouselNext className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
           </div>
-          <div className="absolute top-40 right-20 animate-bounce delay-1000">
-            <Award className="w-6 h-6 text-secondary/20" />
-          </div>
-          <div className="absolute bottom-32 left-20 animate-bounce delay-1500">
-            <Shield className="w-7 h-7 text-secondary/25" />
-          </div>
-          <div className="absolute bottom-20 right-10 animate-bounce delay-2000">
-            <Zap className="w-5 h-5 text-secondary/20" />
-          </div>
-        </div>
+        </Carousel>
 
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full mb-6 border border-secondary/30 backdrop-blur-sm">
-            <Sparkles className="w-4 h-4 text-secondary animate-pulse" />
-            <span className="text-secondary font-black tracking-[0.3em] uppercase text-[10px]">Our Presence</span>
-            <Sparkles className="w-4 h-4 text-secondary animate-pulse" />
-          </div>
-          <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
-            Premium <span className="text-secondary italic relative">Locations
-              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-secondary/50 rounded-full"></div>
-            </span>
-          </h1>
-          <p className="text-gray-300 max-w-2xl mx-auto text-lg font-light leading-relaxed mb-12">
-            Experience luxury grooming at any of our strategically located branches.
-          </p>
-          
-          {/* Real-time Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/15 transition-all">
-              <div className="text-3xl font-serif font-bold text-secondary mb-2">{totalBranches}</div>
-              <div className="text-white/70 text-xs font-black uppercase tracking-widest">Premium Locations</div>
-             
+        {/* Content Overlay */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+          <div className="max-w-6xl mx-auto text-center px-4">
+            <div className="inline-flex items-center gap-2 bg-secondary/20 px-4 py-2 rounded-full mb-6 border border-secondary/30 backdrop-blur-sm">
+              <Sparkles className="w-4 h-4 text-secondary animate-pulse" />
+              <span className="text-secondary font-black tracking-[0.3em] uppercase text-[10px]">Our Presence</span>
+              <Sparkles className="w-4 h-4 text-secondary animate-pulse" />
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/15 transition-all">
-              <div className="text-3xl font-serif font-bold text-secondary mb-2">{activeBranches}</div>
-              <div className="text-white/70 text-xs font-black uppercase tracking-widest">Active Branches</div>
-              <div className="text-[10px] text-white/50 mt-1">Currently operational</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/15 transition-all">
-              <div className="text-3xl font-serif font-bold text-secondary mb-2">{totalManagers}</div>
-              <div className="text-white/70 text-xs font-black uppercase tracking-widest">Dedicated Managers</div>
-              <div className="text-[10px] text-white/50 mt-1">Professional team</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/15 transition-all">
-              <div className="text-3xl font-serif font-bold text-secondary mb-2">{totalCities}</div>
-              <div className="text-white/70 text-xs font-black uppercase tracking-widest">Cities Covered</div>
-              <div className="text-[10px] text-white/50 mt-1">Nationwide presence</div>
+            <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
+              Premium <span className="text-secondary italic">Locations</span>
+            </h1>
+            <p className="text-gray-200 max-w-2xl mx-auto text-lg font-light leading-relaxed mb-8">
+              Experience luxury grooming at any of our strategically located branches.
+            </p>
+            
+            {/* Real-time Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8 pointer-events-auto">
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-all">
+                <div className="text-2xl font-serif font-bold text-secondary mb-1">{totalBranches}</div>
+                <div className="text-white/70 text-xs font-black uppercase tracking-widest">Locations</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-all">
+                <div className="text-2xl font-serif font-bold text-secondary mb-1">{activeBranches}</div>
+                <div className="text-white/70 text-xs font-black uppercase tracking-widest">Active</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-all">
+                <div className="text-2xl font-serif font-bold text-secondary mb-1">{totalManagers}</div>
+                <div className="text-white/70 text-xs font-black uppercase tracking-widest">Managers</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/15 transition-all">
+                <div className="text-2xl font-serif font-bold text-secondary mb-1">{totalCities}</div>
+                <div className="text-white/70 text-xs font-black uppercase tracking-widest">Cities</div>
+              </div>
             </div>
           </div>
         </div>
@@ -668,7 +681,7 @@ export default function Branches() {
                         
                         {/* Rating Overlay */}
                         <div className="absolute bottom-6 left-6 z-10">
-                          <div className="bg-white/90 backdrop-blur-md text-primary border-none px-3 py-1.5 rounded-xl font-black text-xs shadow-xl flex items-center gap-1.5">
+                          <div className="bg-white/90 backdrop-blur-md text-black border-none px-3 py-1.5 rounded-xl font-black text-xs shadow-xl flex items-center gap-1.5">
                             <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
                             {branch.rating?.toFixed(1) || '4.8'}
                             <span className="text-muted-foreground text-[10px] font-medium">({branch.reviews || 0})</span>
@@ -681,7 +694,7 @@ export default function Branches() {
                             <Button 
                               size="sm" 
                               variant="secondary" 
-                              className="bg-white/90 backdrop-blur-md text-primary hover:bg-white rounded-xl p-2"
+                              className="bg-white/90 backdrop-blur-md text-black hover:bg-white rounded-xl p-2"
                               onClick={() => window.open(`tel:${branch.phone}`, '_blank')}
                             >
                               <Phone className="w-3.5 h-3.5" />
@@ -689,7 +702,7 @@ export default function Branches() {
                             <Button 
                               size="sm" 
                               variant="secondary" 
-                              className="bg-white/90 backdrop-blur-md text-primary hover:bg-white rounded-xl p-2"
+                              className="bg-white/90 backdrop-blur-md text-black hover:bg-white rounded-xl p-2"
                               onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(branch.address)}`, '_blank')}
                             >
                               <Navigation className="w-3.5 h-3.5" />

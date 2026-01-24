@@ -231,6 +231,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
+    // ENHANCED: Check localStorage first for instant restoration
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+        console.log('✅ User restored from localStorage:', parsed.email);
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('user');
+      }
+    }
+
+    // Then verify with Firebase
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
         try {
@@ -325,9 +339,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           localStorage.removeItem('customerAuth');
         }
       } else {
-        // User signed out
-        setUser(null);
-        localStorage.removeItem('user');
+        // User signed out - but only if not previously stored in localStorage
+        // This prevents clearing auth on page reload
+        if (!storedUser) {
+          setUser(null);
+          localStorage.removeItem('user');
+        }
         // NOTE: customerAuth remove nahi karein for customer portal access
         console.log('❌ User signed out');
       }

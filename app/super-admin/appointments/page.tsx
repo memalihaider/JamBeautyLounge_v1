@@ -587,100 +587,88 @@ export default function SuperAdminAppointments() {
           <div className="flex-1 overflow-auto">
             <div className="p-4 lg:p-8">
               {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <Card className="shadow-sm">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-4">
+                    <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Total Appointments</CardTitle>
+                    <Calendar className="h-4 w-4 text-primary opacity-70" />
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{stats.total}</div>
-                    <p className="text-xs text-muted-foreground">
-                      Across all branches
-                    </p>
+                  <CardContent className="pb-3 px-4">
+                    <div className="text-xl font-bold">{stats.total}</div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Active Customers</CardTitle>
-                    <User className="h-4 w-4 text-muted-foreground" />
+                <Card className="shadow-sm">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-4">
+                    <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Active Customers</CardTitle>
+                    <User className="h-4 w-4 text-primary opacity-70" />
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{stats.activeCustomers}</div>
-                    <p className="text-xs text-muted-foreground">
-                      Registered customers
-                    </p>
+                  <CardContent className="pb-3 px-4">
+                    <div className="text-xl font-bold">{stats.activeCustomers}</div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Today's Appointments</CardTitle>
-                    <Clock className="h-4 w-4 text-muted-foreground" />
+                <Card className="shadow-sm">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-4">
+                    <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Today's Appointments</CardTitle>
+                    <Clock className="h-4 w-4 text-primary opacity-70" />
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{stats.todayAppointments}</div>
-                    <p className="text-xs text-muted-foreground">
-                      Scheduled for today
-                    </p>
+                  <CardContent className="pb-3 px-4">
+                    <div className="text-xl font-bold">{stats.todayAppointments}</div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <Card className="shadow-sm">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-4">
+                    <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Total Revenue</CardTitle>
+                    <DollarSign className="h-4 w-4 text-primary opacity-70" />
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">${stats.totalRevenue}</div>
-                    <p className="text-xs text-muted-foreground">
-                      From completed appointments
-                    </p>
+                  <CardContent className="pb-3 px-4">
+                    <div className="text-xl font-bold">${stats.totalRevenue}</div>
                   </CardContent>
                 </Card>
               </div>
 
               {/* Detailed Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
-                <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-                  <div className="text-2xl font-bold text-yellow-700">{stats.pending}</div>
-                  <div className="text-sm text-yellow-600 font-medium">Pending</div>
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-6">
+                <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-lg font-bold text-yellow-700 leading-none">{stats.pending}</div>
+                  <div className="text-[10px] text-yellow-600 font-bold uppercase mt-1">Pending</div>
                 </div>
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                  <div className="text-2xl font-bold text-blue-700">{stats.confirmed}</div>
-                  <div className="text-sm text-blue-600 font-medium">Confirmed</div>
+                <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-lg font-bold text-blue-700 leading-none">{stats.confirmed}</div>
+                  <div className="text-[10px] text-blue-600 font-bold uppercase mt-1">Confirmed</div>
                 </div>
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
-                  <div className="text-2xl font-bold text-purple-700">{stats.inProgress}</div>
-                  <div className="text-sm text-purple-600 font-medium">In Progress</div>
+                <div className="bg-purple-50 p-3 rounded-lg border border-purple-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-lg font-bold text-purple-700 leading-none">{stats.inProgress}</div>
+                  <div className="text-[10px] text-purple-600 font-bold uppercase mt-1">In Progress</div>
                 </div>
-                <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-                  <div className="text-2xl font-bold text-green-700">{stats.completed}</div>
-                  <div className="text-sm text-green-600 font-medium">Completed</div>
+                <div className="bg-green-50 p-3 rounded-lg border border-green-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-lg font-bold text-green-700 leading-none">{stats.completed}</div>
+                  <div className="text-[10px] text-green-600 font-bold uppercase mt-1">Completed</div>
                 </div>
-                <div className="bg-red-50 p-4 rounded-lg border border-red-100">
-                  <div className="text-2xl font-bold text-red-700">{stats.cancelled}</div>
-                  <div className="text-sm text-red-600 font-medium">Cancelled</div>
+                <div className="bg-red-50 p-3 rounded-lg border border-red-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-lg font-bold text-red-700 leading-none">{stats.cancelled}</div>
+                  <div className="text-[10px] text-red-600 font-bold uppercase mt-1">Cancelled</div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <div className="text-2xl font-bold text-gray-700">{stats.noShow}</div>
-                  <div className="text-sm text-gray-600 font-medium">No Show</div>
+                <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col items-center justify-center text-center">
+                  <div className="text-lg font-bold text-gray-700 leading-none">{stats.noShow}</div>
+                  <div className="text-[10px] text-gray-600 font-bold uppercase mt-1">No Show</div>
                 </div>
               </div>
 
               {/* Filters */}
-              <Card className="mb-6">
-                <CardContent className="pt-6">
-                  <div className="flex flex-col sm:flex-row gap-4">
+              <Card className="mb-6 shadow-sm border-gray-100">
+                <CardContent className="p-4">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <div className="flex-1">
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
-                          placeholder="Search by customer, service, email or phone..."
+                          placeholder="Search customer, service, email..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-10"
+                          className="pl-9 h-9 text-sm"
                         />
                       </div>
                     </div>
@@ -691,21 +679,21 @@ export default function SuperAdminAppointments() {
                         type="date"
                         value={selectedDate}
                         onChange={(e) => setSelectedDate(e.target.value)}
-                        className="w-full"
+                        className="w-full h-9 text-sm"
                         max={today}
                       />
                     </div>
 
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger className="w-full sm:w-48">
-                        <SelectValue placeholder="Filter by status" />
+                      <SelectTrigger className="w-full sm:w-40 h-9 text-sm">
+                        <SelectValue placeholder="Status" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Status</SelectItem>
                         {statusOptions.map(option => (
-                          <SelectItem key={option.value} value={option.value}>
+                          <SelectItem key={option.value} value={option.value} className="text-xs">
                             <div className="flex items-center gap-2">
-                              <div className={`w-2 h-2 rounded-full ${statusConfig[option.value as keyof typeof statusConfig].badgeColor}`}></div>
+                              <div className={`w-1.5 h-1.5 rounded-full ${statusConfig[option.value as keyof typeof statusConfig].badgeColor}`}></div>
                               {option.label}
                             </div>
                           </SelectItem>
@@ -714,13 +702,13 @@ export default function SuperAdminAppointments() {
                     </Select>
                     
                     <Select value={branchFilter} onValueChange={setBranchFilter}>
-                      <SelectTrigger className="w-full sm:w-48">
-                        <SelectValue placeholder="Filter by branch" />
+                      <SelectTrigger className="w-full sm:w-40 h-9 text-sm">
+                        <SelectValue placeholder="Branch" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Branches</SelectItem>
                         {branches.map(branch => (
-                          <SelectItem key={branch} value={branch}>{branch}</SelectItem>
+                          <SelectItem key={branch} value={branch} className="text-xs">{branch}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -789,126 +777,99 @@ export default function SuperAdminAppointments() {
                   
                   return (
                     <Card key={appointment.id} className="hover:shadow-md transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                      <CardContent className="p-3 sm:p-4">
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                           {/* Appointment Details */}
-                          <div className="flex items-start gap-4 flex-1">
+                          <div className="flex items-start gap-3 flex-1">
                             {/* Time/Date */}
-                            <div className="text-center min-w-[80px]">
-                              <div className="text-lg font-bold text-primary">{appointment.time}</div>
-                              <div className="text-sm text-gray-500">{appointment.date}</div>
-                              <Badge variant="outline" className="mt-2 text-xs">
+                            <div className="text-center min-w-[70px] flex flex-col items-center justify-center">
+                              <div className="text-base font-bold text-primary leading-tight">{appointment.time}</div>
+                              <div className="text-[11px] text-gray-500 font-medium">{appointment.date}</div>
+                              <Badge variant="outline" className="mt-1 text-[10px] px-1.5 py-0 h-5">
                                 ${appointment.totalAmount}
                               </Badge>
                             </div>
                             
                             {/* Customer & Service Details */}
-                            <div className="border-l pl-4 flex-1">
-                              {/* Branch */}
-                              <div className="flex items-center gap-2 mb-2">
-                                <Building className="w-4 h-4 text-gray-400" />
-                                <span className="text-sm font-medium text-secondary">
-                                  {appointment.branch || 'Main Branch'}
-                                </span>
+                            <div className="border-l pl-3 flex-1 py-0.5">
+                              {/* Branch & Barber */}
+                              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
+                                <div className="flex items-center gap-1">
+                                  <Building className="w-3.5 h-3.5 text-gray-400" />
+                                  <span className="text-[11px] font-bold text-secondary uppercase tracking-wider">
+                                    {appointment.branch || 'Main Branch'}
+                                  </span>
+                                </div>
+                                {appointment.barber && (
+                                  <div className="flex items-center gap-1">
+                                    <User className="w-3.5 h-3.5 text-gray-400" />
+                                    <span className="text-[11px] text-gray-600 font-medium italic">{appointment.barber}</span>
+                                  </div>
+                                )}
                               </div>
                               
                               {/* Customer Name with Status */}
-                              <div className="flex items-center gap-3 mb-2">
-                                <h3 className="font-semibold text-gray-900 text-lg">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <h3 className="font-bold text-gray-900 text-base">
                                   {appointment.customerName}
                                 </h3>
                                 {customer && (
                                   <Badge className={cn(
-                                    "text-xs",
+                                    "text-[9px] h-4 px-1.5 leading-none font-bold uppercase",
                                     customer.status === 'active' 
-                                      ? 'bg-green-100 text-green-800' 
-                                      : 'bg-red-100 text-red-800'
+                                      ? 'bg-green-100 text-green-700' 
+                                      : 'bg-red-100 text-red-700'
                                   )}>
-                                    {customer.status === 'active' ? (
-                                      <Check className="w-3 h-3 mr-1" />
-                                    ) : (
-                                      <X className="w-3 h-3 mr-1" />
-                                    )}
                                     {customer.status}
                                   </Badge>
                                 )}
                               </div>
                               
                               {/* Service Details */}
-                              <p className="text-sm text-gray-600 mb-2">
-                                {appointment.serviceName} • ${appointment.servicePrice}
-                                {appointment.duration && ` • ${appointment.duration} min`}
+                              <p className="text-xs text-gray-700 font-medium mb-1.5">
+                                {appointment.serviceName} <span className="text-gray-400 mx-1">|</span> ${appointment.servicePrice}
+                                {appointment.duration && <span className="text-gray-400 ml-1">({appointment.duration} min)</span>}
                               </p>
                               
                               {/* Contact Info */}
-                              <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
+                              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
                                 {/* Email */}
                                 <div className="flex items-center gap-1">
-                                  <Mail className="w-3 h-3" />
-                                  <span className="truncate max-w-[200px]">
+                                  <Mail className="w-3 h-3 text-muted-foreground" />
+                                  <span className="truncate max-w-[150px]">
                                     {appointment.customerEmail}
                                   </span>
                                 </div>
                                 
-                                {/* Phone - Always Show */}
+                                {/* Phone */}
                                 <div className="flex items-center gap-1">
-                                  <Phone className="w-3 h-3" />
-                                  <span className="font-medium">
+                                  <Phone className="w-3 h-3 text-muted-foreground" />
+                                  <span className="font-semibold text-gray-700">
                                     {customerPhone}
                                   </span>
                                 </div>
                                 
-                                {/* Address if available */}
+                                {/* Address */}
                                 {customer?.address && (
                                   <div className="flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    <span className="truncate max-w-[150px]">
+                                    <MapPin className="w-3 h-3 text-muted-foreground" />
+                                    <span className="truncate max-w-[120px]">
                                       {customer.address}
                                     </span>
                                   </div>
                                 )}
-                                
-                                {/* Barber */}
-                                {appointment.barber && (
-                                  <div className="flex items-center gap-1">
-                                    <User className="w-3 h-3" />
-                                    <span>{appointment.barber}</span>
-                                  </div>
-                                )}
                               </div>
-
-                              {/* Customer Additional Info */}
-                              {customer && (
-                                <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
-                                  <div className="flex flex-wrap gap-3">
-                                    {customer.city && (
-                                      <span>City: {customer.city}</span>
-                                    )}
-                                    {customer.country && (
-                                      <span>Country: {customer.country}</span>
-                                    )}
-                                    {customer.role && (
-                                      <span>Role: {customer.role}</span>
-                                    )}
-                                    {customer.lastLogin && (
-                                      <span>
-                                        Last Login: {customer.lastLogin.toDate().toLocaleDateString()}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
                             </div>
                           </div>
 
                           {/* Status & Actions */}
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 min-w-[250px]">
+                          <div className="flex flex-row lg:flex-col xl:flex-row items-center gap-2 min-w-[300px] lg:min-w-0 justify-end">
                             {/* Status Badge */}
                             <Badge className={cn(
-                              "gap-2 px-3 py-1.5 font-medium min-w-[120px] justify-center",
+                              "gap-1.5 px-2 py-1 font-bold text-[10px] uppercase w-28 justify-center shadow-none border-none",
                               status?.color
                             )}>
-                              <StatusIcon className="w-4 h-4" />
+                              <StatusIcon className="w-3.5 h-3.5" />
                               <span>{status?.label || appointment.status}</span>
                             </Badge>
 
@@ -919,11 +880,10 @@ export default function SuperAdminAppointments() {
                                 handleStatusChange(appointment.id, value as Appointment['status'])
                               }
                             >
-                              <SelectTrigger className="w-[180px]">
+                              <SelectTrigger className="w-[140px] h-8 text-xs bg-gray-50/50">
                                 <div className="flex items-center gap-2">
-                                  <div className={`w-2 h-2 rounded-full ${status?.badgeColor}`}></div>
-                                  <span>Change Status</span>
-                                  <ChevronDown className="w-3 h-3 ml-auto" />
+                                  <div className={`w-1.5 h-1.5 rounded-full ${status?.badgeColor}`}></div>
+                                  <span>Update</span>
                                 </div>
                               </SelectTrigger>
                               <SelectContent>
@@ -935,10 +895,12 @@ export default function SuperAdminAppointments() {
                                     <SelectItem 
                                       key={option.value} 
                                       value={option.value}
-                                      className="flex items-center gap-2"
+                                      className="text-xs py-1.5"
                                     >
-                                      <OptionIcon className="w-4 h-4" />
-                                      {option.label}
+                                      <div className="flex items-center gap-2">
+                                        <OptionIcon className="w-3.5 h-3.5" />
+                                        {option.label}
+                                      </div>
                                     </SelectItem>
                                   );
                                 })}
@@ -947,25 +909,24 @@ export default function SuperAdminAppointments() {
                           </div>
                         </div>
 
-                        {/* Notes */}
+                        {/* Notes - Compact */}
                         {appointment.notes && (
-                          <div className="mt-4 pt-4 border-t">
-                            <p className="text-sm text-gray-600">
-                              <strong className="font-medium">Notes:</strong> {appointment.notes}
+                          <div className="mt-2 pt-2 border-t border-dashed">
+                            <p className="text-[11px] text-gray-600 line-clamp-1 hover:line-clamp-none transition-all duration-300">
+                              <span className="font-bold text-gray-400 mr-1 uppercase text-[9px]">Notes:</span> {appointment.notes}
                             </p>
                           </div>
                         )}
 
-                        {/* Technical Info */}
-                        <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
-                          <div className="flex flex-wrap gap-4">
-                            <span>Appointment ID: <code className="bg-gray-100 px-2 py-0.5 rounded">{appointment.id.substring(0, 8)}...</code></span>
-                            <span>Customer ID: <code className="bg-gray-100 px-2 py-0.5 rounded">{appointment.customerId.substring(0, 8)}...</code></span>
-                            <span>Service ID: <code className="bg-gray-100 px-2 py-0.5 rounded">{appointment.serviceId.substring(0, 8)}...</code></span>
-                            <span>
-                              Created: {appointment.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}
-                            </span>
+                        {/* Technical Info - Tiny and dim */}
+                        <div className="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between text-[10px] text-gray-300">
+                          <div className="flex flex-wrap gap-3">
+                            <span>ID: {appointment.id.substring(0, 6)}</span>
+                            <span>Created: {appointment.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}</span>
                           </div>
+                          {customer?.city && (
+                            <span className="hidden sm:inline italic">{customer.city}, {customer.country}</span>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
