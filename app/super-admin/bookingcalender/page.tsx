@@ -2813,12 +2813,12 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                               {getAppointmentsForDate(selectedDate).map((appointment) => (
                                 <div
                                   key={appointment.id.toString()}
-                                  className="group p-5 border-2 border-gray-100 rounded-2xl cursor-pointer hover:border-primary/30 hover:shadow-xl transition-all duration-300 bg-white hover:bg-gradient-to-r hover:from-primary/5 hover:to-secondary/5"
+                                  className="group p-5 border-2 border-gray-100 rounded-2xl cursor-pointer hover:border-primary/30 hover:shadow-xl transition-all duration-300 bg-white hover:bg-linear-to-r hover:from-primary/5 hover:to-secondary/5"
                                   onClick={() => handleAppointmentClick(appointment)}
                                 >
                                   <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-4">
-                                      <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                                      <div className="w-12 h-12 bg-linear-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
                                         <User className="w-6 h-6 text-primary" />
                                       </div>
                                       <div>
@@ -2854,7 +2854,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                                 </div>
                               ))}
                               {getAppointmentsForDate(selectedDate).length === 0 && (
-                                <div className="text-center py-16 px-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl border-2 border-dashed border-gray-200">
+                                <div className="text-center py-16 px-6 bg-linear-to-br from-gray-50 to-gray-100 rounded-3xl border-2 border-dashed border-gray-200">
                                   <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                                     <Calendar className="w-10 h-10 text-gray-400" />
                                   </div>
@@ -2921,7 +2921,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                         <CardHeader className="pb-4 border-b bg-linear-to-r from-gray-50/50 to-white">
                           <div className="flex items-start justify-between">
                             <div className="flex items-start gap-6">
-                              <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                              <div className="w-14 h-14 bg-linear-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
                                 <User className="w-7 h-7 text-primary" />
                               </div>
                               <div className="space-y-2">
@@ -3184,7 +3184,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                               {/* Customer & Service Info */}
                               <div className="md:col-span-3">
                                 <div className="flex items-center gap-3 mb-2">
-                                  <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
+                                  <div className="w-10 h-10 bg-linear-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
                                     <User className="w-5 h-5 text-primary" />
                                   </div>
                                   <div className="min-w-0">
@@ -3641,7 +3641,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                     <p className="text-sm text-gray-600">Multiple services booked:</p>
                     <div className="space-y-3">
                       {selectedAppointment.services.map((service, index) => (
-                        <div key={index} className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                        <div key={index} className="flex justify-between items-center p-4 bg-linear-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
                               <span className="font-bold text-purple-700">{index + 1}</span>
@@ -3946,7 +3946,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                   </div>
                   
                   {/* Total Price Summary */}
-                  <div className="p-5 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border-2 border-gray-300">
+                  <div className="p-5 bg-linear-to-r from-gray-50 to-gray-100 rounded-xl border-2 border-gray-300">
                     <h4 className="font-bold text-gray-900 mb-4 text-lg">Price Breakdown</h4>
                     
                     <div className="space-y-3">
@@ -4164,7 +4164,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
 
       {/* UPDATED: Booking Creation Dialog with Multiple Services */}
       <Sheet open={showBookingDialog} onOpenChange={setShowBookingDialog}>
-        <SheetContent className="sm:max-w-[900px] w-full z-[60] overflow-y-auto">
+        <SheetContent className="sm:max-w-[900px] w-full z-60 overflow-y-auto">
           <SheetHeader className="border-b pb-4 mb-6">
             <SheetTitle className="text-xl font-semibold">Create New Booking</SheetTitle>
             <SheetDescription className="text-base">
@@ -4421,7 +4421,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                 
                 {/* Selected Services Summary */}
                 {selectedServices.length > 0 && (
-                  <div className="mt-6 p-5 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
+                  <div className="mt-6 p-5 bg-linear-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
                     <h4 className="font-bold text-green-900 mb-3 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5" />
                       Selected Services Summary
@@ -5086,7 +5086,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
 
       {/* EDIT APPOINTMENT DIALOG - COMPLETE FUNCTIONAL */}
 <Sheet open={showEditDialog} onOpenChange={setShowEditDialog}>
-  <SheetContent className="sm:max-w-[900px] w-full z-[70] overflow-y-auto">
+  <SheetContent className="sm:max-w-[900px] w-full z-70 overflow-y-auto">
     <SheetHeader className="border-b pb-4 mb-6">
       <SheetTitle className="text-xl font-semibold flex items-center gap-2">
         <Edit className="w-5 h-5 text-primary" />
@@ -5720,7 +5720,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
           {invoiceData && selectedAppointmentForInvoice && (
             <div className="space-y-6">
               {/* Invoice Preview Header */}
-              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 rounded-lg border">
+              <div className="bg-linear-to-r from-primary/5 to-secondary/5 p-6 rounded-lg border">
                 <div className="flex justify-between items-center">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Invoice Preview</h3>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/shared/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,8 +16,26 @@ import { useBookingStore } from '@/stores/booking.store';
 import { useCustomerStore, type Customer, type CustomerWallet } from '@/stores/customer.store';
 import Link from 'next/link';
 import Image from 'next/image';
+import { db } from '@/lib/firebase';
+import { collection, getDocs, QueryDocumentSnapshot, DocumentData, doc, getDoc } from 'firebase/firestore';
 
-const STAFF_MEMBERS = ['Mike Johnson', 'Alex Rodriguez', 'Sarah Chen', 'James Smith'];
+interface StaffMember {
+  id: string;
+  name: string;
+  image: string;
+  position?: string;
+}
+
+interface Service {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  duration: number;
+  category?: string;
+  imageUrl?: string;
+}
+
 const TIME_SLOTS = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00'];
 
 type PaymentMethod = 'cash' | 'wallet' | 'mixed';
@@ -26,19 +44,60 @@ function cn(...inputs: any[]) {
   return inputs.filter(Boolean).join(" ");
 }
 
-// Helper function to get staff image
-function getStaffImage(staffName: string): string {
-  const staffMap: { [key: string]: string } = {
-    'Mike Johnson': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070&auto=format&fit=crop',
-    'Alex Rodriguez': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2070&auto=format&fit=crop',
-    'Sarah Chen': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop',
-    'James Smith': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=2070&auto=format&fit=crop',
-  };
-  return staffMap[staffName] || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070&auto=format&fit=crop';
+// Fetch staff from Firebase
+async function fetchStaffFromFirebase(): Promise<StaffMember[]> {
+  try {
+    const staffRef = collection(db, 'staff');
+    const querySnapshot = await getDocs(staffRef);
+    
+    const staffData: StaffMember[] = [];
+    querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
+      const data = doc.data();
+      staffData.push({
+        id: doc.id,
+        name: data.name || data.fullName || 'Unknown Staff',
+        image: data.imageUrl || data.image || data.photoURL || data.profileImage || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070&auto=format&fit=crop',
+        position: data.position || data.role || 'Barber',
+      });
+    });
+    
+    console.log('Fetched staff from Firebase:', staffData);
+    return staffData;
+  } catch (error) {
+    console.error('Error fetching staff from Firebase:', error);
+    // Return empty array so app doesn't break
+    return [];
+  }
+}
+
+// Fetch service from Firebase by ID
+async function fetchServiceFromFirebase(serviceId: string): Promise<Service | null> {
+  try {
+    const serviceRef = doc(db, 'services', serviceId);
+    const serviceSnap = await getDoc(serviceRef);
+    
+    if (serviceSnap.exists()) {
+      const data = serviceSnap.data();
+      return {
+        id: serviceSnap.id,
+        name: data.name || 'Unknown Service',
+        description: data.description || '',
+        price: data.price || 0,
+        duration: data.duration || 30,
+        category: data.category || '',
+        imageUrl: data.imageUrl || 'https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop',
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching service from Firebase:', error);
+    return null;
+  }
 }
 
 export default function BookingCheckout() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [wallet, setWallet] = useState<CustomerWallet | null>(null);
@@ -46,6 +105,7 @@ export default function BookingCheckout() {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [confirmedBookingId, setConfirmedBookingId] = useState('');
   const [validationError, setValidationError] = useState('');
+  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
   
   // Payment method state
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
@@ -163,6 +223,49 @@ export default function BookingCheckout() {
     setIsLoading(false);
   }, [getCustomerByEmail, getWalletByCustomerId, setCustomerName, setCustomerEmail, setCustomerPhone]);
 
+  // Fetch staff from Firebase
+  useEffect(() => {
+    const loadStaff = async () => {
+      const staff = await fetchStaffFromFirebase();
+      setStaffMembers(staff);
+      console.log('Staff loaded:', staff);
+    };
+    loadStaff();
+  }, []);
+
+  // Fetch service from URL params if provided
+  useEffect(() => {
+    const serviceId = searchParams.get('service');
+    if (serviceId && cartItems.length === 0) {
+      const loadService = async () => {
+        console.log('Fetching service with ID:', serviceId);
+        const service = await fetchServiceFromFirebase(serviceId);
+        if (service) {
+          console.log('Service fetched:', service);
+          // Add to cart directly
+          const cartItem = {
+            serviceId: service.id,
+            serviceName: service.name,
+            price: service.price,
+            duration: service.duration.toString(),
+            description: service.description,
+            image: service.imageUrl || 'https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop',
+            rating: 5,
+            reviews: 0,
+            id: service.id,
+            name: service.name,
+            category: service.category || 'Service'
+          };
+          useBookingStore.setState((state) => ({
+            cartItems: [...state.cartItems, cartItem as any]
+          }));
+        }
+      };
+      loadService();
+    }
+  }, [searchParams]);
+
+
   // Calculate points value
   const pointsValueInDollars = loyaltySettings ? calculatePointsValue(pointsToUse) : 0;
   const maxPointsValue = wallet && loyaltySettings 
@@ -175,6 +278,12 @@ export default function BookingCheckout() {
   const maxPointsToUse = maxPointsValue && loyaltySettings 
     ? Math.floor(maxPointsValue / loyaltySettings.pointsValueInDollars) 
     : 0;
+
+  // Get staff image from staffMembers array
+  const getStaffImage = (staffName: string): string => {
+    const staff = staffMembers.find(s => s.name === staffName);
+    return staff?.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070&auto=format&fit=crop';
+  };
 
   // Calculate final amounts
   const walletDeduction = useWalletBalance ? Math.min(walletAmount, wallet?.balance || 0, cartTotal - couponDiscount) : 0;
@@ -332,7 +441,7 @@ export default function BookingCheckout() {
                   <CardContent className="p-6">
                     <div className="space-y-4">
                       <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
                           <AlertCircle className="w-6 h-6 text-red-600" />
                         </div>
                         <div className="flex-1">
@@ -441,9 +550,13 @@ export default function BookingCheckout() {
                           <SelectValue placeholder="Select barber" />
                         </SelectTrigger>
                         <SelectContent>
-                          {STAFF_MEMBERS.map(staff => (
-                            <SelectItem key={staff} value={staff}>{staff}</SelectItem>
-                          ))}
+                          {staffMembers.length > 0 ? (
+                            staffMembers.map(staff => (
+                              <SelectItem key={staff.id} value={staff.name}>{staff.name}</SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="loading" disabled>Loading staff...</SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                     </div>
@@ -777,7 +890,7 @@ export default function BookingCheckout() {
             <div className="space-y-6">
               <Card className="border-none shadow-lg rounded-none bg-primary text-white sticky top-24">
                 {/* Staff Profile Section - Fixed Height */}
-                <div className="h-40 w-full bg-gradient-to-b from-secondary/20 to-primary flex items-center justify-center overflow-hidden">
+                <div className="h-40 w-full bg-linear-to-b from-secondary/20 to-primary flex items-center justify-center overflow-hidden">
                   {selectedStaff ? (
                     <div className="relative w-full h-full flex items-center justify-center">
                       <Image
@@ -787,7 +900,7 @@ export default function BookingCheckout() {
                         height={160}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent"></div>
+                      <div className="absolute inset-0 bg-linear-to-t from-primary via-transparent to-transparent"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-center">
                         <p className="font-serif font-bold text-lg text-white">{selectedStaff}</p>
                       </div>
@@ -842,8 +955,8 @@ export default function BookingCheckout() {
                               <SelectValue placeholder="Select specialist for this service" />
                             </SelectTrigger>
                             <SelectContent>
-                              {STAFF_MEMBERS.map(staff => (
-                                <SelectItem key={staff} value={staff}>{staff}</SelectItem>
+                              {staffMembers.map(staff => (
+                                <SelectItem key={staff.id} value={staff.name}>{staff.name}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>

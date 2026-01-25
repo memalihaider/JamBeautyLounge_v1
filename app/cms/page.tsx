@@ -29,7 +29,7 @@ export default function LandingPageCMS() {
     subtitle: "Experience signature rituals at our premium flagships",
     ctaPrimary: "Book Now",
     ctaSecondary: "Find Location",
-    backgroundImage: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070&auto=format&fit=crop",
+    backgroundImage: "https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop"
   };
 
   const testimonials = [

@@ -703,7 +703,7 @@ export default function SuperAdminStaff() {
                                   className="w-16 h-16 rounded-full object-cover"
                                 />
                               ) : (
-                                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-semibold">
+                                <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-semibold">
                                   {member.name.split(' ').map(n => n[0]).join('')}
                                 </div>
                               )}
@@ -916,7 +916,7 @@ export default function SuperAdminStaff() {
         <SheetContent className="sm:max-w-lg h-[700px] m-auto rounded-3xl p-4 w-full">
           <div className="flex flex-col h-full">
             {/* Header */}
-            <div className="shrink-0 px-6 py-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+            <div className="shrink-0 px-6 py-6 border-b border-gray-200 bg-linear-to-r from-blue-50 to-indigo-50">
               <SheetHeader className="space-y-3">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center shadow-sm">
@@ -1403,7 +1403,7 @@ export default function SuperAdminStaff() {
         <SheetContent className="sm:max-w-lg h-[700px] m-auto rounded-3xl p-4 w-full">
           <div className="flex flex-col h-full">
             {/* Header */}
-            <div className="shrink-0 px-6 py-6 border-b border-gray-200 bg-gradient-to-r from-amber-50 to-orange-50">
+            <div className="shrink-0 px-6 py-6 border-b border-gray-200 bg-linear-to-r from-amber-50 to-orange-50">
               <SheetHeader className="space-y-3">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shadow-sm">
@@ -1889,7 +1889,7 @@ export default function SuperAdminStaff() {
         <SheetContent className="sm:max-w-md m-auto rounded-3xl p-4 w-full">
           <div className="flex flex-col h-full">
             {/* Header */}
-            <div className="shrink-0 px-6 py-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-pink-50">
+            <div className="shrink-0 px-6 py-6 border-b border-gray-200 bg-linear-to-r from-red-50 to-pink-50">
               <SheetHeader className="space-y-3">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center shadow-sm">
@@ -1929,7 +1929,7 @@ export default function SuperAdminStaff() {
                             className="w-12 h-12 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+                          <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
                             {selectedStaff?.name.split(' ').map(n => n[0]).join('')}
                           </div>
                         )}

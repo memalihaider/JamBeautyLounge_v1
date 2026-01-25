@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/shared/Header";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Carousel, 
   CarouselContent, 
@@ -687,43 +688,17 @@ export default function Home() {
         </Button>
       </div>
 
-      {/* Hero Section - Image Carousel */}
+      {/* Hero Section - Single Image */}
       <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
-        <Carousel 
-          opts={{ 
-            align: "center", 
-            loop: true,
-          }} 
-          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
-          className="w-full h-full"
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110"
+          style={{ 
+            backgroundImage: "url('https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmVhdXR5JTIwc2Fsb258ZW58MHx8MHx8fDA%3D')",
+          }}
         >
-          <CarouselContent className="h-[90vh]">
-            {[
-              "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=2074&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1552813312-7a3d5c9e8b6f?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1600948836101-f3fc9ff8facb?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1580828343064-fde4fc206bc6?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070&auto=format&fit=crop",
-            ].map((image, index) => (
-              <CarouselItem key={index} className="relative w-full h-[90vh] flex items-center justify-center group">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 group-hover:scale-120 transition-transform duration-1000"
-                  style={{ 
-                    backgroundImage: `url('${image}')`,
-                  }}
-                >
-                  <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-black/60 backdrop-blur-[1px]"></div>
-                  <div className="absolute inset-0 bg-linear-to-tr from-primary/20 to-transparent"></div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          {/* Carousel Controls */}
-          <div className="absolute bottom-8 right-8 z-20 flex gap-2 pointer-events-auto">
-            <CarouselPrevious className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
-            <CarouselNext className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
-          </div>
-        </Carousel>
+          <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-black/60 backdrop-blur-[1px]"></div>
+          <div className="absolute inset-0 bg-linear-to-tr from-primary/20 to-transparent"></div>
+        </div>
         
         <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
           <div className="text-center text-white px-4 max-w-5xl mx-auto">
@@ -747,7 +722,7 @@ export default function Home() {
                   BOOK AN EXPERIENCE <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="border-white/40 text-white hover:bg-white/10 px-12 py-8 text-lg rounded-full transition-all duration-700 backdrop-blur-md hover:scale-105 active:scale-95">
+              <Button size="lg" variant="outline" asChild className="border-white/40 text-black hover:bg-white/10 px-12 py-8 text-lg rounded-full transition-all duration-700 backdrop-blur-md hover:scale-105 active:scale-95">
                 <Link href="/services">OUR MENU</Link>
               </Button>
             </div>
@@ -1031,7 +1006,7 @@ export default function Home() {
       {/* Products Slider Section - Boutique Enhancement */}
       <section className="py-32 px-4 bg-primary text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-tr from-secondary/10 to-transparent"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-linear-to-tr from-secondary/10 to-transparent"></div>
         
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
@@ -1357,21 +1332,29 @@ export default function Home() {
               <h2 className="text-5xl md:text-7xl font-serif font-bold text-primary tracking-tight">Master Artisans</h2>
               <p className="text-muted-foreground max-w-xl font-light text-lg">Curating beauty through precision, technique, and a touch of JAM magic.</p>
             </div>
-            <div className="flex items-center gap-4 bg-gray-50 p-2 rounded-full border border-gray-100">
-               <div className="flex -space-x-4">
-                 {staff.slice(0, 4).map((s, i) => (
-                   <div key={i} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden">
-                     <img src={s.image} className="w-full h-full object-cover" alt="" />
-                   </div>
-                 ))}
-               </div>
-               <div className="px-4">
-                 <p className="text-[10px] font-black tracking-widest text-primary uppercase">{staff.length} ELITE MASTERS</p>
-                 <div className="flex items-center gap-1">
-                   <Star className="w-3 h-3 fill-secondary text-secondary" />
-                   <span className="text-[10px] font-bold text-primary font-serif italic">4.9/5 Average Rating</span>
+            <div className="flex flex-col items-end gap-4">
+              <div className="flex items-center gap-4 bg-gray-50 p-2 rounded-full border border-gray-100">
+                 <div className="flex -space-x-4">
+                   {staff.slice(0, 4).map((s, i) => (
+                     <div key={i} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden">
+                       <img src={s.image} className="w-full h-full object-cover" alt="" />
+                     </div>
+                   ))}
                  </div>
-               </div>
+                 <div className="px-4">
+                   <p className="text-[10px] font-black tracking-widest text-primary uppercase">{staff.length} ELITE MASTERS</p>
+                   <div className="flex items-center gap-1">
+                     <Star className="w-3 h-3 fill-secondary text-secondary" />
+                     <span className="text-[10px] font-bold text-primary font-serif italic">4.9/5 Average Rating</span>
+                   </div>
+                 </div>
+              </div>
+              <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-black rounded-full px-8 py-6 text-[10px] tracking-[0.3em] uppercase shadow-xl hover:scale-105 transition-all duration-500">
+                <Link href="/customer/portal/staff">
+                  View All Staff
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Link>
+              </Button>
             </div>
           </div>
 
@@ -1514,7 +1497,7 @@ export default function Home() {
 
       {/* Newsletter Section - Premium */}
       <section className="py-40 px-4 bg-primary relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 blur-sm scale-110"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 blur-sm scale-110"></div>
         <div className="absolute inset-0 bg-primary/90"></div>
         
         <div className="max-w-5xl mx-auto text-center relative z-10">
@@ -1575,13 +1558,18 @@ export default function Home() {
       {/* Footer - Premium Overhaul */}
       <footer className="bg-primary text-white py-40 px-4 border-t border-white/5 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
+        <div className="max-w-7xl auto relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
             <div className="space-y-12">
               <Link href="/" className="inline-block group">
-                <div className="flex items-center gap-3">
-                   <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-white group-hover:rotate-12 transition-transform duration-500">
-                     <Sparkles className="w-6 h-6" />
+                <div className="flex items-center gap-4">
+                   <div className="relative w-14 h-14 rounded-2xl transition-transform duration-500 group-hover:scale-110 overflow-hidden">
+                     <Image
+                       src="/logo.png"
+                       alt="JAM Beauty Lounge"
+                       fill
+                       className="object-contain"
+                     />
                    </div>
                    <h3 className="text-3xl font-serif font-bold tracking-tighter group-hover:text-secondary transition-colors">
                     JAM <span className="opacity-50">BEAUTY</span>

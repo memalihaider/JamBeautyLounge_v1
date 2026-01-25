@@ -450,43 +450,17 @@ export default function Branches() {
         </div>
       )}
 
-      {/* Premium Hero with Image Carousel */}
+      {/* Premium Hero with Single Image */}
       <section className="relative h-96 overflow-hidden">
-        {/* Background Carousel */}
-        <Carousel 
-          opts={{ 
-            align: "center", 
-            loop: true,
-          }} 
-          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
-          className="absolute inset-0 w-full h-full"
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: "url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVhdXR5JTIwc2Fsb29ufGVufDB8fDB8fHww')",
+          }}
         >
-          <CarouselContent className="h-full">
-            {[
-              "https://images.unsplash.com/photo-1552913007-12d65932e836?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1632545639266-7d1ef5d91c15?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1576438436891-519e3b2af870?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1576091160622-137ba884ae86?q=80&w=2070&auto=format&fit=crop",
-            ].map((image, index) => (
-              <CarouselItem key={index} className="relative w-full h-96 flex items-center justify-center group">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 group-hover:scale-120 transition-transform duration-1000"
-                  style={{ 
-                    backgroundImage: `url('${image}')`,
-                  }}
-                >
-                  <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/30 to-primary/70"></div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          {/* Carousel Controls */}
-          <div className="absolute bottom-6 right-6 z-20 flex gap-2">
-            <CarouselPrevious className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
-            <CarouselNext className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
-          </div>
-        </Carousel>
+          <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/30 to-primary/70"></div>
+        </div>
 
         {/* Content Overlay */}
         <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">

@@ -381,7 +381,7 @@ export default function BranchPage({ params }: { params: { id: string } }) {
         {/* CTA */}
         <section className="py-24">
           <div className="bg-secondary rounded-[4rem] p-16 md:p-24 text-center relative overflow-hidden group">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070')] bg-cover bg-center opacity-10 group-hover:scale-110 transition-transform duration-1000"></div>
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070')] bg-cover bg-center opacity-10 group-hover:scale-110 transition-transform duration-1000"></div>
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -ml-32 -mb-32"></div>
             

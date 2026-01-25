@@ -23,6 +23,9 @@ const inconsolata = Inconsolata({
 export const metadata: Metadata = {
   title: "JAM Beauty Lounge Management System",
   description: "JAM Beauty Lounge booking and management system",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

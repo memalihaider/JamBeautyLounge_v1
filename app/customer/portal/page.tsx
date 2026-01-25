@@ -3271,7 +3271,7 @@ const handleAddFeedback = async () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#fcfcfc] via-primary/5 to-secondary/5 flex items-center justify-center overflow-hidden">
+      <div className="min-h-screen bg-linear-to-br from-[#fcfcfc] via-primary/5 to-secondary/5 flex items-center justify-center overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute top-20 right-20 w-72 h-72 bg-secondary/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -3288,7 +3288,7 @@ const handleAddFeedback = async () => {
               
               {/* Center icon container */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-linear-to-br from-secondary to-primary flex items-center justify-center">
                   <Sparkles className="w-8 h-8 text-white animate-bounce" />
                 </div>
               </div>
@@ -3344,7 +3344,7 @@ const handleAddFeedback = async () => {
       <div className="pt-24 pb-16 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Welcome Banner */}
-          <div className="bg-gradient-to-r from-primary to-primary/80 rounded-3xl p-8 mb-8 text-white relative overflow-hidden">
+          <div className="bg-linear-to-r from-primary to-primary/80 rounded-3xl p-8 mb-8 text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
 
@@ -3433,13 +3433,20 @@ const handleAddFeedback = async () => {
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <TabsList className="grid grid-cols-6 w-full bg-gray-100 p-1 rounded-2xl">
+              <TabsList className="grid grid-cols-7 w-full bg-gray-100 p-1 rounded-2xl">
                 <TabsTrigger
                   value="dashboard"
                   className="rounded-xl data-[state=active]:bg-white"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Dashboard
+                </TabsTrigger>
+                <TabsTrigger
+                  value="staff"
+                  className="rounded-xl data-[state=active]:bg-white"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Staff
                 </TabsTrigger>
                 <TabsTrigger
                   value="cart"
@@ -4000,6 +4007,39 @@ const handleAddFeedback = async () => {
                 </div>
               </TabsContent>
 
+              {/* Staff Tab */}
+              <TabsContent value="staff" className="mt-6">
+                <Card className="border-none shadow-lg rounded-2xl">
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-serif flex items-center gap-2">
+                      <Users className="w-6 h-6 text-secondary" />
+                      Browse Our Staff
+                    </CardTitle>
+                    <CardDescription>
+                      View available staff members and book appointments
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-12">
+                      <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600 font-medium mb-4">
+                        Staff Directory
+                      </p>
+                      <p className="text-sm text-gray-500 mb-6">
+                        Browse and book with our talented team members
+                      </p>
+                      <Link href="/customer/portal/staff">
+                        <Button className="bg-secondary hover:bg-secondary/90 text-primary rounded-xl">
+                          <Users className="w-4 h-4 mr-2" />
+                          View All Staff
+                          <ChevronRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
               {/* Cart Tab */}
               <TabsContent value="cart" className="mt-6">
                 <Card className="border-none shadow-lg rounded-2xl">
@@ -4373,7 +4413,7 @@ const handleAddFeedback = async () => {
                             className="flex flex-col md:flex-row items-start md:items-center justify-between p-6 border border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors"
                           >
                             <div className="flex items-start gap-4 mb-4 md:mb-0">
-                              <div className="w-20 h-20 bg-gray-200 rounded-xl overflow-hidden flex-shrink-0">
+                              <div className="w-20 h-20 bg-gray-200 rounded-xl overflow-hidden shrink-0">
                                 <img
                                   src={item.itemImage}
                                   alt={item.itemName}
@@ -5324,7 +5364,7 @@ const handleAddFeedback = async () => {
                       ) : (
                         <>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                            <Card className="bg-linear-to-br from-green-50 to-green-100 border-green-200">
                               <CardContent className="p-4">
                                 <div className="text-center">
                                   <p className="text-3xl font-bold text-green-700">
@@ -5336,7 +5376,7 @@ const handleAddFeedback = async () => {
                                 </div>
                               </CardContent>
                             </Card>
-                            <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+                            <Card className="bg-linear-to-br from-yellow-50 to-yellow-100 border-yellow-200">
                               <CardContent className="p-4">
                                 <div className="text-center">
                                   <p className="text-3xl font-bold text-yellow-700">
@@ -5348,7 +5388,7 @@ const handleAddFeedback = async () => {
                                 </div>
                               </CardContent>
                             </Card>
-                            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                            <Card className="bg-linear-to-br from-blue-50 to-blue-100 border-blue-200">
                               <CardContent className="p-4">
                                 <div className="text-center">
                                   <p className="text-3xl font-bold text-blue-700">
@@ -5499,7 +5539,7 @@ const handleAddFeedback = async () => {
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                          <Card className="bg-gradient-to-br from-primary to-primary/80 text-white">
+                          <Card className="bg-linear-to-br from-primary to-primary/80 text-white">
                             <CardContent className="p-6">
                               <div className="flex items-center justify-between mb-4">
                                 <div>
@@ -5524,7 +5564,7 @@ const handleAddFeedback = async () => {
                             </CardContent>
                           </Card>
 
-                          <Card className="bg-gradient-to-br from-secondary to-secondary/80 text-primary">
+                          <Card className="bg-linear-to-br from-secondary to-secondary/80 text-primary">
                             <CardContent className="p-6">
                               <div className="flex items-center justify-between mb-4">
                                 <div>
@@ -5682,14 +5722,14 @@ const handleAddFeedback = async () => {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Link href="/services">
-                  <Button className="w-full h-24 flex-col gap-3 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 hover:from-blue-100 hover:to-blue-200 text-blue-700">
+                  <Button className="w-full h-24 flex-col gap-3 rounded-xl bg-linear-to-br from-blue-50 to-blue-100 border-blue-200 hover:from-blue-100 hover:to-blue-200 text-blue-700">
                     <Calendar className="w-6 h-6" />
                     <span className="text-sm font-bold">Book Service</span>
                   </Button>
                 </Link>
 
                 <Link href="/products">
-                  <Button className="w-full h-24 flex-col gap-3 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 hover:from-purple-100 hover:to-purple-200 text-purple-700">
+                  <Button className="w-full h-24 flex-col gap-3 rounded-xl bg-linear-to-br from-purple-50 to-purple-100 border-purple-200 hover:from-purple-100 hover:to-purple-200 text-purple-700">
                     <ShoppingCart className="w-6 h-6" />
                     <span className="text-sm font-bold">Shop Products</span>
                   </Button>
@@ -5697,7 +5737,7 @@ const handleAddFeedback = async () => {
 
                 <Button
                   onClick={() => setActiveTab("cart")}
-                  className="w-full h-24 flex-col gap-3 rounded-xl bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:from-green-100 hover:to-green-200 text-green-700"
+                  className="w-full h-24 flex-col gap-3 rounded-xl bg-linear-to-br from-green-50 to-green-100 border-green-200 hover:from-green-100 hover:to-green-200 text-green-700"
                 >
                   <ShoppingCart className="w-6 h-6" />
                   <span className="text-sm font-bold">
@@ -5706,7 +5746,7 @@ const handleAddFeedback = async () => {
                 </Button>
 
                 <Link href="/customer/portal/profile">
-                  <Button className="w-full h-24 flex-col gap-3 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 hover:from-gray-100 hover:to-gray-200 text-gray-700">
+                  <Button className="w-full h-24 flex-col gap-3 rounded-xl bg-linear-to-br from-gray-50 to-gray-100 border-gray-200 hover:from-gray-100 hover:to-gray-200 text-gray-700">
                     <Settings className="w-6 h-6" />
                     <span className="text-sm font-bold">Settings</span>
                   </Button>
@@ -5860,7 +5900,7 @@ const handleAddFeedback = async () => {
                   value={bookingFormData.notes}
                   onChange={(e) => setBookingFormData({...bookingFormData, notes: e.target.value})}
                   placeholder="Any special requirements or notes..."
-                  className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-secondary min-h-[80px]"
+                  className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-secondary min-h-20"
                 />
               </div>
 

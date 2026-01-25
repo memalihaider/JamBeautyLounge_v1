@@ -219,6 +219,7 @@ interface StaffStore {
   staff: StaffMember[];
   isLoading: boolean;
   fetchStaff: () => Promise<void>;
+  setupRealtimeStaff: () => () => void;
 }
 
 const useStaffStore = create<StaffStore>((set) => ({
@@ -237,15 +238,45 @@ const useStaffStore = create<StaffStore>((set) => ({
         staffData.push({
           id: doc.id,
           name: data.name || data.fullName || 'Unknown Staff',
-          image: data.imageUrl || data.image || data.photoURL || '/default-avatar.png',
+          image: data.imageUrl || data.image || data.photoURL || data.profileImage || '/default-avatar.png',
           position: data.position || data.role || 'Barber',
         });
       });
       
+      console.log('Fetched staff:', staffData);
       set({ staff: staffData, isLoading: false });
     } catch (error) {
       console.error('Error fetching staff:', error);
       set({ staff: [], isLoading: false });
+    }
+  },
+
+  setupRealtimeStaff: () => {
+    try {
+      const staffRef = collection(db, 'staff');
+      
+      const unsubscribe = onSnapshot(staffRef, (querySnapshot) => {
+        const staffData: StaffMember[] = [];
+        querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
+          const data = doc.data();
+          staffData.push({
+            id: doc.id,
+            name: data.name || data.fullName || 'Unknown Staff',
+            image: data.imageUrl || data.image || data.photoURL || data.profileImage || '/default-avatar.png',
+            position: data.position || data.role || 'Barber',
+          });
+        });
+        
+        console.log('Real-time staff update:', staffData);
+        set({ staff: staffData });
+      }, (error) => {
+        console.error('Error in real-time staff update:', error);
+      });
+
+      return unsubscribe;
+    } catch (error) {
+      console.error('Error setting up real-time staff updates:', error);
+      return () => {};
     }
   },
 }));
@@ -291,7 +322,7 @@ function ServicesContent() {
     hasFetchedInitialData,
     setupRealtimeUpdates 
   } = useServicesStore();
-  const { staff, fetchStaff, isLoading: staffLoading } = useStaffStore();
+  const { staff, fetchStaff, isLoading: staffLoading, setupRealtimeStaff } = useStaffStore();
   
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStaff, setSelectedStaff] = useState<string>('all');
@@ -309,6 +340,7 @@ function ServicesContent() {
   
   // Use ref to track if we've already set up real-time updates
   const hasSetupRealtimeRef = useRef<boolean>(false);
+  const hasSetupStaffRealtimeRef = useRef<boolean>(false);
 
   // Filter services by selected branch
   const filteredByBranch = selectedBranch
@@ -365,6 +397,16 @@ function ServicesContent() {
     }
   }, [hasFetchedInitialData, setupRealtimeUpdates]);
 
+  // Set up real-time staff updates
+  useEffect(() => {
+    if (!hasSetupStaffRealtimeRef.current && staff.length > 0) {
+      const cleanup = setupRealtimeStaff();
+      hasSetupStaffRealtimeRef.current = true;
+      
+      return cleanup;
+    }
+  }, [staff.length, setupRealtimeStaff]);
+
   // Get unique categories from filtered services
   const categories = [
     { id: 'all', name: 'All Services' },
@@ -392,82 +434,58 @@ function ServicesContent() {
 
   // Handle add to cart with Firestore Integration
   const handleAddToCart = async (service: Service) => {
-    // Check authentication
-    const authData = localStorage.getItem('customerAuth');
-    if (!authData) {
-      router.push('/customer/login?redirect=/services');
-      return;
-    }
-
     try {
+      // Check authentication
+      const authData = localStorage.getItem('customerAuth');
+      if (!authData) {
+        console.warn('No auth data found, redirecting to login');
+        router.push('/customer/login?redirect=/services');
+        return;
+      }
+
       const parsedAuth = JSON.parse(authData);
       const customerData = parsedAuth?.customer;
       if (!customerData) {
+        console.warn('No customer data found, redirecting to login');
         router.push('/customer/login');
         return;
       }
 
       setIsAddingToCart(service.id);
+      console.log('Adding service to cart:', service.name);
 
       const customerId = customerData.id || customerData.uid;
-      const customerName = customerData.name || '';
+      const customerName = customerData.name || 'Guest';
       const customerEmail = customerData.email || '';
 
-      // Check if service already in cart in Firestore
-      try {
-        const cartQuery = query(
-          collection(db, 'cart'),
-          where('customerId', '==', customerId),
-          where('serviceId', '==', service.id),
-          where('status', '==', 'active'),
-          where('type', '==', 'service')
-        );
-        const cartSnapshot = await getDocs(cartQuery);
-        
-        if (cartSnapshot.empty) {
-          // Add new service booking to cart in Firestore
-          await addDoc(collection(db, 'cart'), {
-            customerId,
-            customerName,
-            customerEmail,
-            serviceId: service.id,
-            serviceName: service.name,
-            serviceImage: service.imageUrl,
-            price: service.price,
-            duration: service.duration,
-            quantity: 1,
-            addedAt: serverTimestamp(),
-            status: 'active',
-            type: 'service'
-          });
-        } else {
-          // Update quantity in Firestore
-          const cartDoc = cartSnapshot.docs[0];
-          await updateDoc(doc(db, 'cart', cartDoc.id), {
-            quantity: increment(1),
-            updatedAt: serverTimestamp()
-          });
-        }
-      } catch (indexError) {
-        console.warn('Index error, using fallback method:', indexError);
-        // Fallback: Add without complex query
-        await addDoc(collection(db, 'cart'), {
-          customerId,
-          customerName,
-          customerEmail,
-          serviceId: service.id,
-          serviceName: service.name,
-          serviceImage: service.imageUrl,
-          price: service.price,
-          duration: service.duration,
-          quantity: 1,
-          addedAt: serverTimestamp(),
-          status: 'active',
-          type: 'service'
-        });
+      if (!customerId) {
+        throw new Error('No customer ID found');
       }
 
-      // Also update local cart store
+      // Always add to Firestore cart (no duplicate check for simplicity)
+      const cartData = {
+        customerId,
+        customerName,
+        customerEmail,
+        serviceId: service.id,
+        serviceName: service.name,
+        serviceImage: service.imageUrl || 'https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop',
+        price: Number(service.price) || 0,
+        duration: Number(service.duration) || 30,
+        quantity: 1,
+        addedAt: serverTimestamp(),
+        status: 'active',
+        type: 'service',
+        branchName: service.branchNames?.[0] || 'Main Branch'
+      };
+
+      console.log('Cart data to be saved:', cartData);
+
+      // Add to Firestore
+      const docRef = await addDoc(collection(db, 'cart'), cartData);
+      console.log('Successfully added to Firestore cart:', docRef.id);
+
+      // Also update local cart store for immediate UI feedback
       const cartItem: CartItem = {
         id: service.id,
         name: service.name,
@@ -481,16 +499,20 @@ function ServicesContent() {
       };
 
       addToCart(cartItem);
+      console.log('Updated local cart store');
+
       setAddedService(service.id);
       
+      // Show success message for 3 seconds
       setTimeout(() => {
         setAddedService(null);
         setIsAddingToCart(null);
-      }, 2000);
+      }, 3000);
       
     } catch (error) {
       console.error('Error adding service to cart:', error);
-      alert('Failed to add service to booking. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Failed to add service to booking. ${errorMessage}`);
       setIsAddingToCart(null);
     }
   };
@@ -615,42 +637,17 @@ function ServicesContent() {
     <div className="min-h-screen bg-[#fcfcfc]">
       <Header />
 
-      {/* Premium Hero Section with Image Carousel */}
+      {/* Premium Hero Section with Single Image */}
       <section className="relative py-32 px-4 overflow-hidden h-96">
-        {/* Background Carousel */}
-        <Carousel 
-          opts={{ 
-            align: "center", 
-            loop: true,
-          }} 
-          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })]}
-          className="absolute inset-0 w-full h-full"
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: "url('https://images.unsplash.com/photo-1535241749838-299277b6305f?q=80&w=2070&auto=format&fit=crop')",
+          }}
         >
-          <CarouselContent className="h-full">
-            {[
-              "https://images.unsplash.com/photo-1599351431247-f5094021186d?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1564466809058-bf4114d55352?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1522335617519-26ec2d4ea5ef?q=80&w=2070&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1552987543-3ca62c069efb?q=80&w=2070&auto=format&fit=crop",
-            ].map((image, index) => (
-              <CarouselItem key={index} className="relative w-full h-96 flex items-center justify-center group">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 group-hover:scale-120 transition-transform duration-1000"
-                  style={{ 
-                    backgroundImage: `url('${image}')`,
-                  }}
-                >
-                  <div className="absolute inset-0 bg-linear-to-b from-black/50 via-black/40 to-primary/80"></div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          {/* Carousel Controls */}
-          <div className="absolute bottom-6 right-6 z-20 flex gap-2">
-            <CarouselPrevious className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
-            <CarouselNext className="static bg-white/20 border-white/40 hover:bg-white/30 text-white" />
-          </div>
-        </Carousel>
+          <div className="absolute inset-0 bg-linear-to-b from-black/50 via-black/40 to-primary/80"></div>
+        </div>
 
         {/* Content Overlay */}
         <div className="absolute inset-0 bg-black/40"></div>
