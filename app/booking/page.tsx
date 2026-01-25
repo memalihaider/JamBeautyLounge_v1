@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/shared/Header';
 import { Button } from '@/components/ui/button';
@@ -95,7 +95,8 @@ async function fetchServiceFromFirebase(serviceId: string): Promise<Service | nu
   }
 }
 
-export default function BookingCheckout() {
+// Inner component that uses useSearchParams
+function BookingCheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -1055,5 +1056,14 @@ export default function BookingCheckout() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Export default with Suspense wrapper
+export default function BookingCheckout() {
+  return (
+    <Suspense fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}>
+      <BookingCheckoutContent />
+    </Suspense>
   );
 }

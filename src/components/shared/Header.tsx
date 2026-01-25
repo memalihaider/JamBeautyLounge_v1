@@ -250,7 +250,7 @@ export function Header() {
 
                 {/* Dropdown Menu */}
                 {showProfileMenu && (
-                  <div className="absolute top-12 right-0 bg-white rounded-2xl shadow-2xl border border-primary/5 overflow-hidden min-w-[240px] z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="absolute top-12 right-0 bg-white rounded-2xl shadow-2xl border border-primary/5 overflow-hidden min-w-60 z-50 animate-in fade-in slide-in-from-top-2">
                     <div className="px-5 py-4 bg-primary/5 border-b border-primary/5">
                       <p className="text-sm font-bold text-primary">{customer.name}</p>
                       <p className="text-[10px] uppercase tracking-wider text-primary/40 font-medium">{customer.email}</p>
@@ -319,7 +319,7 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 top-0 left-0 w-full h-screen bg-white z-[60] flex flex-col p-8 transition-all animate-in slide-in-from-right duration-500">
+        <div className="fixed inset-0 top-0 left-0 w-full h-screen bg-white z-60 flex flex-col p-8 transition-all animate-in slide-in-from-right duration-500">
           <div className="flex justify-between items-center mb-12">
             <Link href="/" className="flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
               <div className="relative w-10 h-10 rounded-xl overflow-hidden">

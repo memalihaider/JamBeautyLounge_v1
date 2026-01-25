@@ -500,7 +500,7 @@ export default function Branches() {
         </div>
       </section>
 
-      <div className="py-20 px-4 bg-gradient-to-b from-gray-50/50 to-white">
+      <div className="py-20 px-4 bg-linear-to-b from-gray-50/50 to-white">
         <div className="max-w-7xl mx-auto">
           {/* Filters Section */}
           <div className="flex flex-col lg:flex-row gap-8 mb-16 p-8 bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-white/20 relative overflow-hidden">
@@ -651,7 +651,7 @@ export default function Branches() {
                             e.currentTarget.src = 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2070&auto=format&fit=crop';
                           }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-linear-to-t from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         
                         {/* Rating Overlay */}
                         <div className="absolute bottom-6 left-6 z-10">
@@ -697,7 +697,7 @@ export default function Branches() {
   {branch.name}
 </h3>
                             <p className="text-sm text-gray-600 flex items-center gap-2 mt-2">
-                              <MapPin className="w-3.5 h-3.5 text-secondary flex-shrink-0" />
+                              <MapPin className="w-3.5 h-3.5 text-secondary shrink-0" />
                               <span className="line-clamp-2">{branch.address}</span>
                             </p>
                           </div>
@@ -920,7 +920,7 @@ export default function Branches() {
                     alt={selectedBranch.name}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
                   <Button
                     size="icon"
                     variant="ghost"

@@ -206,7 +206,7 @@ export default function StaffPortal() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
         <Header />
         <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">

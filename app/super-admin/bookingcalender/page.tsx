@@ -2746,7 +2746,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                     {/* Calendar */}
                     <div className="lg:col-span-2">
                       <Card className="border-2 shadow-lg bg-white/50 backdrop-blur-sm">
-                        <CardHeader className="pb-4 border-b bg-gradient-to-r from-primary/5 to-secondary/5">
+                        <CardHeader className="pb-4 border-b bg-linear-to-r from-primary/5 to-secondary/5">
                           <CardTitle className="flex items-center gap-3 text-xl">
                             <Calendar className="w-6 h-6 text-primary" />
                             Booking Calendar
@@ -2787,7 +2787,7 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                     {/* Selected Date Appointments Sidebar */}
                     <div className="lg:col-span-2">
                       <Card className="border-2 shadow-lg bg-white/50 backdrop-blur-sm h-fit sticky top-6">
-                        <CardHeader className="pb-4 border-b bg-gradient-to-r from-primary/5 to-secondary/5">
+                        <CardHeader className="pb-4 border-b bg-linear-to-r from-primary/5 to-secondary/5">
                           <CardTitle className="text-lg lg:text-xl flex items-center gap-3">
                             <Clock className="w-6 h-6 text-primary" />
                             {selectedDate ? selectedDate.toLocaleDateString('en-US', {
