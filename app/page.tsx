@@ -677,8 +677,8 @@ export default function Home() {
     <div className="min-h-screen bg-[#fcfcfc]">
       <Header />
 
-      {/* Refresh Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Refresh Button - Removed */}
+      {/* <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={fetchHomeData}
           className="rounded-full w-12 h-12 bg-primary hover:bg-primary/90 shadow-xl"
@@ -686,7 +686,7 @@ export default function Home() {
         >
           <RefreshCw className="w-5 h-5" />
         </Button>
-      </div>
+      </div> */}
 
       {/* Hero Section - Single Image */}
       <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
