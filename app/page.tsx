@@ -677,16 +677,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#fcfcfc]">
       <Header />
 
-      {/* Refresh Button - Removed */}
-      {/* <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          onClick={fetchHomeData}
-          className="rounded-full w-12 h-12 bg-primary hover:bg-primary/90 shadow-xl"
-          title="Refresh data from Firebase"
-        >
-          <RefreshCw className="w-5 h-5" />
-        </Button>
-      </div> */}
+     
 
       {/* Hero Section - Single Image */}
       <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
@@ -1652,8 +1643,9 @@ export default function Home() {
           <div className="mt-40 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-10 text-white/50 text-[9px] tracking-[0.5em] font-black uppercase">
             <p>&copy; 2026 JAM BEAUTY LOUNGE. ALL RIGHTS RESERVED.</p>
             <div className="flex gap-16">
+              <Link href="/blogs" className="hover:text-white transition-colors">Blog</Link>
+              <Link href="/terms-and-conditions" className="hover:text-white transition-colors">Terms</Link>
               <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
               <a href="#" className="hover:text-white transition-colors">Accessibility</a>
             </div>
           </div>

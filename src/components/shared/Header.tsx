@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -21,13 +21,19 @@ import {
 import { useBranch } from "@/contexts/BranchContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useBookingStore } from "@/stores/booking.store";
+import { type Customer } from "@/stores/customer.store";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const { branches, selectedBranch, setSelectedBranch } = useBranch();
   const { language, setLanguage, t } = useLanguage();
   const { cartItems } = useBookingStore();
+  
+  // Determine if we're on home page
+  const isHomePage = pathname === '/';
+  const isInnerPage = !isHomePage;
   
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -43,34 +49,27 @@ export function Header() {
   }, []);
   
   // Get auth from localStorage
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('user');
-      if (user) {
-        try {
-          const parsed = JSON.parse(user);
-          return parsed.role === 'customer';
-        } catch {
-          return false;
-        }
-      }
-    }
-    return false;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  const [customer, setCustomer] = useState(() => {
-    if (typeof window !== 'undefined' && isLoggedIn) {
-      const user = localStorage.getItem('user');
-      if (user) {
-        try {
-          return JSON.parse(user);
-        } catch {
-          return null;
+  // Initialize auth state after hydration
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsed = JSON.parse(user);
+        if (parsed.role === 'customer') {
+          setIsLoggedIn(true);
+          setCustomer(parsed);
         }
+      } catch {
+        setIsLoggedIn(false);
+        setCustomer(null);
       }
     }
-    return null;
-  });
+    setIsHydrated(true);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -86,6 +85,7 @@ export function Header() {
     { name: t('nav.home'), href: "/" },
     { name: t('nav.services'), href: "/services" },
     { name: t('nav.products'), href: "/products" },
+    { name: t('nav.blog'), href: "/blogs" },
     { name: t('nav.branches'), href: "/branches" },
   ];
 
@@ -93,14 +93,16 @@ export function Header() {
     <header 
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-500",
-        isScrolled 
-          ? "bg-white/95 backdrop-blur-md border-b border-primary/10 py-1 shadow-md" 
-          : "bg-transparent py-4"
+        isInnerPage
+          ? "bg-gray-400/80 backdrop-blur-md border-b border-gray-500/10 py-2 shadow-md"
+          : isScrolled 
+            ? "bg-white/95 backdrop-blur-md border-b border-primary/10 py-1 shadow-md" 
+            : "bg-transparent py-4"
       )} 
       dir={language === 'ar' ? 'rtl' : 'ltr'}
     >
       {/* Top bar (for branches contact info) - Only on larger screens and when not scrolled */}
-      {!isScrolled && (
+      {!isScrolled && isHomePage && (
         <div className="hidden md:block border-b border-white/10 mb-2">
           <div className="max-w-7xl mx-auto px-6 py-1.5 flex justify-between items-center text-[10px] uppercase tracking-[0.2em] font-medium text-white/60">
             <div className="flex items-center gap-6">
@@ -129,7 +131,7 @@ export function Header() {
             isScrolled ? "drop-shadow-sm" : "drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
           )}>
             <Image
-              src="/logo.png"
+              src="/logoo.jpeg"
               alt="JAM BEAUTY LOUNGE"
               fill
               className="object-contain"
@@ -139,13 +141,13 @@ export function Header() {
           <div className="flex flex-col">
             <span className={cn(
               "text-lg font-serif font-bold tracking-tight leading-none transition-colors",
-              isScrolled ? "text-primary" : "text-white"
+              isInnerPage ? "text-white" : (isScrolled ? "text-primary" : "text-white")
             )}>
              <span className="text-secondary"></span>
             </span>
             <span className={cn(
               "text-[8px] uppercase tracking-[0.3em] font-medium transition-colors",
-              isScrolled ? "text-primary/60" : "text-white/60"
+              isInnerPage ? "text-white/70" : (isScrolled ? "text-primary/60" : "text-white/60")
             )}>
               
             </span>
@@ -153,14 +155,19 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center bg-white/5 backdrop-blur-sm rounded-full px-8 py-2.5 border border-white/10 gap-10">
+        <nav className={cn(
+          "hidden lg:flex items-center backdrop-blur-sm rounded-full px-8 py-2.5 border gap-10 transition-all",
+          isInnerPage
+            ? "bg-white/10 border-white/20"
+            : "bg-white/5 border-white/10"
+        )}>
           {navLinks.map((link) => (
             <Link 
               key={link.name}
               href={link.href} 
               className={cn(
                 "text-[10px] uppercase tracking-widest font-bold transition-all duration-300 relative group",
-                isScrolled ? "text-primary/70 hover:text-secondary" : "text-white/80 hover:text-white"
+                isInnerPage ? "text-white/90 hover:text-white" : (isScrolled ? "text-primary/70 hover:text-secondary" : "text-white/80 hover:text-white")
               )}
             >
               {link.name}
@@ -172,8 +179,13 @@ export function Header() {
         {/* Actions Controls */}
         <div className="flex items-center gap-4 relative z-50">
           {/* Branch Selector (Desktop) */}
-          <div className="hidden lg:flex items-center bg-white/5 border border-white/10 rounded-full pl-3 hover:border-white/30 transition-all">
-            <MapPin className={cn("w-3.5 h-3.5 transition-colors", isScrolled ? "text-primary/40" : "text-white/40")} />
+          <div className={cn(
+            "hidden lg:flex items-center border rounded-full pl-3 hover:transition-all",
+            isInnerPage
+              ? "bg-white/10 border-white/20"
+              : "bg-white/5 border-white/10 hover:border-white/30"
+          )}>
+            <MapPin className={cn("w-3.5 h-3.5 transition-colors", isInnerPage ? "text-white/60" : (isScrolled ? "text-primary/40" : "text-white/40"))} />
             <Select 
               value={selectedBranch?.id || ""} 
               onValueChange={(branchId) => {
@@ -182,8 +194,8 @@ export function Header() {
               }}
             >
               <SelectTrigger className={cn(
-                "w-[140px] h-9 border-none bg-transparent text-[10px] uppercase tracking-widest font-bold focus:ring-0",
-                isScrolled ? "text-primary" : "text-white"
+                "w-[140px] h-9 border-none bg-transparent text-[10px] uppercase tracking-widest font-bold focus:ring-0 transition-colors",
+                isInnerPage ? "text-white" : (isScrolled ? "text-primary" : "text-white")
               )}>
                 <SelectValue placeholder={t('branch.select')} />
               </SelectTrigger>
@@ -201,9 +213,11 @@ export function Header() {
           <Link href="/services" className="relative group">
             <div className={cn(
               "p-2.5 rounded-full transition-all duration-300 border",
-              isScrolled 
-                ? "bg-primary/5 border-primary/10 text-primary hover:bg-primary hover:text-white" 
-                : "bg-white/10 border-white/10 text-white hover:bg-white hover:text-primary"
+              isInnerPage 
+                ? "bg-white/10 border-white/20 text-white hover:bg-white hover:text-primary" 
+                : (isScrolled 
+                  ? "bg-primary/5 border-primary/10 text-primary hover:bg-primary hover:text-white" 
+                  : "bg-white/10 border-white/10 text-white hover:bg-white hover:text-primary")
             )}>
               <ShoppingBag className="w-5 h-5 transition-transform group-hover:scale-110" />
               {cartCount > 0 && (
@@ -218,8 +232,8 @@ export function Header() {
           <div className="hidden sm:block">
             <Select value={language} onValueChange={(lang) => setLanguage(lang as 'en' | 'ar')}>
               <SelectTrigger className={cn(
-                "w-12 h-10 border-none bg-transparent focus:ring-0 justify-center",
-                isScrolled ? "text-primary" : "text-white"
+                "w-12 h-10 border-none bg-transparent focus:ring-0 justify-center transition-colors",
+                isInnerPage ? "text-white" : (isScrolled ? "text-primary" : "text-white")
               )}>
                 <Globe className="w-5 h-5" />
               </SelectTrigger>
@@ -232,7 +246,7 @@ export function Header() {
 
           {/* Profile Section */}
           <div className="flex items-center gap-2">
-            {isLoggedIn && customer ? (
+            {isHydrated && isLoggedIn && customer ? (
               <div className="relative">
                 <button
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -244,7 +258,7 @@ export function Header() {
                   <ChevronDown className={cn(
                     "w-3 h-3 transition-transform",
                     showProfileMenu && "rotate-180",
-                    isScrolled ? "text-primary" : "text-white"
+                    isInnerPage ? "text-white" : (isScrolled ? "text-primary" : "text-white")
                   )} />
                 </button>
 

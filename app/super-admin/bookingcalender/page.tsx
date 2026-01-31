@@ -208,6 +208,7 @@ interface Appointment {
   staffId?: string;
   staffRole?: string;
   serviceCategory?: string;
+  category?: string;
   pointsAwarded?: boolean;
   // COMPLETE FIELDS
   cardLast4Digits?: string;
@@ -1118,6 +1119,17 @@ export default function AdminAppointments() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showAppointmentDetails, setShowAppointmentDetails] = useState(false);
+
+  // Advanced Filters State
+  const [employeeFilter, setEmployeeFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState('');
+  const [monthFilter, setMonthFilter] = useState('');
+  const [branchFilter, setBranchFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [serviceFilter, setServiceFilter] = useState('all');
+  const [customerFilter, setCustomerFilter] = useState('');
+  const [bookingNumberFilter, setBookingNumberFilter] = useState('');
+  const [bookingStatusFilter, setBookingStatusFilter] = useState('all');
   // State management mein yeh add karein
 const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
 const [showEditDialog, setShowEditDialog] = useState(false);
@@ -1319,6 +1331,7 @@ const [editSelectedServices, setEditSelectedServices] = useState<FirebaseService
       staffId: booking.staffId,
       staffRole: booking.staffRole,
       serviceCategory: booking.serviceCategory,
+      category: booking.serviceCategory || '',
       pointsAwarded: booking.pointsAwarded || false,
       // COMPLETE FIELDS
       cardLast4Digits: booking.cardLast4Digits || '',
@@ -1342,16 +1355,56 @@ const [editSelectedServices, setEditSelectedServices] = useState<FirebaseService
 
   const allAppointments = [...mockAppointments, ...convertedBookings];
 
-  const filteredAppointments = allAppointments.filter(appointment => {
-    const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
-    const matchesSearch = appointment.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         appointment.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         appointment.barber.toLowerCase().includes(searchQuery.toLowerCase());
-    const dateString = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
-    const matchesDate = !selectedDate || appointment.date === dateString;
-    return matchesStatus && matchesSearch && matchesDate;
-  });
+  // Advanced Filter Logic
+  const applyAdvancedFilters = (appointments: Appointment[]): Appointment[] => {
+    return appointments.filter(appointment => {
+      // Status filter
+      const matchesStatus = bookingStatusFilter === 'all' || appointment.status === bookingStatusFilter;
+      
+      // Employee/Staff filter
+      const matchesEmployee = employeeFilter === 'all' || 
+        appointment.barber.toLowerCase().includes(employeeFilter.toLowerCase());
+      
+      // Date filter (specific date)
+      const matchesDate = !dateFilter || appointment.date === dateFilter;
+      
+      // Month filter (YYYY-MM format)
+      const matchesMonth = !monthFilter || appointment.date.startsWith(monthFilter);
+      
+      // Customer name filter
+      const matchesCustomer = !customerFilter || 
+        appointment.customer.toLowerCase().includes(customerFilter.toLowerCase());
+      
+      // Booking number filter
+      const matchesBookingNumber = !bookingNumberFilter || 
+        (appointment.firebaseId && appointment.firebaseId.includes(bookingNumberFilter)) ||
+        String(appointment.id).includes(bookingNumberFilter);
+      
+      // Branch filter
+      const matchesBranch = branchFilter === 'all' || 
+                           appointment.branch === branchFilter;
+      
+      // Category filter
+      const matchesCategory = categoryFilter === 'all' || 
+                             appointment.category === categoryFilter;
+      
+      // Service filter
+      const matchesService = serviceFilter === 'all' || 
+                            appointment.service === serviceFilter;
 
+      // Search query (general search)
+      const matchesSearch = appointment.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           appointment.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           appointment.barber.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      return matchesStatus && matchesEmployee && matchesDate && matchesMonth && 
+             matchesCustomer && matchesBookingNumber && matchesSearch &&
+             matchesBranch && matchesCategory && matchesService;
+    });
+  };
+
+  const filteredAppointments = applyAdvancedFilters(allAppointments);
+  
   const getAppointmentsForDate = (date: Date): Appointment[] => {
     const dateString = format(date, 'yyyy-MM-dd');
     return allAppointments.filter(apt => apt.date === dateString);
@@ -2490,6 +2543,10 @@ const handleDeleteBooking = async (appointment: Appointment) => {
       tax: booking.tax || 5
     }));
 
+  const filteredPendingAppointments = useMemo(() => {
+    return applyAdvancedFilters(pendingAppointments);
+  }, [pendingAppointments, searchQuery, bookingStatusFilter, employeeFilter, dateFilter, monthFilter, customerFilter, bookingNumberFilter, branchFilter, categoryFilter, serviceFilter]);
+
   const getStatusColor = (status: string): string => {
     switch (status) {
       case "completed": return "bg-green-100 text-green-800 border-green-200";
@@ -2696,8 +2753,8 @@ const handleDeleteBooking = async (appointment: Appointment) => {
           <div className="flex-1 overflow-auto min-h-0">
             <div className="h-full p-4 lg:p-8">
               <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'calendar' | 'advanced-calendar' | 'list' | 'approvals' | 'product-orders')}>
-                <div className="flex items-center justify-between mb-6">
-                  <TabsList>
+                <div className="mb-6">
+                  <TabsList className="mb-6">
                     <TabsTrigger value="calendar">Calendar View</TabsTrigger>
                     <TabsTrigger value="advanced-calendar">Advanced Calendar</TabsTrigger>
                     <TabsTrigger value="list">List View</TabsTrigger>
@@ -2705,31 +2762,128 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                     <TabsTrigger value="product-orders">Product Orders</TabsTrigger>
                   </TabsList>
 
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1 max-w-sm">
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input
-                          placeholder="Search appointments..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-10"
-                        />
+                  {/* Advanced Filters Panel */}
+                  {/* Advanced Filters Panel */}
+                  <Card className="border bg-gray-50/30 p-2 shadow-sm">
+                    <div className="space-y-2">
+                      {/* Row 1: Primary Filters */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Date From</label>
+                          <Input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="h-8 text-xs bg-white" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Date To</label>
+                          <Input type="date" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} className="h-8 text-xs bg-white" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Branch</label>
+                          <Select value={branchFilter} onValueChange={setBranchFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Branches</SelectItem>
+                              {branches.map(b => (<SelectItem key={b.id} value={b.name}>{b.name}</SelectItem>))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Employee</label>
+                          <Select value={employeeFilter} onValueChange={setEmployeeFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Staff</SelectItem>
+                              {staffMembers.map(s => (<SelectItem key={s.id} value={s.name}>{s.name}</SelectItem>))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Category</label>
+                          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Categories</SelectItem>
+                              {categories.map(c => (<SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Service</label>
+                          <Select value={serviceFilter} onValueChange={setServiceFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Services</SelectItem>
+                              {services.slice(0, 20).map(s => (<SelectItem key={s.id} value={s.name}>{s.name}</SelectItem>))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Row 2: Secondary Filters & Actions */}
+                      <div className="flex flex-wrap items-end gap-2 pt-1.5 border-t border-gray-100">
+                        <div className="w-full sm:w-40 space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Status</label>
+                          <Select value={bookingStatusFilter} onValueChange={setBookingStatusFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Status</SelectItem>
+                              <SelectItem value="pending">Pending</SelectItem>
+                              <SelectItem value="approved">Approved</SelectItem>
+                              <SelectItem value="scheduled">Scheduled</SelectItem>
+                              <SelectItem value="completed">Completed</SelectItem>
+                              <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex-1 min-w-[200px] space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Search Customer / Booking ID</label>
+                          <div className="relative">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <Input placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8 h-8 text-xs bg-white" />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="h-8 px-3 flex items-center bg-blue-50 text-blue-700 rounded border border-blue-100 text-[11px] font-bold">
+                            {filteredAppointments.length} RESULTS
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => {
+                              setSearchQuery(''); 
+                              setBookingStatusFilter('all'); 
+                              setEmployeeFilter('all'); 
+                              setBranchFilter('all');
+                              setCategoryFilter('all');
+                              setServiceFilter('all');
+                              setDateFilter(''); 
+                              setMonthFilter(''); 
+                              setCustomerFilter(''); 
+                              setBookingNumberFilter('');
+                            }} 
+                            className="h-8 px-3 text-xs border-gray-300 hover:bg-gray-100 rounded"
+                          >
+                            Reset
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            className="h-8 px-4 text-xs bg-blue-600 hover:bg-blue-700 text-white shadow-sm rounded"
+                          >
+                            Apply
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="scheduled">Scheduled</SelectItem>
-                        <SelectItem value="in-progress">In Progress</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  </Card>
                 </div>
 
                 {/* Calendar View Tab */}
@@ -3162,13 +3316,134 @@ const handleDeleteBooking = async (appointment: Appointment) => {
 
                 {/* Booking Approvals Tab */}
                 <TabsContent value="approvals" className="space-y-6">
+                  {/* Advanced Filters Panel for Approvals */}
+                  <Card className="border bg-gray-50/30 p-2 shadow-sm">
+                    <div className="space-y-2">
+                      {/* Row 1: Primary Filters */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Date From</label>
+                          <Input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="h-8 text-xs bg-white" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Date To</label>
+                          <Input type="date" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} className="h-8 text-xs bg-white" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Branch</label>
+                          <Select value={branchFilter} onValueChange={setBranchFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Branches</SelectItem>
+                              {branches.map(b => (<SelectItem key={b.id} value={b.name}>{b.name}</SelectItem>))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Employee</label>
+                          <Select value={employeeFilter} onValueChange={setEmployeeFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Staff</SelectItem>
+                              {staffMembers.map(s => (<SelectItem key={s.id} value={s.name}>{s.name}</SelectItem>))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Category</label>
+                          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Categories</SelectItem>
+                              {categories.map(c => (<SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Service</label>
+                          <Select value={serviceFilter} onValueChange={setServiceFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="All" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Services</SelectItem>
+                              {services.slice(0, 20).map(s => (<SelectItem key={s.id} value={s.name}>{s.name}</SelectItem>))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Row 2: Secondary Filters & Actions */}
+                      <div className="flex flex-wrap items-end gap-2 pt-1.5 border-t border-gray-100">
+                        <div className="w-full sm:w-40 space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Status</label>
+                          <Select value={bookingStatusFilter} onValueChange={setBookingStatusFilter}>
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                              <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Status</SelectItem>
+                              <SelectItem value="pending">Pending</SelectItem>
+                              <SelectItem value="approved">Approved</SelectItem>
+                              <SelectItem value="scheduled">Scheduled</SelectItem>
+                              <SelectItem value="completed">Completed</SelectItem>
+                              <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex-1 min-w-[200px] space-y-1">
+                          <label className="text-[10px] font-semibold text-gray-500 uppercase px-0.5">Search Customer / Booking ID</label>
+                          <div className="relative">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                            <Input placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-8 h-8 text-xs bg-white" />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="h-8 px-3 flex items-center bg-blue-50 text-blue-700 rounded border border-blue-100 text-[11px] font-bold">
+                            {filteredPendingAppointments.length} RESULTS
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => {
+                              setSearchQuery(''); 
+                              setBookingStatusFilter('all'); 
+                              setEmployeeFilter('all'); 
+                              setBranchFilter('all');
+                              setCategoryFilter('all');
+                              setServiceFilter('all');
+                              setDateFilter(''); 
+                              setMonthFilter(''); 
+                              setCustomerFilter(''); 
+                              setBookingNumberFilter('');
+                            }} 
+                            className="h-8 px-3 text-xs border-gray-300 hover:bg-gray-100 rounded"
+                          >
+                            Reset
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            className="h-8 px-4 text-xs bg-blue-600 hover:bg-blue-700 text-white shadow-sm rounded"
+                          >
+                            Apply
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
                   <div className="space-y-4">
                     {loading.bookings ? (
                       <div className="text-center py-16 px-8">
                         <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
                         <p className="text-gray-600">Loading bookings from Firebase...</p>
                       </div>
-                    ) : pendingAppointments.length === 0 ? (
+                    ) : filteredPendingAppointments.length === 0 ? (
                       <div className="text-center py-16 px-8">
                         <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                           <CheckCircle className="w-10 h-10 text-green-500" />
@@ -3177,14 +3452,14 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                         <p className="text-gray-500 text-lg">No pending approvals at the moment</p>
                       </div>
                     ) : (
-                      pendingAppointments.map((appointment) => (
+                      filteredPendingAppointments.map((appointment) => (
                         <Card key={appointment.id.toString()} className="border-l-4 border-l-orange-500 shadow-sm hover:shadow-md transition-all">
                           <CardContent className="p-4">
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                               {/* Customer & Service Info */}
                               <div className="md:col-span-3">
                                 <div className="flex items-center gap-3 mb-2">
-                                  <div className="w-10 h-10 bg-linear-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
+                                  <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
                                     <User className="w-5 h-5 text-primary" />
                                   </div>
                                   <div className="min-w-0">
@@ -4172,74 +4447,42 @@ const handleDeleteBooking = async (appointment: Appointment) => {
             </SheetDescription>
           </SheetHeader>
 
-          <div className="space-y-6 pb-6">
-            {/* Customer Information */}
-            <div className="space-y-6 p-6 bg-gray-50/50 rounded-lg border">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <User className="w-5 h-5 text-primary" />
-                Customer Information
+          <div className="space-y-4 pb-6">
+            {/* Customer Information - COMPACT */}
+            <div className="p-4 bg-gray-50/50 rounded-lg border space-y-3">
+              <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2 uppercase tracking-widest">
+                <User className="w-4 h-4 text-primary" />
+                Customer Info
               </h3>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Customer Name *</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Name *</label>
                   <Input
-                    placeholder="Enter customer name"
+                    placeholder="Customer name"
                     value={bookingData.customer}
                     onChange={(e) => setBookingData({...bookingData, customer: e.target.value})}
-                    className="h-11"
+                    className="h-9 text-sm"
                   />
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Phone</label>
-                    <Input
-                      placeholder="(555) 123-4567"
-                      value={bookingData.phone}
-                      onChange={(e) => setBookingData({...bookingData, phone: e.target.value})}
-                      className="h-11"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Email</label>
-                    <Input
-                      type="email"
-                      placeholder="customer@email.com"
-                      value={bookingData.email}
-                      onChange={(e) => setBookingData({...bookingData, email: e.target.value})}
-                      className="h-11"
-                    />
-                  </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Phone</label>
+                  <Input
+                    placeholder="(555) 123-4567"
+                    value={bookingData.phone}
+                    onChange={(e) => setBookingData({...bookingData, phone: e.target.value})}
+                    className="h-9 text-sm"
+                  />
                 </div>
-
-                {/* Card Last 4 Digits & TRN Number */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-gray-500" />
-                      Card Last 4 Digits
-                    </label>
-                    <Input
-                      placeholder="1234"
-                      value={bookingData.cardLast4Digits}
-                      onChange={(e) => setBookingData({...bookingData, cardLast4Digits: e.target.value})}
-                      className="h-11"
-                      maxLength={4}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                      <Hash className="w-4 h-4 text-gray-500" />
-                      TRN Number
-                    </label>
-                    <Input
-                      placeholder="Enter TRN number"
-                      value={bookingData.trnNumber}
-                      onChange={(e) => setBookingData({...bookingData, trnNumber: e.target.value})}
-                      className="h-11"
-                    />
-                  </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Email</label>
+                  <Input
+                    type="email"
+                    placeholder="email@example.com"
+                    value={bookingData.email}
+                    onChange={(e) => setBookingData({...bookingData, email: e.target.value})}
+                    className="h-9 text-sm"
+                  />
                 </div>
               </div>
             </div>
@@ -4603,12 +4846,26 @@ const handleDeleteBooking = async (appointment: Appointment) => {
                             type="button"
                             variant="ghost"
                             size="sm"
+                            title="Remove this team member from booking"
                             onClick={() => {
-                              setBookingData(prev => ({
-                                ...prev,
-                                teamMembers: prev.teamMembers.filter((_, i) => i !== index),
-                                barber: index === 0 && prev.teamMembers.length > 1 ? prev.teamMembers[1].name : prev.barber
-                              }));
+                              setBookingData(prev => {
+                                const updatedTeamMembers = prev.teamMembers.filter((_, i) => i !== index);
+                                let newBarber = prev.barber;
+                                
+                                // If removing the primary staff (barber), assign to next available team member
+                                if (index === 0 && updatedTeamMembers.length > 0) {
+                                  newBarber = updatedTeamMembers[0].name;
+                                } else if (index === 0 && updatedTeamMembers.length === 0) {
+                                  // If removing the last team member, set barber to empty
+                                  newBarber = "";
+                                }
+                                
+                                return {
+                                  ...prev,
+                                  teamMembers: updatedTeamMembers,
+                                  barber: newBarber
+                                };
+                              });
                             }}
                           >
                             <XCircle className="w-4 h-4 text-red-500" />
@@ -4974,101 +5231,62 @@ const handleDeleteBooking = async (appointment: Appointment) => {
               </div>
             </div>
 
-            {/* Date & Time */}
-            <div className="space-y-6 p-6 bg-gray-50/50 rounded-lg border">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-primary" />
+            {/* Booking Date & Time */}
+            <div className="p-4 bg-gray-50/50 rounded-lg border space-y-3">
+              <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2 uppercase tracking-widest">
+                <Calendar className="w-4 h-4 text-primary" />
                 Date & Time
               </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Date *</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Date *</label>
                   <Input
                     type="date"
                     value={bookingData.date}
                     onChange={(e) => setBookingData({...bookingData, date: e.target.value})}
-                    className="h-11"
+                    className="h-9"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Time *</label>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Time *</label>
                   <Input
                     type="time"
                     value={bookingData.time}
                     onChange={(e) => setBookingData({...bookingData, time: e.target.value})}
-                    className="h-11"
+                    className="h-9"
                   />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Status</label>
+                  <Select value={bookingData.status} onValueChange={(value) => setBookingData({...bookingData, status: value})}>
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="scheduled">Scheduled</SelectItem>
+                      <SelectItem value="in-progress">In Progress</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
 
-            {/* Invoice Generation */}
-            <div className="space-y-6 p-6 bg-gray-50/50 rounded-lg border">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Receipt className="w-5 h-5 text-primary" />
-                Invoice Options
-              </h3>
-
-              <div className="space-y-4">
-                {bookingData.status === 'completed' ? (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <label htmlFor="generateInvoice" className="text-sm font-medium text-gray-700">
-                        Generate invoice automatically after booking
-                      </label>
-                      <Switch
-                        id="generateInvoice"
-                        checked={bookingData.generateInvoice}
-                        onCheckedChange={(checked) => setBookingData({...bookingData, generateInvoice: checked})}
-                      />
-                    </div>
-
-                    {bookingData.generateInvoice && (
-                      <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div className="flex items-center gap-2 text-blue-800">
-                          <Receipt className="w-4 h-4" />
-                          <span className="text-sm font-medium">Invoice will be generated with:</span>
-                        </div>
-                        <ul className="mt-2 text-sm text-blue-700 space-y-1">
-                          <li>• Customer details and booking information</li>
-                          <li>• Itemized services and products</li>
-                          <li>• Tax calculation and total amount</li>
-                          <li>• Payment terms and due date</li>
-                          <li>• All selected services ({selectedServices.length})</li>
-                        </ul>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <div className="flex items-center gap-2 text-yellow-800">
-                      <AlertCircle className="w-4 h-4" />
-                      <span className="text-sm font-medium">Invoice generation is only available for completed services</span>
-                    </div>
-                    <p className="mt-2 text-sm text-yellow-700">
-                      Set the booking status to "Completed" to enable invoice generation options.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Notes */}
-            <div className="space-y-6 p-6 bg-gray-50/50 rounded-lg border">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-primary" />
-                Additional Notes
+            <div className="p-4 bg-gray-50/50 rounded-lg border space-y-2">
+              <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2 uppercase tracking-widest">
+                <FileText className="w-4 h-4 text-primary" />
+                Notes
               </h3>
-
-              <div className="space-y-2">
-                <Textarea
-                  placeholder="Any special requests or notes..."
-                  value={bookingData.notes}
-                  onChange={(e) => setBookingData({...bookingData, notes: e.target.value})}
-                  className="min-h-[100px] resize-none"
-                />
-              </div>
+              <Textarea
+                placeholder="Any special requests or notes..."
+                value={bookingData.notes}
+                onChange={(e) => setBookingData({...bookingData, notes: e.target.value})}
+                className="min-h-[80px] text-sm resize-none"
+              />
             </div>
           </div>
 

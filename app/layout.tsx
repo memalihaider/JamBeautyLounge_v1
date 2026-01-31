@@ -1,24 +1,6 @@
 import type { Metadata } from "next";
-import { Poppins, Playfair_Display, Inconsolata } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair-display",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
-
-const inconsolata = Inconsolata({
-  variable: "--font-inconsolata",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "JAM Beauty Lounge Management System",
@@ -36,7 +18,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${inconsolata.variable} ${playfairDisplay.variable} antialiased font-sans transition-all duration-300`}
+        className="antialiased font-sans transition-all duration-300"
+        style={{ fontFamily: "'Aptos', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" }}
       >
         <Providers>
           <div className="page-transition">

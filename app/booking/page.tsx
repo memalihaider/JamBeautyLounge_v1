@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/shared/Header';
+import { Footer } from '@/components/shared/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,7 +18,7 @@ import { useCustomerStore, type Customer, type CustomerWallet } from '@/stores/c
 import Link from 'next/link';
 import Image from 'next/image';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, QueryDocumentSnapshot, DocumentData, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, QueryDocumentSnapshot, DocumentData, doc, getDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface StaffMember {
   id: string;
@@ -296,7 +297,7 @@ function BookingCheckoutContent() {
   // Points to be earned
   const pointsToEarn = loyaltySettings ? calculatePointsForAmount(cartTotal) : 0;
 
-  const handleConfirmBooking = () => {
+  const handleConfirmBooking = async () => {
     // Validate that all services have staff assigned
     const servicesWithoutStaff = cartItems.filter(item => !item.staffMember);
     if (servicesWithoutStaff.length > 0) {
@@ -309,16 +310,22 @@ function BookingCheckoutContent() {
       return;
     }
 
-    // Validate payment
-    if (paymentMethod === 'wallet' && remainingAmount > 0) {
+    // Validate payment method requirements
+    if ((paymentMethod === 'wallet' || paymentMethod === 'mixed') && !isLoggedIn) {
+      setValidationError('Please sign in to use Digital Wallet or Mixed payment methods. Use Cash on Delivery for guest checkout.');
+      return;
+    }
+
+    // Validate wallet payment has sufficient balance
+    if (paymentMethod === 'wallet' && isLoggedIn && wallet && wallet.balance < finalTotal) {
       setValidationError('Insufficient wallet balance. Please add more funds or choose a different payment method.');
       return;
     }
 
     setValidationError('');
 
-    // Process payment deductions
-    if (customer && isLoggedIn) {
+    // Process payment deductions and create booking for logged-in users
+    if (isLoggedIn && customer) {
       // Deduct wallet balance if used
       if (useWalletBalance && walletDeduction > 0) {
         deductFromWalletBalance(customer.id, walletDeduction, 'Payment for booking', '');
@@ -351,12 +358,102 @@ function BookingCheckoutContent() {
         specialRequests: specialRequests,
       });
 
+      // Save booking to Firebase for real-time database integration
+      try {
+        const bookingRef = collection(db, 'bookings');
+        await addDoc(bookingRef, {
+          bookingId: newBooking.id,
+          customerId: customer.id,
+          customerName: customerName,
+          customerEmail: customerEmail,
+          customerPhone: customerPhone,
+          services: cartItems.map(item => ({
+            serviceId: item.serviceId,
+            serviceName: item.serviceName,
+            price: item.price,
+            duration: parseInt(item.duration, 10),
+            staffMember: item.staffMember,
+          })),
+          date: selectedDate,
+          time: selectedTime,
+          totalAmount: cartTotal,
+          finalAmount: finalTotal,
+          couponCode: appliedCoupon?.code || null,
+          couponDiscount: couponDiscount,
+          pointsEarned: pointsToEarn,
+          pointsUsed: usePoints ? pointsToUse : 0,
+          walletAmountUsed: walletDeduction,
+          cashAmount: remainingAmount,
+          paymentMethod: paymentMethod,
+          status: 'pending',
+          specialRequests: specialRequests,
+          totalDuration: getTotalDuration(),
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+        console.log('Booking saved to Firebase successfully');
+      } catch (error) {
+        console.error('Error saving booking to Firebase:', error);
+      }
+
       setConfirmedBookingId(newBooking.id);
       clearCart();
       setBookingConfirmed(true);
       setTimeout(() => {
         router.push('/customer/portal/bookings');
       }, 5000);
+    } else if (!isLoggedIn && paymentMethod === 'cash') {
+      // Handle guest checkout with cash payment
+      try {
+        // Generate a guest booking ID
+        const guestBookingId = `GUEST-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Save guest booking to Firebase
+        const bookingRef = collection(db, 'bookings');
+        await addDoc(bookingRef, {
+          bookingId: guestBookingId,
+          customerId: 'guest',
+          customerName: customerName,
+          customerEmail: customerEmail,
+          customerPhone: customerPhone,
+          services: cartItems.map(item => ({
+            serviceId: item.serviceId,
+            serviceName: item.serviceName,
+            price: item.price,
+            duration: parseInt(item.duration, 10),
+            staffMember: item.staffMember,
+          })),
+          date: selectedDate,
+          time: selectedTime,
+          totalAmount: cartTotal,
+          finalAmount: cartTotal - couponDiscount,
+          couponCode: appliedCoupon?.code || null,
+          couponDiscount: couponDiscount,
+          pointsEarned: 0,
+          pointsUsed: 0,
+          walletAmountUsed: 0,
+          cashAmount: cartTotal - couponDiscount,
+          paymentMethod: 'cash',
+          status: 'pending',
+          specialRequests: specialRequests,
+          totalDuration: getTotalDuration(),
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+        console.log('Guest booking saved to Firebase successfully');
+        
+        setConfirmedBookingId(guestBookingId);
+        clearCart();
+        setBookingConfirmed(true);
+        
+        // Show confirmation and redirect
+        setTimeout(() => {
+          router.push('/');
+        }, 5000);
+      } catch (error) {
+        console.error('Error saving guest booking to Firebase:', error);
+        setValidationError('Failed to confirm booking. Please try again.');
+      }
     }
   };
 
@@ -420,10 +517,10 @@ function BookingCheckoutContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc]">
+    <div className="min-h-screen bg-[#fcfcfc] flex flex-col">
       <Header />
       
-      <div className="pt-24 pb-16 px-4">
+      <div className="flex-1 pt-24 pb-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-2 mb-6">
             <Button variant="ghost" asChild className="p-0 hover:bg-transparent text-muted-foreground hover:text-primary">
@@ -437,18 +534,18 @@ function BookingCheckoutContent() {
             {/* Left Column: Booking Details */}
             <div className="lg:col-span-2 space-y-6">
               {/* Mandatory Sign-In Alert */}
-              {!isLoggedIn && (
-                <Card className="border-2 border-red-200 shadow-lg rounded-2xl bg-linear-to-r from-red-50 to-red-50">
+              {!isLoggedIn && paymentMethod !== 'cash' && (
+                <Card className="border-2 border-blue-200 shadow-lg rounded-2xl bg-linear-to-r from-blue-50 to-blue-50">
                   <CardContent className="p-6">
                     <div className="space-y-4">
                       <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
-                          <AlertCircle className="w-6 h-6 text-red-600" />
+                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                          <AlertCircle className="w-6 h-6 text-blue-600" />
                         </div>
                         <div className="flex-1">
-                          <p className="font-bold text-red-900 text-lg">Account Login Required</p>
-                          <p className="text-sm text-red-700 mt-1">
-                            Booking a service requires an active customer account. Sign in to access Digital Wallet payments, loyalty points, and exclusive member benefits.
+                          <p className="font-bold text-blue-900 text-lg">Account Login Required</p>
+                          <p className="text-sm text-blue-700 mt-1">
+                            Digital Wallet and Mixed payment methods require an active account. Sign in to access your wallet balance, loyalty points, and exclusive member benefits.
                           </p>
                         </div>
                       </div>
@@ -470,12 +567,12 @@ function BookingCheckoutContent() {
 
                       <div className="flex gap-3 pl-16 pt-2">
                         <Link href="/customer/login">
-                          <Button className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold tracking-widest text-xs px-6">
+                          <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold tracking-widest text-xs px-6">
                             Sign In Now
                           </Button>
                         </Link>
                         <Link href="/customer/login">
-                          <Button variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 rounded-xl font-bold tracking-widest text-xs">
+                          <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50 rounded-xl font-bold tracking-widest text-xs">
                             Create Account
                           </Button>
                         </Link>
@@ -543,23 +640,6 @@ function BookingCheckoutContent() {
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
                       />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="staff" className="text-[10px] uppercase tracking-widest font-bold">Preferred Specialist</Label>
-                      <Select value={selectedStaff} onValueChange={setSelectedStaff}>
-                        <SelectTrigger className="rounded-none border-gray-200 h-10 text-sm">
-                          <SelectValue placeholder="Select barber" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {staffMembers.length > 0 ? (
-                            staffMembers.map(staff => (
-                              <SelectItem key={staff.id} value={staff.name}>{staff.name}</SelectItem>
-                            ))
-                          ) : (
-                            <SelectItem value="loading" disabled>Loading staff...</SelectItem>
-                          )}
-                        </SelectContent>
-                      </Select>
                     </div>
                   </div>
                   <div className="space-y-1.5">
@@ -1039,7 +1119,7 @@ function BookingCheckoutContent() {
 
                       <Button 
                         className="w-full bg-secondary hover:bg-secondary/90 text-primary font-bold py-6 rounded-lg tracking-[0.2em] text-xs shadow-lg shadow-secondary/20 transition-all duration-300 hover:scale-[1.02] active:scale-95"
-                        disabled={!customerName || !customerEmail || !selectedDate || !selectedTime || cartItems.some(item => !item.staffMember) || !isLoggedIn}
+                        disabled={!customerName || !customerEmail || !selectedDate || !selectedTime || cartItems.some(item => !item.staffMember) || (paymentMethod !== 'cash' && !isLoggedIn)}
                         onClick={handleConfirmBooking}
                       >
                         CONFIRM BOOKING
@@ -1055,6 +1135,7 @@ function BookingCheckoutContent() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

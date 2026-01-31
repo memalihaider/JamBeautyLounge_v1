@@ -97,16 +97,22 @@ export default function ProtectedRoute({ children, requiredRole }: ProtectedRout
     if (requiredRole && user.role !== requiredRole) {
       console.log(`❌ Role mismatch. User: ${user.role}, Required: ${requiredRole}`);
       setAccessDenied(true);
-      
+
       // Show alert
       alert(`ACCESS DENIED!\n\nYou are logged in as: ${user.role.toUpperCase()}\nThis page requires: ${requiredRole.toUpperCase()}\n\nYou will be redirected to your dashboard.`);
-      
-      // Redirect to appropriate dashboard
-      if (user.role === 'super_admin') {
-        router.push('/super-admin');
-      } else {
-        router.push('/admin');
-      }
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        if (user.role === 'super_admin') {
+          router.push('/super-admin');
+        } else if (user.role === 'admin') {
+          router.push('/admin');
+        } else if (user.role === 'customer') {
+          router.push('/customer/portal');
+        } else {
+          router.push('/');
+        }
+      }, 100);
       return;
     }
 
