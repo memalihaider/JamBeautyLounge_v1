@@ -632,7 +632,7 @@ function SidebarContent({ role, onLogout, onToggle, isCollapsed = false }: Omit<
             </div>
             {!isCollapsed && (
               <span className="text-lg font-serif font-bold text-white tracking-tighter mt-1">
-                MAN OF <span className="text-secondary">CAVE</span>
+                Jam <span className="text-secondary">Beauty</span>
               </span>
             )}
           </Link>

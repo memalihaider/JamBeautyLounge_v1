@@ -73,7 +73,7 @@ export const useProductsStore = create<ProductsStore>()(
         rating: 4.7,
         reviews: 156,
         image: "https://images.unsplash.com/photo-1597354984706-fac992d9306f?q=80&w=2070&auto=format&fit=crop",
-        brand: "Man of Cave"
+        brand: "Jam Beauty Lounge"
       },
       {
         id: 4,
@@ -87,7 +87,7 @@ export const useProductsStore = create<ProductsStore>()(
         rating: 4.9,
         reviews: 203,
         image: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?q=80&w=2070&auto=format&fit=crop",
-        brand: "Man of Cave"
+        brand: "Jam Beauty Lounge"
       },
       {
         id: 5,

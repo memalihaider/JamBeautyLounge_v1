@@ -103,7 +103,7 @@ export default function SuperAdminSettings() {
 
   // Branding state
   const [branding, setBranding] = useState<PortalBranding>({
-    portalName: 'Man of Cave',
+    portalName: 'Jam Beauty Lounge',
     primaryColor: '#1a1a1a',
     secondaryColor: '#FF6B00',
     logoUrl: '',
